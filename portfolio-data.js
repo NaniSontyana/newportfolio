@@ -1,0 +1,160 @@
+/* ==========================================================================
+   PORTFOLIO CONFIGURATION DATA
+   Easily add, delete, or edit any skills, projects, summary, personal info, 
+   education, or certifications here!
+   ========================================================================== */
+
+const defaultPortfolioData = {
+    personalInfo: {
+        name: "Nani Sontyana",
+        title: "Full-Stack & AI Systems Engineer",
+        status: "Available for Software Engineering Roles",
+        summary: "Full-Stack Software Engineer with hands-on expertise in building high-performance RESTful microservices, AI & RAG document intelligence engines, and scalable web apps using Java, Python, React.js, Node.js, and Spring Boot.",
+        aboutTitle: "Engineered For Performance & Scale",
+        aboutSubtitle: "A quick snapshot of my technical capabilities and practical software engineering footprint.",
+        email: "nanisontyana47@gmail.com",
+        phone: "+91 9618466575",
+        linkedin: "https://linkedin.com/in/nani-sontyana",
+        github: "https://github.com/nanisontyana",
+        cgpa: "8.14",
+        apiSpeedup: "25%",
+        mlAccuracy: "75%+",
+        codeDupDrop: "30%",
+        bgVideo: "custom-bg-video.mp4"
+    },
+
+    skills: [
+        // Languages
+        { id: "s1", name: "Java", category: "languages", level: 92, status: "Core OOP & DSA", tags: ["Spring Boot", "OOP", "Collections"], icon: "fa-brands fa-java", iconColor: "#f89820" },
+        { id: "s2", name: "Python", category: "languages", level: 90, status: "Data & Microservices", tags: ["Flask", "Scikit-Learn", "LangChain"], icon: "fa-brands fa-python", iconColor: "#3776ab" },
+        { id: "s3", name: "JavaScript (ES6+)", category: "languages", level: 95, status: "Full-Stack Logic", tags: ["Async/Await", "Promises", "DOM"], icon: "fa-brands fa-js", iconColor: "#f7df1e" },
+        { id: "s4", name: "TypeScript & C++", category: "languages", level: 85, status: "Typed & Systems", tags: ["Type Safety", "Algorithms", "C++"], icon: "fa-solid fa-code", iconColor: "#3178c6" },
+
+        // Frontend
+        { id: "s5", name: "React.js & Redux", category: "frontend", level: 92, status: "UI State & Components", tags: ["Hooks", "Context API", "Vite"], icon: "fa-brands fa-react", iconColor: "#61dafb" },
+        { id: "s6", name: "HTML5, CSS3 & Recharts", category: "frontend", level: 94, status: "Modern Visuals", tags: ["Flexbox/Grid", "Glassmorphism", "Recharts"], icon: "fa-brands fa-html5", iconColor: "#e34f26" },
+
+        // Backend & APIs
+        { id: "s7", name: "Node.js & Express.js", category: "backend", level: 94, status: "Scalable Backend APIs", tags: ["REST APIs", "JWT Auth", "Middleware"], icon: "fa-brands fa-node-js", iconColor: "#68a063" },
+        { id: "s8", name: "Spring Boot & Flask", category: "backend", level: 88, status: "Microservices", tags: ["RBAC", "Dependency Injection", "REST"], icon: "fa-solid fa-leaf", iconColor: "#6db33f" },
+
+        // Databases
+        { id: "s9", name: "PostgreSQL & pgvector", category: "databases", level: 90, status: "Relational & Vector DB", tags: ["Semantic Search", "Embeddings", "SQL"], icon: "fa-solid fa-database", iconColor: "#336791" },
+        { id: "s10", name: "MongoDB & MySQL", category: "databases", level: 92, status: "NoSQL & Storage", tags: ["Mongoose", "Aggregation", "Indexing"], icon: "fa-solid fa-envira", iconColor: "#47a248" },
+
+        // AI & ML / RAG
+        { id: "s11", name: "AI, ML & RAG Stack", category: "aiml", level: 88, status: "Intelligence Pipelines", tags: ["Scikit-Learn", "LangChain", "Transformers"], icon: "fa-solid fa-brain", iconColor: "#a855f7" },
+
+        // DevOps & Tools
+        { id: "s12", name: "Docker & DevOps Tools", category: "devops", level: 86, status: "Deployment & Versioning", tags: ["Git/GitHub", "Vercel/Render", "CI/CD"], icon: "fa-brands fa-docker", iconColor: "#2496ed" }
+    ],
+
+    projects: [
+        {
+            id: "documind",
+            title: "DocuMind AI – RAG Document Intelligence",
+            category: "ai fullstack",
+            filterCat: "ai",
+            badge: "Jul 2026",
+            icon: "fa-solid fa-file-pdf",
+            gradientClass: "bg-gradient-rag",
+            coverImage: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80",
+            githubUrl: "https://github.com/nanisontyana/DocuMind-AI",
+            liveUrl: "https://documind-ai.vercel.app",
+            subtitle: "Enterprise Question Answering over PDF Documents with Vector Source Citation",
+            type: "AI & RAG Platform",
+            description: "Enterprise Retrieval-Augmented Generation (RAG) platform enabling accurate natural language question answering over uploaded PDF documents with exact source-cited snippet responses.",
+            tech: ["React", "Node.js", "Python Flask", "PostgreSQL + pgvector", "LangChain", "JWT"],
+            bullets: [
+                "Built a full-stack RAG (Retrieval-Augmented Generation) microservices platform allowing users to upload complex PDF documents and ask natural language questions.",
+                "Utilized PostgreSQL with pgvector extension to perform high-speed cosine vector similarity search over high-dimensional text embeddings generated via Sentence Transformers.",
+                "Integrated LangChain pipeline orchestration in Python Flask microservice to stream source-cited context chunks back to the client interface.",
+                "Secured microservice communications with JWT session token verification and role-based endpoint protection."
+            ]
+        },
+        {
+            id: "smarthr",
+            title: "SmartHR – Retention & Analytics Engine",
+            category: "ai fullstack",
+            filterCat: "fullstack",
+            badge: "Apr 2026",
+            icon: "fa-solid fa-chart-line",
+            gradientClass: "bg-gradient-hr",
+            coverImage: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80",
+            githubUrl: "https://github.com/nanisontyana/SmartHR-Analytics",
+            liveUrl: "https://smarthr-analytics.render.com",
+            subtitle: "Machine Learning Employee Attrition Risk Predictor & Management Dashboard",
+            type: "ML & Enterprise Analytics",
+            description: "Predictive HR analytics system integrating a Random Forest machine learning model achieving 75%+ employee attrition prediction accuracy with response latency under 2 seconds.",
+            tech: ["React", "Vite", "Node.js", "Express", "MongoDB", "Python Flask", "Scikit-Learn"],
+            bullets: [
+                "Engineered an end-to-end employee retention web platform deploying a Random Forest Classifier trained on HR metrics to predict attrition risk with 75%+ accuracy.",
+                "Optimized cross-service API communication between Node.js API gateway and Flask ML service, achieving sub-2-second prediction latency.",
+                "Designed rich visual dashboards utilizing Recharts for real-time organizational risk heatmaps, tenure analysis, and salary distribution breakdown.",
+                "Implemented MongoDB schema design with indexing for rapid employee document lookups and historical trend tracking."
+            ]
+        },
+        {
+            id: "subtracker",
+            title: "Subscription Tracker System",
+            category: "backend fullstack",
+            filterCat: "backend",
+            badge: "Dec 2025",
+            icon: "fa-solid fa-bell",
+            gradientClass: "bg-gradient-sub",
+            coverImage: "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=800&q=80",
+            githubUrl: "https://github.com/nanisontyana/Subscription-Tracker-Backend",
+            liveUrl: "https://subtracker-api.onrender.com",
+            subtitle: "Automated Recurring Billing Tracker & Event-Driven Notification Workflows",
+            type: "Event-Driven Backend System",
+            description: "Resilient backend subscription management platform featuring automated recurring tracking, scheduled background renewal alerts, and Arcjet rate-limiting security.",
+            tech: ["Node.js", "Express", "MongoDB", "JWT", "Nodemailer", "Upstash QStash", "Arcjet"],
+            bullets: [
+                "Developed a scalable backend system managing user subscriptions, automated tracking, and scheduled renewal warnings using background job queues.",
+                "Integrated Upstash QStash for reliable serverless cron scheduling and automated event-driven HTTP callbacks.",
+                "Implemented Arcjet rate-limiting and bot detection security guards to protect authentication endpoints from abusive requests.",
+                "Utilized Nodemailer with HTML email templates to dispatch automated reminder notifications prior to subscription expiry dates."
+            ]
+        }
+    ],
+
+    education: [
+        {
+            id: "edu1",
+            degree: "B.Tech in Computer Science",
+            institution: "Baba Institute of Technology and Science",
+            duration: "Nov 2022 – Apr 2026",
+            gpa: "CGPA: 8.14 / 10.0",
+            description: "Coursework: Data Structures & Algorithms, Object-Oriented Programming, Database Systems, Web Technologies, Operating Systems, Software Engineering."
+        },
+        {
+            id: "edu2",
+            degree: "Intermediate (MPC - Math, Physics, Chem)",
+            institution: "Venkat Sai Junior College",
+            duration: "2020 – 2022",
+            gpa: "Score: 77.1%",
+            description: "Strong foundation in higher mathematics, analytical reasoning, and foundational physics."
+        }
+    ],
+
+    certifications: [
+        {
+            id: "cert1",
+            title: "MERN Stack Web Development",
+            issuer: "GeeksforGeeks",
+            year: "Issued 2025",
+            description: "Comprehensive training covering MongoDB, Express.js, React.js, Node.js, REST API architecture, and state management."
+        },
+        {
+            id: "cert2",
+            title: "Full Stack Web Development",
+            issuer: "BrainOvision Solutions Pvt. Ltd.",
+            year: "Issued 2024",
+            description: "Hands-on development program focusing on Spring Boot, Java backend architectures, and production application building."
+        }
+    ]
+};
+
+// Global portfolioData object initialized from defaults or localStorage
+let portfolioData = JSON.parse(JSON.stringify(defaultPortfolioData));
+

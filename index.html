@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Nani Sontyana - Software Engineer & Full-Stack Developer Portfolio. Specializing in React, Node.js, Python, Spring Boot, RAG AI Architectures, and RESTful APIs.">
+    <meta name="keywords"
+        content="Nani Sontyana, Software Engineer, Full Stack Developer, React, Node.js, Python, RAG AI, Java, Web Developer Portfolio">
+    <meta name="author" content="Nani Sontyana">
+    <title>Nani Sontyana | Full-Stack & AI Systems Engineer</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="dark-theme">
+
+    <!-- Background Video Element -->
+    <div class="video-bg-container">
+        <video id="bg-video" autoplay loop muted playsinline poster="hero-bg-miles-clean.jpg">
+            <source id="bg-video-source" src="custom-bg-video.mp4" type="video/mp4">
+        </video>
+        <div class="video-bg-overlay"></div>
+    </div>
+
+    <!-- Background Particle Canvas -->
+    <canvas id="bg-canvas"></canvas>
+    <div class="ambient-glow glow-1"></div>
+    <div class="ambient-glow glow-2"></div>
+
+    <!-- Navigation Header -->
+    <header class="navbar" id="navbar">
+        <div class="container nav-container">
+            <!-- Hidden Admin Portal Trigger inside Name Logo -->
+            <a href="#hero" class="logo" id="logo-admin-trigger" title="Nani Sontyana Portfolio">
+                <span class="logo-bracket">&lt;</span>NS<span class="logo-bracket"> /&gt;</span>
+                <span class="logo-name">Nani Sontyana</span>
+            </a>
+
+            <nav class="nav-menu" id="nav-menu">
+                <a href="#about" class="nav-link"><i class="fa-solid fa-user-astronaut"></i> About</a>
+                <a href="#skills" class="nav-link"><i class="fa-solid fa-code"></i> Skills</a>
+                <a href="#experience" class="nav-link"><i class="fa-solid fa-briefcase"></i> Experience</a>
+                <a href="#projects" class="nav-link"><i class="fa-solid fa-layer-group"></i> Projects</a>
+                <a href="#education" class="nav-link"><i class="fa-solid fa-graduation-cap"></i> Education</a>
+                <a href="#contact" class="nav-link nav-btn"><i class="fa-solid fa-paper-plane"></i> Contact</a>
+            </nav>
+
+            <div class="nav-actions">
+                <button class="btn-resume-nav" id="open-resume-btn">
+                    <i class="fa-solid fa-file-arrow-down"></i> Resume
+                </button>
+                <button class="mobile-toggle" id="mobile-toggle" aria-label="Toggle Navigation Menu">
+                    <i class="fa-solid fa-bars-staggered"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main id="main-content">
+        <!-- Hero Section -->
+        <section class="hero-section" id="hero">
+            <div class="container hero-grid">
+                <div class="hero-content" data-aos="fade-up">
+                    <div class="badge-status" id="hero-status-display">
+                        <span class="pulse-dot"></span> Available for Software Engineering Roles
+                    </div>
+
+                    <h1 class="hero-title">
+                        Hi, I'm <span class="gradient-text hero-name-click" id="hero-name-admin-trigger"
+                            title="Nani Sontyana Portfolio">Nani Sontyana</span>
+                    </h1>
+
+                    <h2 class="hero-subtitle">
+                        <span class="static-prefix">I build </span>
+                        <span class="typed-text" id="typed-text"></span><span class="cursor-blink">|</span>
+                    </h2>
+
+                    <p class="hero-description" id="hero-summary-display">
+                        Full-Stack Software Engineer with hands-on expertise in building high-performance RESTful microservices, AI & RAG document intelligence engines, and scalable web apps using <strong>Java, Python, React.js, Node.js, and Spring Boot</strong>.
+                    </p>
+
+                    <!-- Metrics Quick Ticker -->
+                    <div class="hero-metrics">
+                        <div class="metric-pill">
+                            <span class="metric-val" id="metric-cgpa-display">8.14</span>
+                            <span class="metric-lbl">B.Tech CGPA</span>
+                        </div>
+                        <div class="metric-pill">
+                            <span class="metric-val" id="metric-apispeed-display">25%</span>
+                            <span class="metric-lbl">API Speedup</span>
+                        </div>
+                        <div class="metric-pill">
+                            <span class="metric-val" id="metric-mlacc-display">75%+</span>
+                            <span class="metric-lbl">ML Model Accuracy</span>
+                        </div>
+                        <div class="metric-pill">
+                            <span class="metric-val" id="metric-codedup-display">30%</span>
+                            <span class="metric-lbl">Code Duplication Drop</span>
+                        </div>
+                    </div>
+
+                    <div class="hero-cta-group">
+                        <a href="#projects" class="btn btn-primary">
+                            <span>Explore Flagship Work</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                        <button class="btn btn-glass" id="open-resume-btn-hero">
+                            <i class="fa-solid fa-file-pdf"></i>
+                            <span>View Resume</span>
+                        </button>
+                        <a href="https://github.com/nanisontyana" target="_blank" rel="noopener noreferrer"
+                            class="social-icon-btn" id="hero-github-link" aria-label="GitHub">
+                            <i class="fa-brands fa-github"></i>
+                        </a>
+                        <a href="https://linkedin.com/in/nani-sontyana" target="_blank" rel="noopener noreferrer"
+                            class="social-icon-btn" id="hero-linkedin-link" aria-label="LinkedIn">
+                            <i class="fa-brands fa-linkedin-in"></i>
+                        </a>
+                        <a href="mailto:nanisontyana47@gmail.com" class="social-icon-btn" id="hero-email-link" aria-label="Email">
+                            <i class="fa-solid fa-envelope"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="hero-visual" data-aos="fade-left">
+                    <div class="code-window">
+                        <div class="window-header">
+                            <div class="window-buttons">
+                                <span class="dot red"></span>
+                                <span class="dot yellow"></span>
+                                <span class="dot green"></span>
+                            </div>
+                            <div class="window-title">
+                                <i class="fa-brands fa-react"></i> developer.profile.ts
+                            </div>
+                        </div>
+                        <div class="window-body">
+                            <pre><code><span class="code-keyword">const</span> <span class="code-variable">engineer</span> = {
+  <span class="code-property">name</span>: <span class="code-string">"Nani Sontyana"</span>,
+  <span class="code-property">role</span>: <span class="code-string">"Full Stack & AI Systems Engineer"</span>,
+  <span class="code-property">degree</span>: <span class="code-string">"B.Tech Computer Science (8.14 CGPA)"</span>,
+  <span class="code-property">coreLanguages</span>: [<span class="code-string">"Java"</span>, <span class="code-string">"Python"</span>, <span class="code-string">"TypeScript"</span>, <span class="code-string">"C++"</span>],
+  <span class="code-property">architectures</span>: [<span class="code-string">"RAG Vector Search"</span>, <span class="code-string">"Microservices"</span>, <span class="code-string">"REST APIs"</span>],
+  <span class="code-property">passion</span>: <span class="code-string">"Building fast, secure & resilient software"</span>,
+  <span class="code-property">status</span>: <span class="code-string">"Ready to innovate 🚀"</span>
+};
+
+<span class="code-comment">// Execute build workflow</span>
+<span class="code-function">deployProductionSystem</span>(engineer);</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Floating Tech Cards -->
+                    <div class="floating-badge badge-1">
+                        <i class="fa-brands fa-node-js"></i>
+                        <span>Node.js & Express</span>
+                    </div>
+                    <div class="floating-badge badge-2">
+                        <i class="fa-brands fa-python"></i>
+                        <span>Python & Scikit-Learn</span>
+                    </div>
+                    <div class="floating-badge badge-3">
+                        <i class="fa-brands fa-java"></i>
+                        <span>Java Spring Boot</span>
+                    </div>
+                </div>
+            </div>
+
+            <a href="#about" class="scroll-down-indicator" aria-label="Scroll Down">
+                <i class="fa-solid fa-chevron-down"></i>
+            </a>
+        </section>
+
+        <!-- About & Impact Section -->
+        <section class="about-section section" id="about">
+            <div class="container">
+                <div class="section-header text-center">
+                    <span class="section-tag"><i class="fa-solid fa-id-card"></i> Overview</span>
+                    <h2 class="section-title">Engineered For <span class="gradient-text">Performance & Scale</span></h2>
+                    <p class="section-subtitle">A quick snapshot of my technical capabilities and practical software
+                        engineering footprint.</p>
+                </div>
+
+                <div class="about-grid">
+                    <div class="about-card glass-card">
+                        <div class="card-icon">
+                            <i class="fa-solid fa-laptop-code"></i>
+                        </div>
+                        <h3>Full-Stack Mastery</h3>
+                        <p>Specialized in crafting modern web platforms using <strong>React.js, Node.js, Express.js, and
+                                Python Flask</strong> with robust dynamic client interfaces and decoupled RESTful
+                            services.</p>
+                    </div>
+
+                    <div class="about-card glass-card">
+                        <div class="card-icon">
+                            <i class="fa-solid fa-brain"></i>
+                        </div>
+                        <h3>AI & RAG Architecture</h3>
+                        <p>Experienced in embedding machine learning models (Random Forest) and developing RAG document
+                            intelligence platforms using <strong>PostgreSQL + pgvector, LangChain, and Sentence
+                                Transformers</strong>.</p>
+                    </div>
+
+                    <div class="about-card glass-card">
+                        <div class="card-icon">
+                            <i class="fa-solid fa-server"></i>
+                        </div>
+                        <h3>Backend Reliability</h3>
+                        <p>Proven track record of building secure role-based access controls (RBAC), <strong>JWT
+                                authentication</strong>, background job scheduling (QStash), and optimizing database
+                            queries for high efficiency.</p>
+                    </div>
+                </div>
+
+                <!-- Animated Stats Counter Grid -->
+                <div class="stats-banner glass-card">
+                    <div class="stat-item">
+                        <div class="stat-num" data-target="25">0</div>
+                        <div class="stat-unit">%</div>
+                        <div class="stat-label">Faster API Response Time</div>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <div class="stat-num" data-target="40">0</div>
+                        <div class="stat-unit">%</div>
+                        <div class="stat-label">Admin Task Reduction</div>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <div class="stat-num" data-target="75">0</div>
+                        <div class="stat-unit">%+</div>
+                        <div class="stat-label">ML Attrition Accuracy</div>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <div class="stat-num" data-target="15">0</div>
+                        <div class="stat-unit">+</div>
+                        <div class="stat-label">REST API Endpoints Built</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Technical Skills Section -->
+        <section class="skills-section section" id="skills">
+            <div class="container">
+                <div class="section-header text-center">
+                    <span class="section-tag"><i class="fa-solid fa-screwdriver-wrench"></i> Technical Toolkit</span>
+                    <h2 class="section-title">Skills & <span class="gradient-text">Technologies</span></h2>
+                    <p class="section-subtitle">Comprehensive breakdown of languages, frameworks, databases, and DevOps
+                        tools I utilize.</p>
+                </div>
+
+                <!-- Skill Category Filter Tabs -->
+                <div class="skill-tabs">
+                    <button class="skill-tab-btn active" data-category="all">All Skills</button>
+                    <button class="skill-tab-btn" data-category="languages">Languages</button>
+                    <button class="skill-tab-btn" data-category="frontend">Frontend</button>
+                    <button class="skill-tab-btn" data-category="backend">Backend & APIs</button>
+                    <button class="skill-tab-btn" data-category="databases">Databases</button>
+                    <button class="skill-tab-btn" data-category="aiml">AI & ML / RAG</button>
+                    <button class="skill-tab-btn" data-category="devops">DevOps & Tools</button>
+                </div>
+
+                <!-- Dynamically Rendered via JavaScript -->
+                <div class="skills-grid" id="skills-grid"></div>
+            </div>
+        </section>
+
+        <!-- Professional Experience Section -->
+        <section class="experience-section section" id="experience">
+            <div class="container">
+                <div class="section-header text-center">
+                    <span class="section-tag"><i class="fa-solid fa-building-user"></i> Work History</span>
+                    <h2 class="section-title">Industry <span class="gradient-text">Experience</span></h2>
+                    <p class="section-subtitle">Real-world impact delivered during my software engineering internship.
+                    </p>
+                </div>
+
+                <div class="timeline-container">
+                    <div class="timeline-line"></div>
+
+                    <!-- Experience Item 1 -->
+                    <div class="timeline-item glass-card" data-aos="fade-up">
+                        <div class="timeline-dot">
+                            <i class="fa-solid fa-briefcase"></i>
+                        </div>
+
+                        <div class="timeline-header">
+                            <div>
+                                <h3 class="company-name">BrainOvision Solutions Pvt. Ltd.</h3>
+                                <div class="role-title">Full Stack Developer Intern</div>
+                            </div>
+                            <div class="timeline-date">
+                                <span class="badge-date"><i class="fa-regular fa-calendar"></i> June 2024 – August
+                                    2024</span>
+                                <span class="badge-location"><i class="fa-solid fa-location-dot"></i> Remote</span>
+                            </div>
+                        </div>
+
+                        <div class="timeline-body">
+                            <ul class="experience-bullets">
+                                <li>
+                                    <i class="fa-solid fa-circle-check bullet-icon"></i>
+                                    <span>Engineered robust <strong>Java Spring Boot applications</strong> featuring
+                                        secure authentication, role-based access control (RBAC), and dynamic
+                                        administration dashboards, cutting manual admin overhead by
+                                        <strong>40%</strong>.</span>
+                                </li>
+                                <li>
+                                    <i class="fa-solid fa-circle-check bullet-icon"></i>
+                                    <span>Architected and implemented <strong>15+ RESTful API endpoints</strong>,
+                                        streamlining data flow and reducing average client response time by
+                                        <strong>25%</strong>.</span>
+                                </li>
+                                <li>
+                                    <i class="fa-solid fa-circle-check bullet-icon"></i>
+                                    <span>Refactored backend service logic and optimized database queries, achieving a
+                                        <strong>30% reduction in code duplication</strong> and enhancing codebase
+                                        maintainability.</span>
+                                </li>
+                                <li>
+                                    <i class="fa-solid fa-circle-check bullet-icon"></i>
+                                    <span>Actively code-reviewed <strong>20+ pull requests</strong>, resolved
+                                        high-priority production bugs, and delivered core features within a 5-member
+                                        Agile sprint team.</span>
+                                </li>
+                            </ul>
+
+                            <div class="exp-tech-stack">
+                                <span class="tech-chip">Java</span>
+                                <span class="tech-chip">Spring Boot</span>
+                                <span class="tech-chip">REST APIs</span>
+                                <span class="tech-chip">RBAC Security</span>
+                                <span class="tech-chip">SQL</span>
+                                <span class="tech-chip">Git / GitHub</span>
+                                <span class="tech-chip">Agile Scrum</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Projects Section -->
+        <section class="projects-section section" id="projects">
+            <div class="container">
+                <div class="section-header text-center">
+                    <span class="section-tag"><i class="fa-solid fa-rocket"></i> Portfolio Highlights</span>
+                    <h2 class="section-title">Featured <span class="gradient-text">Projects</span></h2>
+                    <p class="section-subtitle">Production-grade applications spanning AI Document Intelligence, ML
+                        Predictive Analytics, and Event-Driven Backend Systems.</p>
+                </div>
+
+                <!-- Project Filter Buttons -->
+                <div class="project-filters">
+                    <button class="filter-btn active" data-filter="all">All Projects</button>
+                    <button class="filter-btn" data-filter="ai">AI / ML & RAG</button>
+                    <button class="filter-btn" data-filter="fullstack">Full-Stack Web</button>
+                    <button class="filter-btn" data-filter="backend">Backend Systems</button>
+                </div>
+
+                <!-- Dynamically Rendered via JavaScript -->
+                <div class="projects-grid" id="projects-grid"></div>
+            </div>
+        </section>
+
+        <!-- Education & Certifications Section -->
+        <section class="education-section section" id="education">
+            <div class="container">
+                <div class="section-header text-center">
+                    <span class="section-tag"><i class="fa-solid fa-award"></i> Qualifications</span>
+                    <h2 class="section-title">Education & <span class="gradient-text">Certifications</span></h2>
+                    <p class="section-subtitle">Academic foundations and verified industry certifications.</p>
+                </div>
+
+                <div class="edu-cert-grid">
+                    <!-- Education Column -->
+                    <div class="edu-column">
+                        <h3 class="column-title"><i class="fa-solid fa-graduation-cap"></i> Academic Background</h3>
+                        <div id="education-list-container"></div>
+                    </div>
+
+                    <!-- Certifications Column -->
+                    <div class="cert-column">
+                        <h3 class="column-title"><i class="fa-solid fa-certificate"></i> Verified Certifications</h3>
+                        <div id="certs-list-container"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section class="contact-section section" id="contact">
+            <div class="container">
+                <div class="section-header text-center">
+                    <span class="section-tag"><i class="fa-solid fa-comments"></i> Get In Touch</span>
+                    <h2 class="section-title">Let's Build Something <span class="gradient-text">Extraordinary</span>
+                    </h2>
+                    <p class="section-subtitle">Currently exploring full-time Software Engineer opportunities. Reach out
+                        via email, phone, or send a message directly!</p>
+                </div>
+
+                <div class="contact-grid">
+                    <!-- Contact Info -->
+                    <div class="contact-info-card glass-card">
+                        <h3>Contact Information</h3>
+                        <p>Feel free to connect directly through any of the platforms below:</p>
+
+                        <div class="info-list">
+                            <a href="mailto:nanisontyana47@gmail.com" class="info-item">
+                                <div class="info-icon"><i class="fa-solid fa-envelope"></i></div>
+                                <div>
+                                    <span class="info-label">Email Address</span>
+                                    <span class="info-val">nanisontyana47@gmail.com</span>
+                                </div>
+                            </a>
+
+                            <a href="tel:+919618466575" class="info-item">
+                                <div class="info-icon"><i class="fa-solid fa-phone"></i></div>
+                                <div>
+                                    <span class="info-label">Phone / WhatsApp</span>
+                                    <span class="info-val">+91 9618466575</span>
+                                </div>
+                            </a>
+
+                            <a href="https://linkedin.com/in/nani-sontyana" target="_blank" rel="noopener noreferrer"
+                                class="info-item">
+                                <div class="info-icon"><i class="fa-brands fa-linkedin-in"></i></div>
+                                <div>
+                                    <span class="info-label">LinkedIn Profile</span>
+                                    <span class="info-val">linkedin.com/in/nani-sontyana</span>
+                                </div>
+                            </a>
+
+                            <a href="https://github.com/nanisontyana" target="_blank" rel="noopener noreferrer"
+                                class="info-item">
+                                <div class="info-icon"><i class="fa-brands fa-github"></i></div>
+                                <div>
+                                    <span class="info-label">GitHub Repository</span>
+                                    <span class="info-val">github.com/nanisontyana</span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Contact Form -->
+                    <div class="contact-form-card glass-card">
+                        <form id="contact-form" onsubmit="handleFormSubmit(event)">
+                            <div class="form-group">
+                                <label for="name">Your Full Name</label>
+                                <input type="text" id="name" required placeholder="e.g. Alex Mercer">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="email">Your Email Address</label>
+                                <input type="email" id="email" required placeholder="e.g. alex@company.com">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="subject">Subject</label>
+                                <input type="text" id="subject" required
+                                    placeholder="Software Engineer Opportunity / Project Inquiry">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="message">Message</label>
+                                <textarea id="message" rows="5" required
+                                    placeholder="Write your message here..."></textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-block" id="form-submit-btn">
+                                <span>Send Message</span>
+                                <i class="fa-solid fa-paper-plane"></i>
+                            </button>
+
+                            <div id="form-feedback" class="form-feedback"></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-content">
+            <div class="footer-brand">
+                <a href="#hero" class="logo" id="footer-logo-admin-trigger">
+                    <span class="logo-bracket">&lt;</span>NS<span class="logo-bracket"> /&gt;</span>
+                </a>
+                <p>Designed & Built by <strong>Nani Sontyana</strong> &copy; 2026. All rights reserved.</p>
+            </div>
+            <div class="footer-links">
+                <a href="#hero">Back to top <i class="fa-solid fa-arrow-up"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Hidden Customizer Admin Modal -->
+    <div class="modal-overlay" id="customizer-modal">
+        <div class="modal-card glass-card" style="max-width:900px; width:92%;">
+            <button class="modal-close" onclick="closeCustomizerModal()">&times;</button>
+
+            <div class="modal-header-block">
+                <h2><i class="fa-solid fa-sliders" style="color:var(--primary-cyan);"></i> Portfolio Admin & Customizer Portal</h2>
+                <p style="color:var(--text-muted); font-size:0.9rem;">Edit any section live on the website: Personal Bio/Summary, Skills, Projects, Education, and Contact Links!</p>
+            </div>
+
+            <!-- Tabs: Personal & Summary | Skills | Projects | Education & Certs | Edit Config JS -->
+            <div class="skill-tabs" style="justify-content:flex-start; margin-bottom:1.5rem; flex-wrap:wrap; gap:0.5rem;">
+                <button class="skill-tab-btn active" id="cust-tab-personal" onclick="switchCustTab('personal')"><i class="fa-solid fa-user-pen"></i> Personal & Summary</button>
+                <button class="skill-tab-btn" id="cust-tab-skills" onclick="switchCustTab('skills')"><i class="fa-solid fa-code"></i> Skills Toolkit</button>
+                <button class="skill-tab-btn" id="cust-tab-projects" onclick="switchCustTab('projects')"><i class="fa-solid fa-rocket"></i> Projects Showcase</button>
+                <button class="skill-tab-btn" id="cust-tab-education" onclick="switchCustTab('education')"><i class="fa-solid fa-graduation-cap"></i> Education & Certs</button>
+                <button class="skill-tab-btn" id="cust-tab-export" onclick="switchCustTab('export')"><i class="fa-solid fa-code-compare"></i> Edit / Export Config</button>
+            </div>
+
+            <!-- Tab Content 1: Edit Personal Info & Summary -->
+            <div id="cust-content-personal">
+                <div style="background:rgba(6,9,19,0.7); padding:1.25rem; border-radius:12px; border:1px solid var(--glass-border); margin-bottom:1rem;">
+                    <h4 style="font-size:1rem; color:var(--primary-cyan); margin-bottom:1rem;"><i class="fa-solid fa-pen-to-square"></i> Hero Section & Personal Summary</h4>
+
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-bottom:0.8rem;">
+                        <div>
+                            <label style="font-size:0.8rem; color:var(--text-muted); display:block; margin-bottom:0.3rem;">Full Name</label>
+                            <input type="text" id="cust-name" class="form-group-input" style="width:100%;">
+                        </div>
+                        <div>
+                            <label style="font-size:0.8rem; color:var(--text-muted); display:block; margin-bottom:0.3rem;">Professional Title / Role</label>
+                            <input type="text" id="cust-title" class="form-group-input" style="width:100%;">
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom:0.8rem;">
+                        <label style="font-size:0.8rem; color:var(--text-muted); display:block; margin-bottom:0.3rem;">Availability Status Badge Text</label>
+                        <input type="text" id="cust-status" class="form-group-input" style="width:100%;">
+                    </div>
+
+                    <div style="margin-bottom:1rem;">
+                        <label style="font-size:0.8rem; color:var(--primary-cyan); font-weight:600; display:block; margin-bottom:0.3rem;">
+                            <i class="fa-solid fa-align-left"></i> Summary / Bio Description
+                        </label>
+                        <textarea id="cust-summary" rows="4" class="form-group-input" style="width:100%; font-size:0.9rem;" placeholder="Write your professional summary bio here..."></textarea>
+                    </div>
+
+                    <h4 style="font-size:1rem; color:var(--primary-cyan); margin-bottom:0.8rem; margin-top:1.2rem;"><i class="fa-solid fa-chart-simple"></i> Hero Impact Metrics</h4>
+                    <div style="display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:0.8rem; margin-bottom:1rem;">
+                        <div>
+                            <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.2rem;">CGPA</label>
+                            <input type="text" id="cust-cgpa" class="form-group-input" style="width:100%;">
+                        </div>
+                        <div>
+                            <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.2rem;">API Speedup</label>
+                            <input type="text" id="cust-apispeed" class="form-group-input" style="width:100%;">
+                        </div>
+                        <div>
+                            <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.2rem;">ML Accuracy</label>
+                            <input type="text" id="cust-mlacc" class="form-group-input" style="width:100%;">
+                        </div>
+                        <div>
+                            <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.2rem;">Code Dup Drop</label>
+                            <input type="text" id="cust-codedup" class="form-group-input" style="width:100%;">
+                        </div>
+                    </div>
+
+                    <h4 style="font-size:1rem; color:var(--primary-cyan); margin-bottom:0.8rem; margin-top:1.2rem;"><i class="fa-solid fa-address-book"></i> Contact Details & Social Links</h4>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-bottom:0.8rem;">
+                        <div>
+                            <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.2rem;">Email</label>
+                            <input type="email" id="cust-email" class="form-group-input" style="width:100%;">
+                        </div>
+                        <div>
+                            <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.2rem;">Phone</label>
+                            <input type="text" id="cust-phone" class="form-group-input" style="width:100%;">
+                        </div>
+                    </div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-bottom:1rem;">
+                        <div>
+                            <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.2rem;">LinkedIn URL</label>
+                            <input type="url" id="cust-linkedin" class="form-group-input" style="width:100%;">
+                        </div>
+                        <div>
+                            <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.2rem;">GitHub URL</label>
+                            <input type="url" id="cust-github" class="form-group-input" style="width:100%;">
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom:1.2rem;">
+                        <label style="font-size:0.75rem; color:var(--primary-cyan); display:block; margin-bottom:0.2rem;">
+                            <i class="fa-solid fa-video"></i> Background Video MP4 URL
+                        </label>
+                        <input type="text" id="cust-bg-video" class="form-group-input" style="width:100%;" placeholder="Paste custom MP4 video link or filename (e.g. ./bg-video.mp4)">
+                    </div>
+
+                    <button class="btn btn-primary" onclick="savePersonalInfoFromUI()">
+                        <i class="fa-solid fa-floppy-disk"></i> Save Summary & Personal Info
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tab Content 2: Manage Skills -->
+            <div id="cust-content-skills" style="display:none;">
+                <div style="background:rgba(6,9,19,0.7); padding:1.25rem; border-radius:12px; border:1px solid var(--glass-border); margin-bottom:1.5rem;">
+                    <h4 style="font-size:1rem; color:var(--primary-cyan); margin-bottom:1rem;"><i class="fa-solid fa-plus"></i> Add New Skill</h4>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-bottom:0.8rem;">
+                        <input type="text" id="new-skill-name" placeholder="Skill Name (e.g. GraphQL)" class="form-group-input">
+                        <select id="new-skill-category" class="form-group-input">
+                            <option value="languages">Languages</option>
+                            <option value="frontend">Frontend</option>
+                            <option value="backend">Backend & APIs</option>
+                            <option value="databases">Databases</option>
+                            <option value="aiml">AI & ML / RAG</option>
+                            <option value="devops">DevOps & Tools</option>
+                        </select>
+                    </div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-bottom:1rem;">
+                        <input type="number" id="new-skill-level" placeholder="Proficiency Level % (e.g. 90)" min="10" max="100" class="form-group-input">
+                        <input type="text" id="new-skill-tags" placeholder="Tags comma separated (e.g. API, Schema)" class="form-group-input">
+                    </div>
+                    <button class="btn btn-primary" style="padding:0.5rem 1.25rem; font-size:0.85rem;" onclick="addNewSkillFromUI()">
+                        <i class="fa-solid fa-plus"></i> Add Skill to Portfolio
+                    </button>
+                </div>
+
+                <h4 style="font-size:1rem; margin-bottom:0.75rem;">Current Skills (<span id="skill-count">0</span>):</h4>
+                <div id="cust-skills-list" style="display:flex; flex-direction:column; gap:0.5rem; max-height:280px; overflow-y:auto; padding-right:0.5rem;"></div>
+            </div>
+
+            <!-- Tab Content 3: Manage Projects -->
+            <div id="cust-content-projects" style="display:none;">
+                <div style="background:rgba(6,9,19,0.7); padding:1.25rem; border-radius:12px; border:1px solid var(--glass-border); margin-bottom:1.5rem;">
+                    <h4 style="font-size:1rem; color:var(--primary-cyan); margin-bottom:1rem;"><i class="fa-solid fa-plus"></i> Add New Project</h4>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-bottom:0.8rem;">
+                        <input type="text" id="new-proj-title" placeholder="Project Title (e.g. DocuMind AI)" class="form-group-input">
+                        <input type="text" id="new-proj-badge" placeholder="Date (e.g. Jul 2026)" class="form-group-input">
+                    </div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-bottom:0.8rem;">
+                        <input type="url" id="new-proj-cover" placeholder="Cover Image URL (https://...)" class="form-group-input">
+                        <select id="new-proj-category" class="form-group-input">
+                            <option value="ai fullstack">AI / ML & RAG</option>
+                            <option value="fullstack">Full-Stack Web</option>
+                            <option value="backend fullstack">Backend Systems</option>
+                        </select>
+                    </div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-bottom:0.8rem;">
+                        <input type="url" id="new-proj-github" placeholder="GitHub Repo Link (https://github.com/...)" class="form-group-input">
+                        <input type="url" id="new-proj-live" placeholder="Live Deployment Link (https://...)" class="form-group-input">
+                    </div>
+                    <div style="margin-bottom:0.8rem;">
+                        <input type="text" id="new-proj-tech" placeholder="Technologies Applied (comma separated: React, Node.js, Python Flask, PostgreSQL)" class="form-group-input">
+                    </div>
+                    <textarea id="new-proj-desc" rows="2" placeholder="Brief project summary description..." class="form-group-input" style="width:100%; margin-bottom:0.8rem;"></textarea>
+                    <textarea id="new-proj-bullets" rows="4" placeholder="Key Architecture & Achievements Bullet Points (Paste 1 point per line)..." class="form-group-input" style="width:100%; margin-bottom:0.8rem;"></textarea>
+
+                    <button class="btn btn-primary" style="padding:0.5rem 1.25rem; font-size:0.85rem;" onclick="addNewProjectFromUI()">
+                        <i class="fa-solid fa-plus"></i> Add Project to Portfolio
+                    </button>
+                </div>
+
+                <h4 style="font-size:1rem; margin-bottom:0.75rem;">Current Projects (<span id="proj-count">0</span>):</h4>
+                <div id="cust-projects-list" style="display:flex; flex-direction:column; gap:0.5rem; max-height:260px; overflow-y:auto; padding-right:0.5rem;"></div>
+            </div>
+
+            <!-- Tab Content 4: Manage Education & Certifications -->
+            <div id="cust-content-education" style="display:none;">
+                <div style="background:rgba(6,9,19,0.7); padding:1.25rem; border-radius:12px; border:1px solid var(--glass-border); margin-bottom:1.5rem;">
+                    <h4 style="font-size:1rem; color:var(--primary-cyan); margin-bottom:1rem;"><i class="fa-solid fa-plus"></i> Add Education Degree</h4>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-bottom:0.8rem;">
+                        <input type="text" id="new-edu-degree" placeholder="Degree (e.g. B.Tech in CS)" class="form-group-input">
+                        <input type="text" id="new-edu-inst" placeholder="Institution Name" class="form-group-input">
+                    </div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-bottom:0.8rem;">
+                        <input type="text" id="new-edu-duration" placeholder="Duration (e.g. 2022 - 2026)" class="form-group-input">
+                        <input type="text" id="new-edu-gpa" placeholder="CGPA/Grade (e.g. CGPA: 8.14)" class="form-group-input">
+                    </div>
+                    <textarea id="new-edu-desc" rows="2" placeholder="Coursework / details..." class="form-group-input" style="width:100%; margin-bottom:0.8rem;"></textarea>
+                    <button class="btn btn-primary" style="padding:0.5rem 1.25rem; font-size:0.85rem;" onclick="addNewEduFromUI()">
+                        <i class="fa-solid fa-plus"></i> Add Education Entry
+                    </button>
+                </div>
+
+                <h4 style="font-size:1rem; margin-bottom:0.75rem;">Education Entries (<span id="edu-count">0</span>):</h4>
+                <div id="cust-edu-list" style="display:flex; flex-direction:column; gap:0.5rem; max-height:180px; overflow-y:auto; padding-right:0.5rem; margin-bottom:1.5rem;"></div>
+
+                <div style="background:rgba(6,9,19,0.7); padding:1.25rem; border-radius:12px; border:1px solid var(--glass-border); margin-bottom:1.5rem;">
+                    <h4 style="font-size:1rem; color:var(--primary-cyan); margin-bottom:1rem;"><i class="fa-solid fa-plus"></i> Add Verified Certification</h4>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-bottom:0.8rem;">
+                        <input type="text" id="new-cert-title" placeholder="Certification Title" class="form-group-input">
+                        <input type="text" id="new-cert-issuer" placeholder="Issuer (e.g. GeeksforGeeks)" class="form-group-input">
+                    </div>
+                    <div style="display:grid; grid-template-columns:1fr; gap:0.8rem; margin-bottom:0.8rem;">
+                        <input type="text" id="new-cert-year" placeholder="Year / Date Issued (e.g. Issued 2025)" class="form-group-input">
+                    </div>
+                    <textarea id="new-cert-desc" rows="2" placeholder="Certification description..." class="form-group-input" style="width:100%; margin-bottom:0.8rem;"></textarea>
+                    <button class="btn btn-primary" style="padding:0.5rem 1.25rem; font-size:0.85rem;" onclick="addNewCertFromUI()">
+                        <i class="fa-solid fa-plus"></i> Add Certification Entry
+                    </button>
+                </div>
+
+                <h4 style="font-size:1rem; margin-bottom:0.75rem;">Certification Entries (<span id="cert-count">0</span>):</h4>
+                <div id="cust-cert-list" style="display:flex; flex-direction:column; gap:0.5rem; max-height:180px; overflow-y:auto; padding-right:0.5rem;"></div>
+            </div>
+
+            <!-- Tab Content 5: Edit & Export Config JS -->
+            <div id="cust-content-export" style="display:none;">
+                <p style="font-size:0.88rem; color:var(--text-muted); margin-bottom:1rem;">
+                    Edit the full configuration JavaScript/JSON directly below and click <strong>"Apply Changes Live"</strong> to update the entire website immediately!
+                </p>
+                <textarea id="export-json-box" rows="12" style="width:100%; background:#060913; border:1px solid var(--glass-border); border-radius:8px; color:#50fa7b; font-family:var(--font-code); font-size:0.8rem; padding:1rem;"></textarea>
+                <div style="margin-top:1rem; display:flex; gap:1rem; flex-wrap:wrap;">
+                    <button class="btn btn-primary" onclick="applyLiveConfigFromTextarea()">
+                        <i class="fa-solid fa-floppy-disk"></i> Apply Changes Live
+                    </button>
+                    <button class="btn btn-glass" onclick="copyConfigToClipboard()">
+                        <i class="fa-solid fa-copy"></i> Copy Config JS
+                    </button>
+                    <button class="btn btn-glass" style="color:#ff4d4d; border-color:rgba(255,77,77,0.3);" onclick="resetPortfolioDataToDefaults()">
+                        <i class="fa-solid fa-rotate-left"></i> Reset To Defaults
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Interactive Project Modal Window -->
+    <div class="modal-overlay" id="project-modal">
+        <div class="modal-card glass-card">
+            <button class="modal-close" onclick="closeProjectModal()">&times;</button>
+            <div id="modal-content-body"></div>
+        </div>
+    </div>
+
+    <!-- Resume Viewer Modal Window -->
+    <div class="modal-overlay" id="resume-modal">
+        <div class="modal-card resume-modal-card glass-card">
+            <button class="modal-close" onclick="closeResumeModal()">&times;</button>
+            <div class="resume-header">
+                <h2><i class="fa-solid fa-file-invoice"></i> Nani Sontyana - Professional Resume</h2>
+                <div class="resume-actions">
+                    <button class="btn btn-sm btn-primary" onclick="printResume()">
+                        <i class="fa-solid fa-print"></i> Print / Save PDF
+                    </button>
+                </div>
+            </div>
+            <div class="resume-body-preview" id="resume-printable-area">
+                <div class="res-paper">
+                    <div class="res-title-block">
+                        <h1>NANI SONTYANA</h1>
+                        <p class="res-contact-bar">+91-9618466575 | nanisontyana47@gmail.com | LinkedIn | GitHub</p>
+                    </div>
+
+                    <div class="res-section">
+                        <h3>Professional Summary</h3>
+                        <p>Software Engineer with hands-on experience designing and developing full-stack web
+                            applications using Java, JavaScript, Python, React.js, Node.js, Express.js, and MongoDB.
+                            Experienced in building RESTful APIs, integrating machine learning models, and developing
+                            scalable backend systems with SQL/NoSQL databases. Proficient in object-oriented
+                            programming, data structures and algorithms, Git, and Agile software development.
+                            Experienced with JWT authentication, microservices, and backend performance optimization.
+                        </p>
+                    </div>
+
+                    <div class="res-section">
+                        <h3>Technical Skills</h3>
+                        <p><strong>Programming Languages:</strong> Java, Python, JavaScript (ES6+), C++, TypeScript</p>
+                        <p><strong>Frontend:</strong> React.js, Vite, Redux, HTML5, CSS3, Recharts</p>
+                        <p><strong>Backend & APIs:</strong> Node.js, Express.js, Spring Boot, Flask, REST API Design,
+                            JWT Authentication</p>
+                        <p><strong>Databases & DBMS:</strong> SQL, MySQL, PostgreSQL, SQLite, MongoDB</p>
+                        <p><strong>DevOps & Tools:</strong> Git, GitHub, Docker, Vercel, Render, CI/CD pipelines,
+                            Postman</p>
+                        <p><strong>AI & ML Tools:</strong> Scikit-Learn, TensorFlow, PyTorch, LangChain, Sentence
+                            Transformers</p>
+                    </div>
+
+                    <div class="res-section">
+                        <h3>Experience</h3>
+                        <div class="res-job-title">
+                            <strong>BrainOvision Solutions Pvt. Ltd.</strong> <span>June 2024 – August 2024</span>
+                        </div>
+                        <em>Full Stack Developer Intern (Remote)</em>
+                        <ul>
+                            <li>Developed Java Spring Boot applications with secure authentication, role-based access
+                                control, and dynamic dashboards, reducing manual administrative tasks by 40%.</li>
+                            <li>Designed and implemented 15+ RESTful API endpoints, reducing average response time by
+                                25%.</li>
+                            <li>Optimized backend logic and database queries, reducing code duplication by 30%.</li>
+                            <li>Reviewed 20+ pull requests, resolved critical bugs, and delivered sprint features with a
+                                5-member Agile team.</li>
+                        </ul>
+                    </div>
+
+                    <div class="res-section">
+                        <h3>Projects</h3>
+                        <div class="res-proj-item">
+                            <strong>SmartHR – Enterprise Retention & Analytics Engine</strong> <span>Apr 2026</span>
+                            <ul>
+                                <li>Developed a full-stack HR analytics platform using React, Express.js, MongoDB, and
+                                    Python Flask, integrating a Random Forest model with 75%+ employee attrition
+                                    prediction accuracy.</li>
+                                <li>Implemented JWT authentication, role-based authorization, REST APIs, and analytics
+                                    dashboards, reducing prediction latency to under 2 seconds.</li>
+                            </ul>
+                        </div>
+                        <div class="res-proj-item">
+                            <strong>DocuMind AI – RAG-Based Document Intelligence Platform</strong> <span>Jul
+                                2026</span>
+                            <ul>
+                                <li>Built a RAG platform enabling natural language question answering over uploaded PDF
+                                    documents with source-cited responses.</li>
+                                <li>Designed a microservices architecture using React, Node.js, Express.js, Python
+                                    Flask, PostgreSQL + pgvector, semantic vector search, and JWT-secured REST APIs.
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="res-proj-item">
+                            <strong>Subscription Tracker System</strong> <span>Dec 2025</span>
+                            <ul>
+                                <li>Developed a backend subscription management system with automated recurring
+                                    subscription tracking and renewal reminders using scheduled background jobs.</li>
+                                <li>Integrated JWT authentication, Nodemailer, Upstash QStash, and Arcjet to implement
+                                    secure event-driven notification workflows.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="res-section">
+                        <h3>Education</h3>
+                        <p><strong>Baba Institute of Technology and Science</strong> — B.Tech in Computer Science (Nov
+                            2022 – Apr 2026) | CGPA: 8.14</p>
+                        <p><strong>Venkat Sai Junior College</strong> — Intermediate MPC (2020 – 2022) | 77.1%</p>
+                    </div>
+
+                    <div class="res-section">
+                        <h3>Certifications</h3>
+                        <p>• MERN Stack Web Development – GeeksforGeeks (2025)</p>
+                        <p>• Full Stack Web Development – BrainOvision Solutions Pvt. Ltd. (2024)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Configuration Data JS -->
+    <script src="portfolio-data.js"></script>
+    <!-- Custom Application Logic JS -->
+    <script src="app.js"></script>
+</body>
+
+</html>

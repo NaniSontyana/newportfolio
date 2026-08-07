@@ -1,0 +1,12 @@
+# Dependencies & System Logs
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment & Vercel Artifacts
+.env
+.env.local
+.DS_Store
+.vercel
+*.py
