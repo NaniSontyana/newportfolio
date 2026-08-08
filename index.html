@@ -641,35 +641,82 @@
                 <div id="cust-skills-list" style="display:flex; flex-direction:column; gap:0.5rem; max-height:280px; overflow-y:auto; padding-right:0.5rem;"></div>
             </div>
 
-            <!-- Tab Content 3: Manage Projects -->
+            <!-- Tab Content 3: Manage Projects & Edit Hidden Details -->
             <div id="cust-content-projects" style="display:none;">
                 <div style="background:rgba(6,9,19,0.7); padding:1.25rem; border-radius:12px; border:1px solid var(--glass-border); margin-bottom:1.5rem;">
-                    <h4 style="font-size:1rem; color:var(--primary-cyan); margin-bottom:1rem;"><i class="fa-solid fa-plus"></i> Add New Project</h4>
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-bottom:0.8rem;">
-                        <input type="text" id="new-proj-title" placeholder="Project Title (e.g. DocuMind AI)" class="form-group-input">
-                        <input type="text" id="new-proj-badge" placeholder="Date (e.g. Jul 2026)" class="form-group-input">
-                    </div>
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-bottom:0.8rem;">
-                        <input type="url" id="new-proj-cover" placeholder="Cover Image URL (https://...)" class="form-group-input">
-                        <select id="new-proj-category" class="form-group-input">
-                            <option value="ai fullstack">AI / ML & RAG</option>
-                            <option value="fullstack">Full-Stack Web</option>
-                            <option value="backend fullstack">Backend Systems</option>
-                        </select>
-                    </div>
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-bottom:0.8rem;">
-                        <input type="url" id="new-proj-github" placeholder="GitHub Repo Link (https://github.com/...)" class="form-group-input">
-                        <input type="url" id="new-proj-live" placeholder="Live Deployment Link (https://...)" class="form-group-input">
-                    </div>
-                    <div style="margin-bottom:0.8rem;">
-                        <input type="text" id="new-proj-tech" placeholder="Technologies Applied (comma separated: React, Node.js, Python Flask, PostgreSQL)" class="form-group-input">
-                    </div>
-                    <textarea id="new-proj-desc" rows="2" placeholder="Brief project summary description..." class="form-group-input" style="width:100%; margin-bottom:0.8rem;"></textarea>
-                    <textarea id="new-proj-bullets" rows="4" placeholder="Key Architecture & Achievements Bullet Points (Paste 1 point per line)..." class="form-group-input" style="width:100%; margin-bottom:0.8rem;"></textarea>
+                    <h4 style="font-size:1rem; color:var(--primary-cyan); margin-bottom:1rem;" id="proj-form-heading">
+                        <i class="fa-solid fa-plus"></i> Add / Edit Project & Hidden Details
+                    </h4>
+                    <input type="hidden" id="editing-proj-id" value="">
 
-                    <button class="btn btn-primary" style="padding:0.5rem 1.25rem; font-size:0.85rem;" onclick="addNewProjectFromUI()">
-                        <i class="fa-solid fa-plus"></i> Add Project to Portfolio
-                    </button>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-bottom:0.8rem;">
+                        <div>
+                            <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.2rem;">Project Title</label>
+                            <input type="text" id="new-proj-title" placeholder="Project Title (e.g. DocuMind AI)" class="form-group-input" style="width:100%;">
+                        </div>
+                        <div>
+                            <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.2rem;">Badge / Date</label>
+                            <input type="text" id="new-proj-badge" placeholder="Date (e.g. Jul 2026)" class="form-group-input" style="width:100%;">
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom:0.8rem;">
+                        <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.2rem;">Cover Image (URL or Upload Image File)</label>
+                        <div style="display:flex; gap:0.5rem; align-items:center;">
+                            <input type="url" id="new-proj-cover" placeholder="Cover Image URL (https://...)" class="form-group-input" style="flex:1;">
+                            <button type="button" class="btn btn-sm btn-glass" style="white-space:nowrap; padding:0.55rem 0.85rem;" onclick="document.getElementById('new-proj-image-file').click()">
+                                <i class="fa-solid fa-upload"></i> Upload Image
+                            </button>
+                            <input type="file" id="new-proj-image-file" accept="image/*" style="display:none;" onchange="handleProjectImageUpload(event)">
+                        </div>
+                    </div>
+
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-bottom:0.8rem;">
+                        <div>
+                            <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.2rem;">Filter Category</label>
+                            <select id="new-proj-category" class="form-group-input" style="width:100%;">
+                                <option value="ai fullstack">AI / ML & RAG</option>
+                                <option value="fullstack">Full-Stack Web</option>
+                                <option value="backend fullstack">Backend Systems</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.2rem;">Technologies Applied (comma separated)</label>
+                            <input type="text" id="new-proj-tech" placeholder="React, Node.js, Python Flask, PostgreSQL" class="form-group-input" style="width:100%;">
+                        </div>
+                    </div>
+
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-bottom:0.8rem;">
+                        <div>
+                            <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.2rem;">GitHub Repo Link</label>
+                            <input type="url" id="new-proj-github" placeholder="https://github.com/..." class="form-group-input" style="width:100%;">
+                        </div>
+                        <div>
+                            <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.2rem;">Live Deployment Link</label>
+                            <input type="url" id="new-proj-live" placeholder="https://..." class="form-group-input" style="width:100%;">
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom:0.8rem;">
+                        <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.2rem;">Short Description (Shown on Card Front)</label>
+                        <textarea id="new-proj-desc" rows="2" placeholder="Brief project summary description..." class="form-group-input" style="width:100%;"></textarea>
+                    </div>
+
+                    <div style="margin-bottom:0.8rem;">
+                        <label style="font-size:0.75rem; color:var(--primary-cyan); font-weight:600; display:block; margin-bottom:0.2rem;">
+                            <i class="fa-solid fa-layer-group"></i> Hidden Details: Deep-Dive Architecture & Achievements (1 per line)
+                        </label>
+                        <textarea id="new-proj-bullets" rows="4" placeholder="Paste 1 bullet per line..." class="form-group-input" style="width:100%;"></textarea>
+                    </div>
+
+                    <div style="display:flex; gap:0.8rem; align-items:center;">
+                        <button class="btn btn-primary" id="btn-save-project" style="padding:0.5rem 1.25rem; font-size:0.85rem;" onclick="addNewProjectFromUI()">
+                            <i class="fa-solid fa-plus"></i> Save / Add Project
+                        </button>
+                        <button type="button" class="btn btn-glass" id="btn-cancel-proj-edit" style="display:none; padding:0.5rem 1rem; font-size:0.85rem;" onclick="resetProjectForm()">
+                            <i class="fa-solid fa-xmark"></i> Cancel Edit
+                        </button>
+                    </div>
                 </div>
 
                 <h4 style="font-size:1rem; margin-bottom:0.75rem;">Current Projects (<span id="proj-count">0</span>):</h4>
@@ -725,6 +772,9 @@
                 <div style="margin-top:1rem; display:flex; gap:1rem; flex-wrap:wrap;">
                     <button class="btn btn-primary" onclick="applyLiveConfigFromTextarea()">
                         <i class="fa-solid fa-floppy-disk"></i> Apply Changes Live
+                    </button>
+                    <button class="btn btn-glass" style="border-color:var(--primary-cyan); color:var(--primary-cyan);" onclick="downloadPortfolioConfigFile()">
+                        <i class="fa-solid fa-download"></i> Download portfolio-data.js File
                     </button>
                     <button class="btn btn-glass" onclick="copyConfigToClipboard()">
                         <i class="fa-solid fa-copy"></i> Copy Config JS

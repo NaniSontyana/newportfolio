@@ -2,8 +2,8 @@
    NANI SONTYANA - PORTFOLIO INTERACTIVE LOGIC & DYNAMIC DATA ENGINE
    ========================================================================== */
 
-document.addEventListener('DOMContentLoaded', () => {
-    loadStoredData();
+document.addEventListener('DOMContentLoaded', async () => {
+    await loadStoredData();
     initCanvasParticles();
     initTypingEffect();
     initNavbarScroll();
@@ -19,9 +19,54 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /* ==========================================================================
-   1. Data Persistence & Full Section Renderers
+   1. Data Persistence & Full Section Renderers (IndexedDB + localStorage)
    ========================================================================== */
-function loadStoredData() {
+const IDB_NAME = 'NaniPortfolioDB';
+const IDB_STORE = 'portfolio_store';
+
+function openPortfolioDB() {
+    return new Promise((resolve) => {
+        if (!window.indexedDB) {
+            resolve(null);
+            return;
+        }
+        const request = indexedDB.open(IDB_NAME, 1);
+        request.onupgradeneeded = (e) => {
+            const db = e.target.result;
+            if (!db.objectStoreNames.contains(IDB_STORE)) {
+                db.createObjectStore(IDB_STORE);
+            }
+        };
+        request.onsuccess = (e) => resolve(e.target.result);
+        request.onerror = () => resolve(null);
+    });
+}
+
+async function loadStoredData() {
+    // 1. Try IndexedDB first (supports large payloads like uploaded images)
+    try {
+        const db = await openPortfolioDB();
+        if (db) {
+            const dataStr = await new Promise((resolve) => {
+                const tx = db.transaction(IDB_STORE, 'readonly');
+                const store = tx.objectStore(IDB_STORE);
+                const req = store.get('current_portfolio_data');
+                req.onsuccess = () => resolve(req.result);
+                req.onerror = () => resolve(null);
+            });
+            if (dataStr) {
+                const parsed = JSON.parse(dataStr);
+                if (parsed && parsed.personalInfo) {
+                    window.portfolioData = parsed;
+                    return;
+                }
+            }
+        }
+    } catch (e) {
+        console.warn("IndexedDB load warning, falling back to localStorage", e);
+    }
+
+    // 2. Fallback to localStorage
     const stored = localStorage.getItem('nani_portfolio_custom_v1');
     if (stored) {
         try {
@@ -35,8 +80,27 @@ function loadStoredData() {
     }
 }
 
-function saveStoredData() {
-    localStorage.setItem('nani_portfolio_custom_v1', JSON.stringify(portfolioData));
+async function saveStoredData() {
+    const dataStr = JSON.stringify(portfolioData);
+
+    // Save to IndexedDB (unlimited storage for uploaded images and edit data)
+    try {
+        const db = await openPortfolioDB();
+        if (db) {
+            const tx = db.transaction(IDB_STORE, 'readwrite');
+            const store = tx.objectStore(IDB_STORE);
+            store.put(dataStr, 'current_portfolio_data');
+        }
+    } catch (e) {
+        console.error("Failed to save data to IndexedDB", e);
+    }
+
+    // Save to localStorage (with quota error catch)
+    try {
+        localStorage.setItem('nani_portfolio_custom_v1', dataStr);
+    } catch (err) {
+        console.warn("localStorage quota exceeded. Data safely stored in IndexedDB.", err);
+    }
 }
 
 function renderAllSectionsFromData() {
@@ -366,9 +430,14 @@ function renderCustomizerLists() {
                     <strong style="color:var(--text-main); font-size:0.9rem;">${p.title}</strong>
                     <span style="font-size:0.75rem; color:var(--text-muted); display:block;">${p.badge}</span>
                 </div>
-                <button onclick="deleteProjectFromUI('${p.id}')" style="background:rgba(255,77,77,0.15); border:1px solid rgba(255,77,77,0.3); color:#ff4d4d; border-radius:6px; padding:0.25rem 0.6rem; cursor:pointer; font-size:0.78rem;">
-                    <i class="fa-solid fa-trash"></i> Delete
-                </button>
+                <div style="display:flex; gap:0.5rem;">
+                    <button onclick="populateProjectFormForEdit('${p.id}')" style="background:rgba(0,242,254,0.15); border:1px solid rgba(0,242,254,0.4); color:var(--primary-cyan); border-radius:6px; padding:0.25rem 0.65rem; cursor:pointer; font-size:0.78rem;">
+                        <i class="fa-solid fa-pen-to-square"></i> Edit
+                    </button>
+                    <button onclick="deleteProjectFromUI('${p.id}')" style="background:rgba(255,77,77,0.15); border:1px solid rgba(255,77,77,0.3); color:#ff4d4d; border-radius:6px; padding:0.25rem 0.65rem; cursor:pointer; font-size:0.78rem;">
+                        <i class="fa-solid fa-trash"></i> Delete
+                    </button>
+                </div>
             </div>
         `).join('');
     }
@@ -446,7 +515,126 @@ function deleteSkillFromUI(id) {
     renderAllSectionsFromData();
 }
 
+function handleProjectImageUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+            const canvas = document.createElement('canvas');
+            const MAX_WIDTH = 1000;
+            const MAX_HEIGHT = 700;
+            let width = img.width;
+            let height = img.height;
+
+            if (width > height) {
+                if (width > MAX_WIDTH) {
+                    height *= MAX_WIDTH / width;
+                    width = MAX_WIDTH;
+                }
+            } else {
+                if (height > MAX_HEIGHT) {
+                    width *= MAX_HEIGHT / height;
+                    height = MAX_HEIGHT;
+                }
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+
+            const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.85);
+            document.getElementById('new-proj-cover').value = compressedDataUrl;
+        };
+        img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+}
+
+function downloadPortfolioConfigFile() {
+    const fileContent = `/* ==========================================================================
+   PORTFOLIO CONFIGURATION DATA
+   Saved on ${new Date().toLocaleDateString()}
+   ========================================================================== */
+
+const defaultPortfolioData = ${JSON.stringify(portfolioData, null, 4)};
+
+// Global portfolioData object initialized from defaults or localStorage
+let portfolioData = JSON.parse(JSON.stringify(defaultPortfolioData));
+`;
+
+    const blob = new Blob([fileContent], { type: 'application/javascript' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'portfolio-data.js';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
+function populateProjectFormForEdit(projId) {
+    const proj = (portfolioData.projects || []).find(p => p.id === projId);
+    if (!proj) return;
+
+    document.getElementById('editing-proj-id').value = proj.id;
+    document.getElementById('new-proj-title').value = proj.title || '';
+    document.getElementById('new-proj-badge').value = proj.badge || '';
+    document.getElementById('new-proj-cover').value = proj.coverImage || '';
+    document.getElementById('new-proj-category').value = proj.category || 'ai fullstack';
+    document.getElementById('new-proj-github').value = proj.githubUrl || '';
+    document.getElementById('new-proj-live').value = proj.liveUrl || '';
+    document.getElementById('new-proj-tech').value = (proj.tech || []).join(', ');
+    document.getElementById('new-proj-desc').value = proj.description || '';
+    document.getElementById('new-proj-bullets').value = (proj.bullets || []).join('\n');
+
+    const heading = document.getElementById('proj-form-heading');
+    if (heading) {
+        heading.innerHTML = `<i class="fa-solid fa-pen-to-square"></i> Edit Project: <span style="color:#00f2fe;">${proj.title}</span>`;
+    }
+    const saveBtn = document.getElementById('btn-save-project');
+    if (saveBtn) {
+        saveBtn.innerHTML = `<i class="fa-solid fa-floppy-disk"></i> Save Project Changes`;
+    }
+    const cancelBtn = document.getElementById('btn-cancel-proj-edit');
+    if (cancelBtn) {
+        cancelBtn.style.display = 'inline-flex';
+    }
+}
+
+function resetProjectForm() {
+    const editIdInput = document.getElementById('editing-proj-id');
+    if (editIdInput) editIdInput.value = '';
+    document.getElementById('new-proj-title').value = '';
+    document.getElementById('new-proj-badge').value = '';
+    document.getElementById('new-proj-cover').value = '';
+    document.getElementById('new-proj-github').value = '';
+    document.getElementById('new-proj-live').value = '';
+    document.getElementById('new-proj-tech').value = '';
+    document.getElementById('new-proj-desc').value = '';
+    document.getElementById('new-proj-bullets').value = '';
+
+    const heading = document.getElementById('proj-form-heading');
+    if (heading) {
+        heading.innerHTML = `<i class="fa-solid fa-plus"></i> Add / Edit Project & Hidden Details`;
+    }
+    const saveBtn = document.getElementById('btn-save-project');
+    if (saveBtn) {
+        saveBtn.innerHTML = `<i class="fa-solid fa-plus"></i> Save / Add Project`;
+    }
+    const cancelBtn = document.getElementById('btn-cancel-proj-edit');
+    if (cancelBtn) {
+        cancelBtn.style.display = 'none';
+    }
+}
+
 function addNewProjectFromUI() {
+    const editIdInput = document.getElementById('editing-proj-id');
+    const editId = editIdInput ? editIdInput.value : '';
     const title = document.getElementById('new-proj-title').value.trim();
     const badge = document.getElementById('new-proj-badge').value.trim() || '2026';
     const category = document.getElementById('new-proj-category').value;
@@ -457,42 +645,56 @@ function addNewProjectFromUI() {
     const desc = document.getElementById('new-proj-desc').value.trim();
     const bulletsStr = document.getElementById('new-proj-bullets').value.trim();
 
-    if (!title || !desc) {
-        alert("Please enter a project title and description.");
+    if (!title) {
+        alert("Please enter a project title.");
         return;
     }
 
-    const parsedBullets = bulletsStr ? bulletsStr.split('\n').filter(line => line.trim().length > 0) : [desc];
+    const parsedBullets = bulletsStr
+        ? bulletsStr.split('\n').map(b => b.trim()).filter(b => b.length > 0)
+        : [desc || "Designed scalable architecture and user interface."];
 
-    const newProj = {
-        id: "p_" + Date.now(),
-        title: title,
-        category: category,
-        badge: badge,
-        icon: "fa-solid fa-rocket",
-        gradientClass: "bg-gradient-rag",
-        coverImage: coverImage || "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80",
-        githubUrl: githubUrl || "https://github.com/nanisontyana",
-        liveUrl: liveUrl || "",
-        subtitle: title + " Microservices & Architecture",
-        type: "Featured Platform",
-        description: desc,
-        tech: techStr ? techStr.split(',').map(t => t.trim()) : ["React", "Node.js", "Python Flask"],
-        bullets: parsedBullets
-    };
+    if (!portfolioData.projects) portfolioData.projects = [];
 
-    portfolioData.projects.push(newProj);
+    if (editId) {
+        const idx = portfolioData.projects.findIndex(p => p.id === editId);
+        if (idx !== -1) {
+            portfolioData.projects[idx] = {
+                ...portfolioData.projects[idx],
+                title,
+                badge,
+                coverImage: coverImage || portfolioData.projects[idx].coverImage,
+                category,
+                githubUrl,
+                liveUrl,
+                description: desc || portfolioData.projects[idx].description,
+                tech: techStr ? techStr.split(',').map(t => t.trim()) : portfolioData.projects[idx].tech,
+                bullets: parsedBullets
+            };
+        }
+    } else {
+        const newProj = {
+            id: "p_" + Date.now(),
+            title: title,
+            category: category,
+            badge: badge,
+            icon: "fa-solid fa-rocket",
+            gradientClass: "bg-gradient-rag",
+            coverImage: coverImage || "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80",
+            githubUrl: githubUrl || "https://github.com/nanisontyana",
+            liveUrl: liveUrl || "",
+            subtitle: title + " Microservices & Architecture",
+            type: "Featured Platform",
+            description: desc || "Scalable full-stack application built with microservice architecture.",
+            tech: techStr ? techStr.split(',').map(t => t.trim()) : ["React", "Node.js", "Python Flask"],
+            bullets: parsedBullets
+        };
+        portfolioData.projects.push(newProj);
+    }
+
     saveStoredData();
     renderAllSectionsFromData();
-
-    document.getElementById('new-proj-title').value = '';
-    document.getElementById('new-proj-badge').value = '';
-    document.getElementById('new-proj-cover').value = '';
-    document.getElementById('new-proj-github').value = '';
-    document.getElementById('new-proj-live').value = '';
-    document.getElementById('new-proj-tech').value = '';
-    document.getElementById('new-proj-desc').value = '';
-    document.getElementById('new-proj-bullets').value = '';
+    resetProjectForm();
 }
 
 function deleteProjectFromUI(id) {
@@ -952,10 +1154,15 @@ function openProjectModal(key) {
 
     const body = document.getElementById('modal-content-body');
     body.innerHTML = `
-        <div class="modal-header-block">
-            <span style="color:var(--primary-cyan); font-size:0.8rem; font-weight:700; text-transform:uppercase;">${data.badge}</span>
-            <h2>${data.title}</h2>
-            <p style="color:var(--text-muted); font-size:0.95rem;">${data.subtitle || ''}</p>
+        <div class="modal-header-block" style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:0.8rem;">
+            <div>
+                <span style="color:var(--primary-cyan); font-size:0.8rem; font-weight:700; text-transform:uppercase;">${data.badge}</span>
+                <h2 style="margin-top:0.2rem;">${data.title}</h2>
+                <p style="color:var(--text-muted); font-size:0.95rem;">${data.subtitle || ''}</p>
+            </div>
+            <button class="btn btn-sm btn-glass" onclick="openEditProjectModal('${data.id}')" style="border-color:var(--primary-cyan); color:var(--primary-cyan); font-size:0.85rem; padding:0.45rem 0.95rem; cursor:pointer;">
+                <i class="fa-solid fa-pen-to-square"></i> Edit Project Details
+            </button>
         </div>
 
         ${data.coverImage ? `<img src="${data.coverImage}" alt="${data.title}" style="width:100%; max-height:260px; object-fit:cover; border-radius:12px; margin-bottom:1.5rem; border:1px solid var(--glass-border);">` : ''}
@@ -973,7 +1180,7 @@ function openProjectModal(key) {
         </div>
 
         <div style="margin-bottom:1.5rem;">
-            <h4 style="font-size:1rem; margin-bottom:0.8rem; color:var(--primary-cyan);">Key Architecture & Achievements:</h4>
+            <h4 style="font-size:1rem; margin-bottom:0.8rem; color:var(--primary-cyan);">Key Architecture & Achievements (Hidden Details):</h4>
             <ul class="experience-bullets">
                 ${(data.bullets || []).map(b => `<li><i class="fa-solid fa-circle-check bullet-icon"></i><span>${b}</span></li>`).join('')}
             </ul>
@@ -981,6 +1188,13 @@ function openProjectModal(key) {
     `;
 
     document.getElementById('project-modal').classList.add('active');
+}
+
+function openEditProjectModal(projId) {
+    closeProjectModal();
+    openCustomizerModal();
+    switchCustTab('projects');
+    populateProjectFormForEdit(projId);
 }
 
 function closeProjectModal() {
