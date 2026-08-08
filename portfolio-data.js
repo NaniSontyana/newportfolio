@@ -115,6 +115,29 @@ const defaultPortfolioData = {
                 "Implemented Arcjet rate-limiting and bot detection security guards to protect authentication endpoints from abusive requests.",
                 "Utilized Nodemailer with HTML email templates to dispatch automated reminder notifications prior to subscription expiry dates."
             ]
+        },
+        {
+            id: "mentymaps",
+            title: "Menty by Maps – Spatial Mentorship Engine",
+            category: "ai fullstack",
+            filterCat: "ai",
+            badge: "Aug 2026",
+            icon: "fa-solid fa-map-location-dot",
+            gradientClass: "bg-gradient-rag",
+            coverImage: "https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&w=800&q=80",
+            githubUrl: "https://github.com/nanisontyana/Menty-by-Maps",
+            liveUrl: "https://menty-by-maps.vercel.app",
+            subtitle: "Geospatial Mentorship Discovery & Real-Time Location-Based Navigation Engine",
+            type: "Spatial GIS & AI System",
+            description: "Interactive geospatial mentorship platform enabling real-time location-based mentor discovery, spatial density clustering, and low-latency route navigation for proximity-based networking.",
+            tech: ["React", "Mapbox GL JS", "Node.js", "Python Flask", "PostgreSQL + PostGIS", "Redis", "JWT"],
+            bullets: [
+                "Engineered a full-stack spatial microservices platform integrating Mapbox GL JS and Leaflet to render real-time interactive mentor heatmaps and proximity-based user node clusters.",
+                "Utilized PostgreSQL with PostGIS extension (ST_DWithin, ST_DistanceSphere, R-tree spatial indexing) to execute spatial radius searches and geo-fencing queries with sub-50ms query latency.",
+                "Implemented an event-driven real-time communication engine in Node.js utilizing Socket.io and Redis Pub/Sub for location updates and instant mentor-mentee chat dispatch under 100ms.",
+                "Built a Python Flask microservice leveraging Scikit-Learn (DBSCAN / K-Means spatial clustering) to dynamically aggregate high-density mentorship hubs and calculate optimal proximity matching routes.",
+                "Secured microservice communications with JWT session token verification, spatial location obfuscation algorithms, and role-based endpoint protection (RBAC)."
+            ]
         }
     ],
 
@@ -155,6 +178,21 @@ const defaultPortfolioData = {
     ]
 };
 
-// Global portfolioData object initialized from defaults or localStorage
-let portfolioData = JSON.parse(JSON.stringify(defaultPortfolioData));
+// Global portfolioData object initialized immediately from localStorage or defaults
+let portfolioData;
+try {
+    const localSaved = localStorage.getItem('nani_portfolio_custom_v1');
+    if (localSaved) {
+        const parsed = JSON.parse(localSaved);
+        if (parsed && parsed.personalInfo && parsed.projects) {
+            portfolioData = parsed;
+        } else {
+            portfolioData = JSON.parse(JSON.stringify(defaultPortfolioData));
+        }
+    } else {
+        portfolioData = JSON.parse(JSON.stringify(defaultPortfolioData));
+    }
+} catch (e) {
+    portfolioData = JSON.parse(JSON.stringify(defaultPortfolioData));
+}
 

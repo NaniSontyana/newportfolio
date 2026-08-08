@@ -43,7 +43,21 @@ function openPortfolioDB() {
 }
 
 async function loadStoredData() {
-    // 1. Try IndexedDB first (supports large payloads like uploaded images)
+    // 1. Try synchronous localStorage first for instant loading on page refresh
+    const stored = localStorage.getItem('nani_portfolio_custom_v1');
+    if (stored) {
+        try {
+            const parsed = JSON.parse(stored);
+            if (parsed && parsed.personalInfo && parsed.projects) {
+                window.portfolioData = parsed;
+                return;
+            }
+        } catch (e) {
+            console.error("Error parsing stored portfolio customizer data", e);
+        }
+    }
+
+    // 2. Fallback to IndexedDB (supports large payloads like uploaded images)
     try {
         const db = await openPortfolioDB();
         if (db) {
@@ -58,49 +72,35 @@ async function loadStoredData() {
                 const parsed = JSON.parse(dataStr);
                 if (parsed && parsed.personalInfo) {
                     window.portfolioData = parsed;
-                    return;
+                    // Sync back to localStorage for instant future loads
+                    try { localStorage.setItem('nani_portfolio_custom_v1', dataStr); } catch (err) {}
                 }
             }
         }
     } catch (e) {
-        console.warn("IndexedDB load warning, falling back to localStorage", e);
-    }
-
-    // 2. Fallback to localStorage
-    const stored = localStorage.getItem('nani_portfolio_custom_v1');
-    if (stored) {
-        try {
-            const parsed = JSON.parse(stored);
-            if (parsed && parsed.personalInfo) {
-                window.portfolioData = parsed;
-            }
-        } catch (e) {
-            console.error("Error loading stored portfolio customizer data", e);
-        }
+        console.warn("IndexedDB load warning", e);
     }
 }
 
-async function saveStoredData() {
+function saveStoredData() {
+    if (!window.portfolioData) return;
     const dataStr = JSON.stringify(portfolioData);
 
-    // Save to IndexedDB (unlimited storage for uploaded images and edit data)
+    // 1. Synchronously save to localStorage immediately
     try {
-        const db = await openPortfolioDB();
+        localStorage.setItem('nani_portfolio_custom_v1', dataStr);
+    } catch (err) {
+        console.warn("localStorage quota warning. Storing payload in IndexedDB.", err);
+    }
+
+    // 2. Asynchronously backup to IndexedDB for large image data payloads
+    openPortfolioDB().then(db => {
         if (db) {
             const tx = db.transaction(IDB_STORE, 'readwrite');
             const store = tx.objectStore(IDB_STORE);
             store.put(dataStr, 'current_portfolio_data');
         }
-    } catch (e) {
-        console.error("Failed to save data to IndexedDB", e);
-    }
-
-    // Save to localStorage (with quota error catch)
-    try {
-        localStorage.setItem('nani_portfolio_custom_v1', dataStr);
-    } catch (err) {
-        console.warn("localStorage quota exceeded. Data safely stored in IndexedDB.", err);
-    }
+    }).catch(e => console.error("IndexedDB save error", e));
 }
 
 function renderAllSectionsFromData() {
