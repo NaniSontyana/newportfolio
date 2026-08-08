@@ -4,7 +4,7 @@
 
 document.addEventListener('DOMContentLoaded', async () => {
     await loadStoredData();
-    initCanvasParticles();
+    initThreeDBackground();
     initTypingEffect();
     initNavbarScroll();
     initScrollAnimations();
@@ -13,6 +13,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     initProjectFilters();
     initResumeModals();
     initSecretAdminTriggers();
+    
+    // High-End Interactive Animation Suite
+    initCustomCursor();
+    initSpotlightAnd3DTilt();
+    initMagneticButtons();
+    initClickRipples();
+    initScrollProgressBar();
     
     // Dynamic Render from portfolioData
     renderAllSectionsFromData();
@@ -109,6 +116,11 @@ function renderAllSectionsFromData() {
     renderProjectsFromData();
     renderEducationAndCertsFromData();
     renderCustomizerLists();
+
+    // Refresh interactive animation triggers for dynamic elements
+    initSpotlightAnd3DTilt();
+    initMagneticButtons();
+    initScrollAnimations();
 }
 
 function renderPersonalAndSummaryFromData() {
@@ -834,113 +846,224 @@ function resetPortfolioDataToDefaults() {
 
 
 /* ==========================================================================
-   3. Canvas Particle Constellation System
+   3. Real-Time 3D WebGL Engine (Three.js 3D Cyber World & Camera Flight Engine)
    ========================================================================== */
-function initCanvasParticles() {
-    const canvas = document.getElementById('bg-canvas');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+function initThreeDBackground() {
+    const canvas = document.getElementById('three-bg-canvas');
+    if (!canvas || typeof THREE === 'undefined') return;
 
-    let width = canvas.width = window.innerWidth;
-    let height = canvas.height = window.innerHeight;
+    // 1. Scene, Fog, Camera, Renderer
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0x060913, 0.012);
 
-    let particles = [];
-    const particleCount = Math.floor((width * height) / 18000);
+    const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(0, 5, 25);
 
-    let mouse = { x: null, y: null, radius: 140 };
+    const renderer = new THREE.WebGLRenderer({
+        canvas: canvas,
+        antialias: true,
+        alpha: true,
+        powerPreference: "high-performance"
+    });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    // 2. Cyber Undulating Wireframe Terrain Grid
+    const gridWidth = 110;
+    const gridDepth = 110;
+    const gridSegments = 55;
+    const gridGeo = new THREE.PlaneGeometry(gridWidth, gridDepth, gridSegments, gridSegments);
+    gridGeo.rotateX(-Math.PI / 2.2);
+
+    const gridMat = new THREE.MeshBasicMaterial({
+        color: 0xff2a4b,
+        wireframe: true,
+        transparent: true,
+        opacity: 0.28
+    });
+    const gridMesh = new THREE.Mesh(gridGeo, gridMat);
+    gridMesh.position.set(0, -12, -15);
+    scene.add(gridMesh);
+
+    // Store base vertex heights for smooth wave animation
+    const posAttr = gridGeo.attributes.position;
+    const initialZ = new Float32Array(posAttr.count);
+    for (let i = 0; i < posAttr.count; i++) {
+        initialZ[i] = posAttr.getZ(i);
+    }
+
+    // 3. Floating 3D Cyber Geometric Polyhedrons Group
+    const objectsGroup = new THREE.Group();
+
+    // Neon Wireframe Icosahedron
+    const icoGeo = new THREE.IcosahedronGeometry(3.8, 1);
+    const icoMat = new THREE.MeshBasicMaterial({
+        color: 0xff2a4b,
+        wireframe: true,
+        transparent: true,
+        opacity: 0.55
+    });
+    const icoMesh = new THREE.Mesh(icoGeo, icoMat);
+    icoMesh.position.set(22, 6, -18);
+    objectsGroup.add(icoMesh);
+
+    // Cyber Torus Knot
+    const torusGeo = new THREE.TorusKnotGeometry(3, 0.75, 100, 16);
+    const torusMat = new THREE.MeshBasicMaterial({
+        color: 0xffffff,
+        wireframe: true,
+        transparent: true,
+        opacity: 0.35
+    });
+    const torusMesh = new THREE.Mesh(torusGeo, torusMat);
+    torusMesh.position.set(-24, -4, -22);
+    objectsGroup.add(torusMesh);
+
+    // Floating Crimson Octahedron Core
+    const octGeo = new THREE.OctahedronGeometry(2.6, 0);
+    const octMat = new THREE.MeshBasicMaterial({
+        color: 0xcc0029,
+        wireframe: true,
+        transparent: true,
+        opacity: 0.65
+    });
+    const octMesh = new THREE.Mesh(octGeo, octMat);
+    octMesh.position.set(-14, 14, -25);
+    objectsGroup.add(octMesh);
+
+    // Orbiting Double Ring System
+    const ringGeo = new THREE.RingGeometry(4, 4.3, 36);
+    const ringMat = new THREE.MeshBasicMaterial({ color: 0xff2a4b, side: THREE.DoubleSide, transparent: true, opacity: 0.4 });
+    const ringMesh = new THREE.Mesh(ringGeo, ringMat);
+    ringMesh.position.set(22, 6, -18);
+    objectsGroup.add(ringMesh);
+
+    scene.add(objectsGroup);
+
+    // 4. 3D Particle Constellation Dust Field (1,300+ 3D points)
+    const particleCount = 1350;
+    const pPositions = new Float32Array(particleCount * 3);
+    const pColors = new Float32Array(particleCount * 3);
+
+    const cNeonRed = new THREE.Color(0xff2a4b);
+    const cCrispWhite = new THREE.Color(0xffffff);
+    const cDeepCrimson = new THREE.Color(0xcc0029);
+
+    for (let i = 0; i < particleCount; i++) {
+        pPositions[i * 3] = (Math.random() - 0.5) * 150;
+        pPositions[i * 3 + 1] = (Math.random() - 0.5) * 95;
+        pPositions[i * 3 + 2] = (Math.random() - 0.5) * 130 - 10;
+
+        const rand = Math.random();
+        const pickColor = rand > 0.6 ? cNeonRed : (rand > 0.4 ? cCrispWhite : cDeepCrimson);
+
+        pColors[i * 3] = pickColor.r;
+        pColors[i * 3 + 1] = pickColor.g;
+        pColors[i * 3 + 2] = pickColor.b;
+    }
+
+    const pGeo = new THREE.BufferGeometry();
+    pGeo.setAttribute('position', new THREE.BufferAttribute(pPositions, 3));
+    pGeo.setAttribute('color', new THREE.BufferAttribute(pColors, 3));
+
+    const pMat = new THREE.PointsMaterial({
+        size: 0.28,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.75,
+        blending: THREE.AdditiveBlending
+    });
+    const particleSystem = new THREE.Points(pGeo, pMat);
+    scene.add(particleSystem);
+
+    // 5. Lighting
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+    scene.add(ambientLight);
+
+    const pointLight = new THREE.PointLight(0xff2a4b, 2.5, 100);
+    pointLight.position.set(0, 10, 10);
+    scene.add(pointLight);
+
+    // 6. Interactive Mouse & Scroll State Handling
+    let mouseX = 0;
+    let mouseY = 0;
+    let targetMouseX = 0;
+    let targetMouseY = 0;
 
     window.addEventListener('mousemove', (e) => {
-        mouse.x = e.clientX;
-        mouse.y = e.clientY;
+        targetMouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+        targetMouseY = (e.clientY / window.innerHeight - 0.5) * 2;
     });
 
-    window.addEventListener('mouseleave', () => {
-        mouse.x = null;
-        mouse.y = null;
+    let scrollProgress = 0;
+    window.addEventListener('scroll', () => {
+        const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+        scrollProgress = totalHeight > 0 ? window.scrollY / totalHeight : 0;
     });
 
     window.addEventListener('resize', () => {
-        width = canvas.width = window.innerWidth;
-        height = canvas.height = window.innerHeight;
-        createParticles();
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     });
 
-    class Particle {
-        constructor() {
-            this.x = Math.random() * width;
-            this.y = Math.random() * height;
-            this.vx = (Math.random() - 0.5) * 0.7;
-            this.vy = (Math.random() - 0.5) * 0.7;
-            this.size = Math.random() * 2 + 1;
-            this.color = Math.random() > 0.5 ? '#ff2a4b' : '#ffffff';
+    // 7. Real-Time WebGL Render Loop
+    const clock = new THREE.Clock();
+
+    function animate3D() {
+        requestAnimationFrame(animate3D);
+
+        const elapsedTime = clock.getElapsedTime();
+
+        // Terrain vertex undulating wave motion
+        for (let i = 0; i < posAttr.count; i++) {
+            const x = posAttr.getX(i);
+            const y = posAttr.getY(i);
+            const zWave = Math.sin(elapsedTime * 1.5 + x * 0.15 + y * 0.15) * 1.8;
+            posAttr.setZ(i, initialZ[i] + zWave);
         }
+        posAttr.needsUpdate = true;
 
-        update() {
-            this.x += this.vx;
-            this.y += this.vy;
+        // Rotate 3D Objects
+        icoMesh.rotation.x = elapsedTime * 0.25;
+        icoMesh.rotation.y = elapsedTime * 0.35;
 
-            if (this.x < 0 || this.x > width) this.vx *= -1;
-            if (this.y < 0 || this.y > height) this.vy *= -1;
+        torusMesh.rotation.x = elapsedTime * 0.2;
+        torusMesh.rotation.z = elapsedTime * 0.3;
 
-            if (mouse.x !== null && mouse.y !== null) {
-                const dx = mouse.x - this.x;
-                const dy = mouse.y - this.y;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-                if (dist < mouse.radius) {
-                    const force = (mouse.radius - dist) / mouse.radius;
-                    this.x -= (dx / dist) * force * 3;
-                    this.y -= (dy / dist) * force * 3;
-                }
-            }
-        }
+        octMesh.rotation.y = elapsedTime * 0.4;
+        octMesh.rotation.z = elapsedTime * 0.2;
 
-        draw() {
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            ctx.fillStyle = this.color;
-            ctx.fill();
-        }
+        ringMesh.rotation.z = elapsedTime * -0.3;
+
+        // Organic oscillation of floating objects group
+        objectsGroup.position.y = Math.sin(elapsedTime * 0.8) * 1.2;
+
+        // 3D Particle system slow drift
+        particleSystem.rotation.y = elapsedTime * 0.03;
+        particleSystem.rotation.x = elapsedTime * 0.015;
+
+        // Smooth Mouse Parallax Lerp
+        mouseX += (targetMouseX - mouseX) * 0.05;
+        mouseY += (targetMouseY - mouseY) * 0.05;
+
+        // Scroll Camera Flight Interpolation across page depth
+        const targetCamZ = 25 - (scrollProgress * 22);
+        const targetCamY = 5 - (scrollProgress * 12);
+        const targetCamRotX = -(scrollProgress * 0.3);
+
+        camera.position.x = mouseX * 6;
+        camera.position.y += (targetCamY + (mouseY * -4) - camera.position.y) * 0.05;
+        camera.position.z += (targetCamZ - camera.position.z) * 0.05;
+        camera.rotation.x += (targetCamRotX - camera.rotation.x) * 0.05;
+
+        camera.lookAt(0, -2, -10);
+
+        renderer.render(scene, camera);
     }
 
-    function createParticles() {
-        particles = [];
-        for (let i = 0; i < particleCount; i++) {
-            particles.push(new Particle());
-        }
-    }
-
-    function connectParticles() {
-        for (let i = 0; i < particles.length; i++) {
-            for (let j = i + 1; j < particles.length; j++) {
-                const dx = particles[i].x - particles[j].x;
-                const dy = particles[i].y - particles[j].y;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-
-                if (dist < 120) {
-                    const opacity = 1 - (dist / 120);
-                    ctx.strokeStyle = `rgba(255, 42, 75, ${opacity * 0.3})`;
-                    ctx.lineWidth = 0.8;
-                    ctx.beginPath();
-                    ctx.moveTo(particles[i].x, particles[i].y);
-                    ctx.lineTo(particles[j].x, particles[j].y);
-                    ctx.stroke();
-                }
-            }
-        }
-    }
-
-    function animate() {
-        ctx.clearRect(0, 0, width, height);
-        particles.forEach(p => {
-            p.update();
-            p.draw();
-        });
-        connectParticles();
-        requestAnimationFrame(animate);
-    }
-
-    createParticles();
-    animate();
+    animate3D();
 }
 
 /* ==========================================================================
@@ -1251,3 +1374,155 @@ function handleFormSubmit(event) {
         }, 6000);
     }, 1000);
 }
+
+/* ==========================================================================
+   10. High-End Interactive Animation Suite
+   ========================================================================== */
+
+// Top Scroll Progress Bar
+function initScrollProgressBar() {
+    const bar = document.getElementById('scroll-progress');
+    if (!bar) return;
+
+    window.addEventListener('scroll', () => {
+        const scrollTop = window.scrollY;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const scrollPercent = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+        bar.style.width = `${Math.min(100, Math.max(0, scrollPercent))}%`;
+    });
+}
+
+// Custom High-Tech Dual Ring Cursor Follower with Lerp Smoothing
+function initCustomCursor() {
+    const follower = document.getElementById('cursor-follower');
+    const dot = document.getElementById('cursor-dot');
+    if (!follower || !dot) return;
+
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
+    let followerX = mouseX;
+    let followerY = mouseY;
+
+    window.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+
+        // Instant position update for center dot
+        dot.style.left = `${mouseX}px`;
+        dot.style.top = `${mouseY}px`;
+    });
+
+    // Smooth lerp trailing animation for outer ring follower
+    function animateCursor() {
+        followerX += (mouseX - followerX) * 0.18;
+        followerY += (mouseY - followerY) * 0.18;
+
+        follower.style.left = `${followerX}px`;
+        follower.style.top = `${followerY}px`;
+
+        requestAnimationFrame(animateCursor);
+    }
+    animateCursor();
+
+    // Hover scale feedback on interactive elements
+    const interactiveSelectors = 'a, button, .glass-card, .project-card, .skill-card, .social-icon-btn, input, textarea, select, .timeline-content, .metric-pill';
+    document.addEventListener('mouseover', (e) => {
+        if (e.target.closest(interactiveSelectors)) {
+            document.body.classList.add('cursor-hover');
+        }
+    });
+
+    document.addEventListener('mouseout', (e) => {
+        if (e.target.closest(interactiveSelectors)) {
+            document.body.classList.remove('cursor-hover');
+        }
+    });
+
+    document.addEventListener('mousedown', () => document.body.classList.add('cursor-click'));
+    document.addEventListener('mouseup', () => document.body.classList.remove('cursor-click'));
+}
+
+// Vercel / Linear Dynamic Mouse Spotlight Glow & 3D Tilt Engine
+function initSpotlightAnd3DTilt() {
+    const cards = document.querySelectorAll('.glass-card, .project-card, .skill-card, .timeline-content, .code-window');
+
+    cards.forEach(card => {
+        // Ensure spotlight glow layer exists
+        if (!card.querySelector('.spotlight-glow')) {
+            const glow = document.createElement('div');
+            glow.className = 'spotlight-glow';
+            card.appendChild(glow);
+        }
+
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            card.style.setProperty('--mouse-x', `${x}px`);
+            card.style.setProperty('--mouse-y', `${y}px`);
+
+            // Calculate 3D tilt angles (-7 deg to +7 deg)
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            const tiltX = ((y - centerY) / centerY) * -5.5;
+            const tiltY = ((x - centerX) / centerX) * 5.5;
+
+            card.style.transform = `perspective(1000px) rotateX(${tiltX.toFixed(2)}deg) rotateY(${tiltY.toFixed(2)}deg) scale3d(1.02, 1.02, 1.02)`;
+        });
+
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+        });
+    });
+}
+
+// Magnetic Buttons Physics (Subtle magnetic attraction towards cursor)
+function initMagneticButtons() {
+    const magneticBtns = document.querySelectorAll('.btn, .social-icon-btn, .nav-btn, .btn-resume-nav, .btn-customize-nav');
+
+    magneticBtns.forEach(btn => {
+        btn.addEventListener('mousemove', (e) => {
+            const rect = btn.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+
+            const deltaX = (e.clientX - centerX) * 0.28;
+            const deltaY = (e.clientY - centerY) * 0.28;
+
+            btn.style.transform = `translate3d(${deltaX}px, ${deltaY}px, 0) scale(1.05)`;
+        });
+
+        btn.addEventListener('mouseleave', () => {
+            btn.style.transform = `translate3d(0, 0, 0) scale(1)`;
+        });
+    });
+}
+
+// Click Radial Ripple Effect
+function initClickRipples() {
+    document.addEventListener('click', (e) => {
+        const targetBtn = e.target.closest('.btn, .social-icon-btn, .glass-card, .project-card, .skill-card, .nav-link');
+        if (!targetBtn) return;
+
+        const rect = targetBtn.getBoundingClientRect();
+        const ripple = document.createElement('span');
+        ripple.className = 'click-ripple';
+
+        const size = Math.max(rect.width, rect.height);
+        ripple.style.width = ripple.style.height = `${size}px`;
+
+        const x = e.clientX - rect.left - size / 2;
+        const y = e.clientY - rect.top - size / 2;
+
+        ripple.style.left = `${x}px`;
+        ripple.style.top = `${y}px`;
+
+        targetBtn.appendChild(ripple);
+
+        setTimeout(() => {
+            ripple.remove();
+        }, 650);
+    });
+}
+
