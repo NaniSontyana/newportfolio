@@ -21,9 +21,6 @@
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-    <!-- Three.js 3D WebGL Library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-
     <!-- Custom CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
@@ -33,16 +30,11 @@
     <!-- Scroll Progress Indicator Bar -->
     <div id="scroll-progress" class="scroll-progress-bar"></div>
 
-    <!-- Custom Glowing Cursor Follower -->
-    <div class="cursor-follower" id="cursor-follower"></div>
-    <div class="cursor-dot" id="cursor-dot"></div>
-
-    <!-- Interactive Real-Time 3D WebGL Canvas -->
-    <canvas id="three-bg-canvas"></canvas>
-    <div class="three-bg-overlay"></div>
-
+    <!-- Professional Grid & Ambient Lighting Backdrop -->
+    <div class="pro-bg-grid"></div>
     <div class="ambient-glow glow-1"></div>
     <div class="ambient-glow glow-2"></div>
+    <div class="ambient-glow glow-3"></div>
 
     <!-- Navigation Header -->
     <header class="navbar" id="navbar">
@@ -192,10 +184,9 @@
         <section class="about-section section" id="about">
             <div class="container">
                 <div class="section-header text-center">
-                    <span class="section-tag"><i class="fa-solid fa-id-card"></i> Overview</span>
+                    <span class="section-tag"><i class="fa-solid fa-id-card"></i> Core Overview</span>
                     <h2 class="section-title">Engineered For <span class="gradient-text">Performance & Scale</span></h2>
-                    <p class="section-subtitle">A quick snapshot of my technical capabilities and practical software
-                        engineering footprint.</p>
+                    <p class="section-subtitle" id="about-subtitle-val">Building high-throughput microservices, RAG document intelligence engines, and scalable web applications powered by robust RESTful APIs.</p>
                 </div>
 
                 <div class="about-grid">
@@ -264,9 +255,8 @@
             <div class="container">
                 <div class="section-header text-center">
                     <span class="section-tag"><i class="fa-solid fa-screwdriver-wrench"></i> Technical Toolkit</span>
-                    <h2 class="section-title">Skills & <span class="gradient-text">Technologies</span></h2>
-                    <p class="section-subtitle">Comprehensive breakdown of languages, frameworks, databases, and DevOps
-                        tools I utilize.</p>
+                    <h2 class="section-title">Skills & <span class="gradient-text">Core Stack</span></h2>
+                    <p class="section-subtitle">Battle-tested production technologies across Languages, Modern Frontend, Scalable Backend APIs, Vector Databases, AI/ML, and DevOps.</p>
                 </div>
 
                 <!-- Skill Category Filter Tabs -->
@@ -289,73 +279,14 @@
         <section class="experience-section section" id="experience">
             <div class="container">
                 <div class="section-header text-center">
-                    <span class="section-tag"><i class="fa-solid fa-building-user"></i> Work History</span>
-                    <h2 class="section-title">Industry <span class="gradient-text">Experience</span></h2>
-                    <p class="section-subtitle">Real-world impact delivered during my software engineering internship.
-                    </p>
+                    <span class="section-tag"><i class="fa-solid fa-building-user"></i> Career Footprint</span>
+                    <h2 class="section-title">Professional <span class="gradient-text">Experience</span></h2>
+                    <p class="section-subtitle">Real-world software engineering impact delivered through Java Spring Boot microservices, RESTful API design, and codebase optimization.</p>
                 </div>
 
                 <div class="timeline-container">
                     <div class="timeline-line"></div>
-
-                    <!-- Experience Item 1 -->
-                    <div class="timeline-item glass-card" data-aos="fade-up">
-                        <div class="timeline-dot">
-                            <i class="fa-solid fa-briefcase"></i>
-                        </div>
-
-                        <div class="timeline-header">
-                            <div>
-                                <h3 class="company-name">BrainOvision Solutions Pvt. Ltd.</h3>
-                                <div class="role-title">Full Stack Developer Intern</div>
-                            </div>
-                            <div class="timeline-date">
-                                <span class="badge-date"><i class="fa-regular fa-calendar"></i> June 2024 – August
-                                    2024</span>
-                                <span class="badge-location"><i class="fa-solid fa-location-dot"></i> Remote</span>
-                            </div>
-                        </div>
-
-                        <div class="timeline-body">
-                            <ul class="experience-bullets">
-                                <li>
-                                    <i class="fa-solid fa-circle-check bullet-icon"></i>
-                                    <span>Engineered robust <strong>Java Spring Boot applications</strong> featuring
-                                        secure authentication, role-based access control (RBAC), and dynamic
-                                        administration dashboards, cutting manual admin overhead by
-                                        <strong>40%</strong>.</span>
-                                </li>
-                                <li>
-                                    <i class="fa-solid fa-circle-check bullet-icon"></i>
-                                    <span>Architected and implemented <strong>15+ RESTful API endpoints</strong>,
-                                        streamlining data flow and reducing average client response time by
-                                        <strong>25%</strong>.</span>
-                                </li>
-                                <li>
-                                    <i class="fa-solid fa-circle-check bullet-icon"></i>
-                                    <span>Refactored backend service logic and optimized database queries, achieving a
-                                        <strong>30% reduction in code duplication</strong> and enhancing codebase
-                                        maintainability.</span>
-                                </li>
-                                <li>
-                                    <i class="fa-solid fa-circle-check bullet-icon"></i>
-                                    <span>Actively code-reviewed <strong>20+ pull requests</strong>, resolved
-                                        high-priority production bugs, and delivered core features within a 5-member
-                                        Agile sprint team.</span>
-                                </li>
-                            </ul>
-
-                            <div class="exp-tech-stack">
-                                <span class="tech-chip">Java</span>
-                                <span class="tech-chip">Spring Boot</span>
-                                <span class="tech-chip">REST APIs</span>
-                                <span class="tech-chip">RBAC Security</span>
-                                <span class="tech-chip">SQL</span>
-                                <span class="tech-chip">Git / GitHub</span>
-                                <span class="tech-chip">Agile Scrum</span>
-                            </div>
-                        </div>
-                    </div>
+                    <div id="experience-list-container"></div>
                 </div>
             </div>
         </section>
@@ -364,10 +295,9 @@
         <section class="projects-section section" id="projects">
             <div class="container">
                 <div class="section-header text-center">
-                    <span class="section-tag"><i class="fa-solid fa-rocket"></i> Portfolio Highlights</span>
+                    <span class="section-tag"><i class="fa-solid fa-rocket"></i> Portfolio Showcase</span>
                     <h2 class="section-title">Featured <span class="gradient-text">Projects</span></h2>
-                    <p class="section-subtitle">Production-grade applications spanning AI Document Intelligence, ML
-                        Predictive Analytics, and Event-Driven Backend Systems.</p>
+                    <p class="section-subtitle">Production-grade systems spanning RAG AI Document Intelligence, ML Predictive Analytics, GIS Mentorship, and Event-Driven Backends.</p>
                 </div>
 
                 <!-- Project Filter Buttons -->
@@ -378,8 +308,16 @@
                     <button class="filter-btn" data-filter="backend">Backend Systems</button>
                 </div>
 
-                <!-- Dynamically Rendered via JavaScript -->
-                <div class="projects-grid" id="projects-grid"></div>
+                <!-- Horizontal Slider Wrapper with Navigation Buttons -->
+                <div class="projects-slider-wrapper">
+                    <button class="slider-btn slider-btn-prev" id="projects-scroll-left" aria-label="Scroll Left">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                    <div class="projects-grid projects-slider" id="projects-grid"></div>
+                    <button class="slider-btn slider-btn-next" id="projects-scroll-right" aria-label="Scroll Right">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
             </div>
         </section>
 
@@ -387,9 +325,9 @@
         <section class="education-section section" id="education">
             <div class="container">
                 <div class="section-header text-center">
-                    <span class="section-tag"><i class="fa-solid fa-award"></i> Qualifications</span>
+                    <span class="section-tag"><i class="fa-solid fa-award"></i> Credentials</span>
                     <h2 class="section-title">Education & <span class="gradient-text">Certifications</span></h2>
-                    <p class="section-subtitle">Academic foundations and verified industry certifications.</p>
+                    <p class="section-subtitle">Computer Science academic foundation backed by industry-accredited Full-Stack and MERN Web Development credentials.</p>
                 </div>
 
                 <div class="edu-cert-grid">
@@ -412,11 +350,9 @@
         <section class="contact-section section" id="contact">
             <div class="container">
                 <div class="section-header text-center">
-                    <span class="section-tag"><i class="fa-solid fa-comments"></i> Get In Touch</span>
-                    <h2 class="section-title">Let's Build Something <span class="gradient-text">Extraordinary</span>
-                    </h2>
-                    <p class="section-subtitle">Currently exploring full-time Software Engineer opportunities. Reach out
-                        via email, phone, or send a message directly!</p>
+                    <span class="section-tag"><i class="fa-solid fa-comments"></i> Collaboration</span>
+                    <h2 class="section-title">Let's Build Something <span class="gradient-text">Extraordinary</span></h2>
+                    <p class="section-subtitle">Actively open for Software Engineering and Full-Stack development roles. Reach out via email, phone, or drop a message below!</p>
                 </div>
 
                 <div class="contact-grid">
@@ -525,13 +461,14 @@
                 <p style="color:var(--text-muted); font-size:0.9rem;">Edit any section live on the website: Personal Bio/Summary, Skills, Projects, Education, and Contact Links!</p>
             </div>
 
-            <!-- Tabs: Personal & Summary | Skills | Projects | Education & Certs | Edit Config JS -->
+            <!-- Tabs Navigation -->
             <div class="skill-tabs" style="justify-content:flex-start; margin-bottom:1.5rem; flex-wrap:wrap; gap:0.5rem;">
                 <button class="skill-tab-btn active" id="cust-tab-personal" onclick="switchCustTab('personal')"><i class="fa-solid fa-user-pen"></i> Personal & Summary</button>
                 <button class="skill-tab-btn" id="cust-tab-skills" onclick="switchCustTab('skills')"><i class="fa-solid fa-code"></i> Skills Toolkit</button>
                 <button class="skill-tab-btn" id="cust-tab-projects" onclick="switchCustTab('projects')"><i class="fa-solid fa-rocket"></i> Projects Showcase</button>
+                <button class="skill-tab-btn" id="cust-tab-experience" onclick="switchCustTab('experience')"><i class="fa-solid fa-briefcase"></i> Experience / Internships</button>
                 <button class="skill-tab-btn" id="cust-tab-education" onclick="switchCustTab('education')"><i class="fa-solid fa-graduation-cap"></i> Education & Certs</button>
-                <button class="skill-tab-btn" id="cust-tab-export" onclick="switchCustTab('export')"><i class="fa-solid fa-code-compare"></i> Edit / Export Config</button>
+                <button class="skill-tab-btn" id="cust-tab-export" onclick="switchCustTab('export')"><i class="fa-solid fa-code-compare"></i> Permanent Save & Export</button>
             </div>
 
             <!-- Tab Content 1: Edit Personal Info & Summary -->
@@ -754,8 +691,9 @@
                         <input type="text" id="new-cert-title" placeholder="Certification Title" class="form-group-input">
                         <input type="text" id="new-cert-issuer" placeholder="Issuer (e.g. GeeksforGeeks)" class="form-group-input">
                     </div>
-                    <div style="display:grid; grid-template-columns:1fr; gap:0.8rem; margin-bottom:0.8rem;">
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-bottom:0.8rem;">
                         <input type="text" id="new-cert-year" placeholder="Year / Date Issued (e.g. Issued 2025)" class="form-group-input">
+                        <input type="url" id="new-cert-url" placeholder="Verification / Certificate URL (https://...)" class="form-group-input">
                     </div>
                     <textarea id="new-cert-desc" rows="2" placeholder="Certification description..." class="form-group-input" style="width:100%; margin-bottom:0.8rem;"></textarea>
                     <button class="btn btn-primary" style="padding:0.5rem 1.25rem; font-size:0.85rem;" onclick="addNewCertFromUI()">
@@ -765,6 +703,49 @@
 
                 <h4 style="font-size:1rem; margin-bottom:0.75rem;">Certification Entries (<span id="cert-count">0</span>):</h4>
                 <div id="cust-cert-list" style="display:flex; flex-direction:column; gap:0.5rem; max-height:180px; overflow-y:auto; padding-right:0.5rem;"></div>
+            </div>
+
+            <!-- Tab Content 4: Manage Experience & Internships -->
+            <div id="cust-content-experience" style="display:none;">
+                <div style="background:rgba(6,9,19,0.7); padding:1.25rem; border-radius:12px; border:1px solid var(--glass-border); margin-bottom:1.5rem;">
+                    <h4 style="font-size:1rem; color:var(--primary-cyan); margin-bottom:1rem;"><i class="fa-solid fa-plus"></i> Add Work / Internship Experience</h4>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-bottom:0.8rem;">
+                        <div>
+                            <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.2rem;">Company Name</label>
+                            <input type="text" id="new-exp-company" placeholder="Company (e.g. BrainOvision Solutions)" class="form-group-input" style="width:100%;">
+                        </div>
+                        <div>
+                            <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.2rem;">Role / Job Title</label>
+                            <input type="text" id="new-exp-role" placeholder="Role (e.g. Full Stack Developer Intern)" class="form-group-input" style="width:100%;">
+                        </div>
+                    </div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-bottom:0.8rem;">
+                        <div>
+                            <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.2rem;">Duration Range</label>
+                            <input type="text" id="new-exp-duration" placeholder="Dates (e.g. June 2024 – August 2024)" class="form-group-input" style="width:100%;">
+                        </div>
+                        <div>
+                            <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.2rem;">Location / Mode</label>
+                            <input type="text" id="new-exp-location" placeholder="Location (e.g. Remote / On-site)" class="form-group-input" style="width:100%;">
+                        </div>
+                    </div>
+                    <div style="margin-bottom:0.8rem;">
+                        <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.2rem;">Technologies Used (comma separated)</label>
+                        <input type="text" id="new-exp-tech" placeholder="Java, Spring Boot, REST APIs, SQL" class="form-group-input" style="width:100%;">
+                    </div>
+                    <div style="margin-bottom:0.8rem;">
+                        <label style="font-size:0.75rem; color:var(--primary-cyan); font-weight:600; display:block; margin-bottom:0.2rem;">
+                            Key Achievements & Bullets (1 per line)
+                        </label>
+                        <textarea id="new-exp-bullets" rows="4" placeholder="Paste 1 bullet per line..." class="form-group-input" style="width:100%;"></textarea>
+                    </div>
+                    <button class="btn btn-primary" style="padding:0.5rem 1.25rem; font-size:0.85rem;" onclick="addNewExpFromUI()">
+                        <i class="fa-solid fa-plus"></i> Add Experience Entry
+                    </button>
+                </div>
+
+                <h4 style="font-size:1rem; margin-bottom:0.75rem;">Experience Entries (<span id="exp-count">0</span>):</h4>
+                <div id="cust-exp-list" style="display:flex; flex-direction:column; gap:0.5rem; max-height:220px; overflow-y:auto; padding-right:0.5rem;"></div>
             </div>
 
             <!-- Tab Content 5: Edit & Export Config JS -->

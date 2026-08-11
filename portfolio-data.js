@@ -166,6 +166,7 @@ const defaultPortfolioData = {
             title: "MERN Stack Web Development",
             issuer: "GeeksforGeeks",
             year: "Issued 2025",
+            certUrl: "https://media.geeksforgeeks.org/courses/certificates/",
             description: "Comprehensive training covering MongoDB, Express.js, React.js, Node.js, REST API architecture, and state management."
         },
         {
@@ -173,7 +174,25 @@ const defaultPortfolioData = {
             title: "Full Stack Web Development",
             issuer: "BrainOvision Solutions Pvt. Ltd.",
             year: "Issued 2024",
+            certUrl: "https://brainovision.in/",
             description: "Hands-on development program focusing on Spring Boot, Java backend architectures, and production application building."
+        }
+    ],
+
+    experience: [
+        {
+            id: "exp1",
+            company: "BrainOvision Solutions Pvt. Ltd.",
+            role: "Full Stack Developer Intern",
+            duration: "June 2024 – August 2024",
+            location: "Remote",
+            tech: ["Java", "Spring Boot", "REST APIs", "RBAC Security", "SQL", "Git / GitHub", "Agile Scrum"],
+            bullets: [
+                "Engineered robust Java Spring Boot applications featuring secure authentication, role-based access control (RBAC), and dynamic administration dashboards, cutting manual admin overhead by 40%.",
+                "Architected and implemented 15+ RESTful API endpoints, streamlining data flow and reducing average client response time by 25%.",
+                "Refactored backend service logic and optimized database queries, achieving a 30% reduction in code duplication and enhancing codebase maintainability.",
+                "Actively code-reviewed 20+ pull requests, resolved high-priority production bugs, and delivered core features within a 5-member Agile sprint team."
+            ]
         }
     ]
 };

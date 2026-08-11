@@ -4,18 +4,18 @@
 
 document.addEventListener('DOMContentLoaded', async () => {
     await loadStoredData();
-    initThreeDBackground();
+    initProBackground();
     initTypingEffect();
     initNavbarScroll();
     initScrollAnimations();
     initStatCounters();
     initSkillFilters();
     initProjectFilters();
+    initProjectSliderNavigation();
     initResumeModals();
     initSecretAdminTriggers();
     
     // High-End Interactive Animation Suite
-    initCustomCursor();
     initSpotlightAnd3DTilt();
     initMagneticButtons();
     initClickRipples();
@@ -114,6 +114,7 @@ function renderAllSectionsFromData() {
     renderPersonalAndSummaryFromData();
     renderSkillsFromData();
     renderProjectsFromData();
+    renderExperienceFromData();
     renderEducationAndCertsFromData();
     renderCustomizerLists();
 
@@ -268,6 +269,48 @@ function renderProjectsFromData() {
             </div>
         </div>
     `).join('');
+
+    // Re-bind interactive 3D tilt and mouse spotlight animations to dynamic project cards
+    initSpotlightAnd3DTilt();
+}
+
+function renderExperienceFromData() {
+    const expContainer = document.getElementById('experience-list-container');
+    if (!expContainer || !portfolioData || !portfolioData.experience) return;
+
+    expContainer.innerHTML = portfolioData.experience.map(exp => `
+        <div class="timeline-item glass-card" data-aos="fade-up" style="margin-bottom:2rem;">
+            <div class="timeline-dot">
+                <i class="fa-solid fa-briefcase"></i>
+            </div>
+
+            <div class="timeline-header">
+                <div>
+                    <h3 class="company-name">${exp.company}</h3>
+                    <div class="role-title">${exp.role}</div>
+                </div>
+                <div class="timeline-date">
+                    <span class="badge-date"><i class="fa-regular fa-calendar"></i> ${exp.duration}</span>
+                    <span class="badge-location"><i class="fa-solid fa-location-dot"></i> ${exp.location || 'Remote'}</span>
+                </div>
+            </div>
+
+            <div class="timeline-body">
+                <ul class="experience-bullets">
+                    ${(exp.bullets || []).map(b => `
+                        <li>
+                            <i class="fa-solid fa-circle-check bullet-icon"></i>
+                            <span>${b}</span>
+                        </li>
+                    `).join('')}
+                </ul>
+
+                <div class="exp-tech-stack">
+                    ${(exp.tech || []).map(t => `<span class="tech-chip">${t}</span>`).join('')}
+                </div>
+            </div>
+        </div>
+    `).join('');
 }
 
 function renderEducationAndCertsFromData() {
@@ -291,11 +334,20 @@ function renderEducationAndCertsFromData() {
                 <div class="cert-icon">
                     <i class="fa-solid fa-award"></i>
                 </div>
-                <div class="cert-info">
+                <div class="cert-info" style="flex-grow:1;">
                     <h4>${cert.title}</h4>
                     <div class="cert-issuer">${cert.issuer}</div>
                     <div class="cert-date"><i class="fa-regular fa-calendar-check"></i> ${cert.year}</div>
-                    <p>${cert.description}</p>
+                    <p style="margin-bottom:0.5rem;">${cert.description}</p>
+                    ${cert.certUrl ? `
+                        <a href="${cert.certUrl}" target="_blank" rel="noopener noreferrer" class="btn-cert-link">
+                            <i class="fa-solid fa-shield-halved"></i> Verify Certificate
+                        </a>
+                    ` : `
+                        <button class="btn-cert-link btn-cert-add" onclick="promptAddCertLink(event, '${cert.id}')">
+                            <i class="fa-solid fa-link"></i> Add Certificate Link
+                        </button>
+                    `}
                 </div>
             </div>
         `).join('');
@@ -348,7 +400,7 @@ function switchCustTab(tab) {
     const activeTabBtn = document.getElementById(`cust-tab-${tab}`);
     if (activeTabBtn) activeTabBtn.classList.add('active');
 
-    const contents = ['personal', 'skills', 'projects', 'education', 'export'];
+    const contents = ['personal', 'skills', 'projects', 'experience', 'education', 'export'];
     contents.forEach(c => {
         const el = document.getElementById(`cust-content-${c}`);
         if (el) el.style.display = c === tab ? 'block' : 'none';
@@ -484,6 +536,24 @@ function renderCustomizerLists() {
                     <span style="font-size:0.75rem; color:var(--text-muted); display:block;">${c.issuer} (${c.year})</span>
                 </div>
                 <button onclick="deleteCertFromUI('${c.id}')" style="background:rgba(255,77,77,0.15); border:1px solid rgba(255,77,77,0.3); color:#ff4d4d; border-radius:6px; padding:0.25rem 0.6rem; cursor:pointer; font-size:0.78rem;">
+                    <i class="fa-solid fa-trash"></i> Delete
+                </button>
+            </div>
+        `).join('');
+    }
+
+    // Experience List
+    const expList = document.getElementById('cust-exp-list');
+    const expCount = document.getElementById('exp-count');
+    if (expList && portfolioData.experience) {
+        expCount.textContent = portfolioData.experience.length;
+        expList.innerHTML = portfolioData.experience.map(x => `
+            <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.03); padding:0.6rem 0.9rem; border-radius:8px; border:1px solid var(--glass-border);">
+                <div>
+                    <strong style="color:var(--text-main); font-size:0.9rem;">${x.company}</strong>
+                    <span style="font-size:0.75rem; color:var(--text-muted); display:block;">${x.role} (${x.duration})</span>
+                </div>
+                <button onclick="deleteExpFromUI('${x.id}')" style="background:rgba(255,77,77,0.15); border:1px solid rgba(255,77,77,0.3); color:#ff4d4d; border-radius:6px; padding:0.25rem 0.6rem; cursor:pointer; font-size:0.78rem;">
                     <i class="fa-solid fa-trash"></i> Delete
                 </button>
             </div>
@@ -757,6 +827,7 @@ function addNewCertFromUI() {
     const title = document.getElementById('new-cert-title').value.trim();
     const issuer = document.getElementById('new-cert-issuer').value.trim();
     const year = document.getElementById('new-cert-year').value.trim() || 'Issued 2025';
+    const certUrl = document.getElementById('new-cert-url') ? document.getElementById('new-cert-url').value.trim() : '';
     const desc = document.getElementById('new-cert-desc').value.trim();
 
     if (!title || !issuer) {
@@ -770,6 +841,7 @@ function addNewCertFromUI() {
         title,
         issuer,
         year,
+        certUrl,
         description: desc
     });
 
@@ -779,11 +851,70 @@ function addNewCertFromUI() {
     document.getElementById('new-cert-title').value = '';
     document.getElementById('new-cert-issuer').value = '';
     document.getElementById('new-cert-year').value = '';
+    if (document.getElementById('new-cert-url')) document.getElementById('new-cert-url').value = '';
     document.getElementById('new-cert-desc').value = '';
+}
+
+function promptAddCertLink(e, certId) {
+    if (e) e.preventDefault();
+    const cert = (portfolioData.certifications || []).find(c => c.id === certId);
+    if (!cert) return;
+
+    const url = prompt(`Paste Certificate Verification URL for "${cert.title}":`, cert.certUrl || 'https://');
+    if (url && url.trim() && url !== 'https://') {
+        cert.certUrl = url.trim();
+        saveStoredData();
+        renderAllSectionsFromData();
+    }
 }
 
 function deleteCertFromUI(id) {
     portfolioData.certifications = (portfolioData.certifications || []).filter(c => c.id !== id);
+    saveStoredData();
+    renderAllSectionsFromData();
+}
+
+function addNewExpFromUI() {
+    const company = document.getElementById('new-exp-company').value.trim();
+    const role = document.getElementById('new-exp-role').value.trim();
+    const duration = document.getElementById('new-exp-duration').value.trim() || '2024';
+    const location = document.getElementById('new-exp-location').value.trim() || 'Remote';
+    const techStr = document.getElementById('new-exp-tech').value.trim();
+    const bulletsStr = document.getElementById('new-exp-bullets').value.trim();
+
+    if (!company || !role) {
+        alert("Please enter company name and role title.");
+        return;
+    }
+
+    const bullets = bulletsStr
+        ? bulletsStr.split('\n').map(b => b.trim()).filter(b => b.length > 0)
+        : ["Delivered full-stack microservices and API solutions."];
+
+    if (!portfolioData.experience) portfolioData.experience = [];
+    portfolioData.experience.push({
+        id: "exp_" + Date.now(),
+        company,
+        role,
+        duration,
+        location,
+        tech: techStr ? techStr.split(',').map(t => t.trim()) : ["Full Stack"],
+        bullets
+    });
+
+    saveStoredData();
+    renderAllSectionsFromData();
+
+    document.getElementById('new-exp-company').value = '';
+    document.getElementById('new-exp-role').value = '';
+    document.getElementById('new-exp-duration').value = '';
+    document.getElementById('new-exp-location').value = '';
+    document.getElementById('new-exp-tech').value = '';
+    document.getElementById('new-exp-bullets').value = '';
+}
+
+function deleteExpFromUI(id) {
+    portfolioData.experience = (portfolioData.experience || []).filter(x => x.id !== id);
     saveStoredData();
     renderAllSectionsFromData();
 }
@@ -832,6 +963,45 @@ function copyConfigToClipboard() {
     }
 }
 
+function downloadPortfolioConfigFile() {
+    const jsContent = `/* ==========================================================================
+   PORTFOLIO CONFIGURATION DATA (EXPORTED)
+   ========================================================================== */
+
+const defaultPortfolioData = ${JSON.stringify(portfolioData, null, 4)};
+
+// Global portfolioData object initialized immediately from localStorage or defaults
+let portfolioData;
+try {
+    const localSaved = localStorage.getItem('nani_portfolio_custom_v1');
+    if (localSaved) {
+        const parsed = JSON.parse(localSaved);
+        if (parsed && parsed.personalInfo && parsed.projects) {
+            portfolioData = parsed;
+        } else {
+            portfolioData = JSON.parse(JSON.stringify(defaultPortfolioData));
+        }
+    } else {
+        portfolioData = JSON.parse(JSON.stringify(defaultPortfolioData));
+    }
+} catch (e) {
+    portfolioData = JSON.parse(JSON.stringify(defaultPortfolioData));
+}
+`;
+
+    const blob = new Blob([jsContent], { type: 'application/javascript;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'portfolio-data.js');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    alert("SUCCESS! 'portfolio-data.js' downloaded.\nSave or replace 'portfolio-data.js' in your project root to keep your changes permanently in source control!");
+}
+
 function resetPortfolioDataToDefaults() {
     if (confirm("Are you sure you want to reset all portfolio data to default settings?")) {
         localStorage.removeItem('nani_portfolio_custom_v1');
@@ -846,224 +1016,13 @@ function resetPortfolioDataToDefaults() {
 
 
 /* ==========================================================================
-   3. Real-Time 3D WebGL Engine (Three.js 3D Cyber World & Camera Flight Engine)
+   3. Professional Dark Blueprint & Ambient Depth Backdrop System
    ========================================================================== */
-function initThreeDBackground() {
-    const canvas = document.getElementById('three-bg-canvas');
-    if (!canvas || typeof THREE === 'undefined') return;
-
-    // 1. Scene, Fog, Camera, Renderer
-    const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x060913, 0.012);
-
-    const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.set(0, 5, 25);
-
-    const renderer = new THREE.WebGLRenderer({
-        canvas: canvas,
-        antialias: true,
-        alpha: true,
-        powerPreference: "high-performance"
-    });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-    // 2. Cyber Undulating Wireframe Terrain Grid
-    const gridWidth = 110;
-    const gridDepth = 110;
-    const gridSegments = 55;
-    const gridGeo = new THREE.PlaneGeometry(gridWidth, gridDepth, gridSegments, gridSegments);
-    gridGeo.rotateX(-Math.PI / 2.2);
-
-    const gridMat = new THREE.MeshBasicMaterial({
-        color: 0xff2a4b,
-        wireframe: true,
-        transparent: true,
-        opacity: 0.28
-    });
-    const gridMesh = new THREE.Mesh(gridGeo, gridMat);
-    gridMesh.position.set(0, -12, -15);
-    scene.add(gridMesh);
-
-    // Store base vertex heights for smooth wave animation
-    const posAttr = gridGeo.attributes.position;
-    const initialZ = new Float32Array(posAttr.count);
-    for (let i = 0; i < posAttr.count; i++) {
-        initialZ[i] = posAttr.getZ(i);
-    }
-
-    // 3. Floating 3D Cyber Geometric Polyhedrons Group
-    const objectsGroup = new THREE.Group();
-
-    // Neon Wireframe Icosahedron
-    const icoGeo = new THREE.IcosahedronGeometry(3.8, 1);
-    const icoMat = new THREE.MeshBasicMaterial({
-        color: 0xff2a4b,
-        wireframe: true,
-        transparent: true,
-        opacity: 0.55
-    });
-    const icoMesh = new THREE.Mesh(icoGeo, icoMat);
-    icoMesh.position.set(22, 6, -18);
-    objectsGroup.add(icoMesh);
-
-    // Cyber Torus Knot
-    const torusGeo = new THREE.TorusKnotGeometry(3, 0.75, 100, 16);
-    const torusMat = new THREE.MeshBasicMaterial({
-        color: 0xffffff,
-        wireframe: true,
-        transparent: true,
-        opacity: 0.35
-    });
-    const torusMesh = new THREE.Mesh(torusGeo, torusMat);
-    torusMesh.position.set(-24, -4, -22);
-    objectsGroup.add(torusMesh);
-
-    // Floating Crimson Octahedron Core
-    const octGeo = new THREE.OctahedronGeometry(2.6, 0);
-    const octMat = new THREE.MeshBasicMaterial({
-        color: 0xcc0029,
-        wireframe: true,
-        transparent: true,
-        opacity: 0.65
-    });
-    const octMesh = new THREE.Mesh(octGeo, octMat);
-    octMesh.position.set(-14, 14, -25);
-    objectsGroup.add(octMesh);
-
-    // Orbiting Double Ring System
-    const ringGeo = new THREE.RingGeometry(4, 4.3, 36);
-    const ringMat = new THREE.MeshBasicMaterial({ color: 0xff2a4b, side: THREE.DoubleSide, transparent: true, opacity: 0.4 });
-    const ringMesh = new THREE.Mesh(ringGeo, ringMat);
-    ringMesh.position.set(22, 6, -18);
-    objectsGroup.add(ringMesh);
-
-    scene.add(objectsGroup);
-
-    // 4. 3D Particle Constellation Dust Field (1,300+ 3D points)
-    const particleCount = 1350;
-    const pPositions = new Float32Array(particleCount * 3);
-    const pColors = new Float32Array(particleCount * 3);
-
-    const cNeonRed = new THREE.Color(0xff2a4b);
-    const cCrispWhite = new THREE.Color(0xffffff);
-    const cDeepCrimson = new THREE.Color(0xcc0029);
-
-    for (let i = 0; i < particleCount; i++) {
-        pPositions[i * 3] = (Math.random() - 0.5) * 150;
-        pPositions[i * 3 + 1] = (Math.random() - 0.5) * 95;
-        pPositions[i * 3 + 2] = (Math.random() - 0.5) * 130 - 10;
-
-        const rand = Math.random();
-        const pickColor = rand > 0.6 ? cNeonRed : (rand > 0.4 ? cCrispWhite : cDeepCrimson);
-
-        pColors[i * 3] = pickColor.r;
-        pColors[i * 3 + 1] = pickColor.g;
-        pColors[i * 3 + 2] = pickColor.b;
-    }
-
-    const pGeo = new THREE.BufferGeometry();
-    pGeo.setAttribute('position', new THREE.BufferAttribute(pPositions, 3));
-    pGeo.setAttribute('color', new THREE.BufferAttribute(pColors, 3));
-
-    const pMat = new THREE.PointsMaterial({
-        size: 0.28,
-        vertexColors: true,
-        transparent: true,
-        opacity: 0.75,
-        blending: THREE.AdditiveBlending
-    });
-    const particleSystem = new THREE.Points(pGeo, pMat);
-    scene.add(particleSystem);
-
-    // 5. Lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
-    scene.add(ambientLight);
-
-    const pointLight = new THREE.PointLight(0xff2a4b, 2.5, 100);
-    pointLight.position.set(0, 10, 10);
-    scene.add(pointLight);
-
-    // 6. Interactive Mouse & Scroll State Handling
-    let mouseX = 0;
-    let mouseY = 0;
-    let targetMouseX = 0;
-    let targetMouseY = 0;
-
+function initProBackground() {
     window.addEventListener('mousemove', (e) => {
-        targetMouseX = (e.clientX / window.innerWidth - 0.5) * 2;
-        targetMouseY = (e.clientY / window.innerHeight - 0.5) * 2;
-    });
-
-    let scrollProgress = 0;
-    window.addEventListener('scroll', () => {
-        const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
-        scrollProgress = totalHeight > 0 ? window.scrollY / totalHeight : 0;
-    });
-
-    window.addEventListener('resize', () => {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    });
-
-    // 7. Real-Time WebGL Render Loop
-    const clock = new THREE.Clock();
-
-    function animate3D() {
-        requestAnimationFrame(animate3D);
-
-        const elapsedTime = clock.getElapsedTime();
-
-        // Terrain vertex undulating wave motion
-        for (let i = 0; i < posAttr.count; i++) {
-            const x = posAttr.getX(i);
-            const y = posAttr.getY(i);
-            const zWave = Math.sin(elapsedTime * 1.5 + x * 0.15 + y * 0.15) * 1.8;
-            posAttr.setZ(i, initialZ[i] + zWave);
-        }
-        posAttr.needsUpdate = true;
-
-        // Rotate 3D Objects
-        icoMesh.rotation.x = elapsedTime * 0.25;
-        icoMesh.rotation.y = elapsedTime * 0.35;
-
-        torusMesh.rotation.x = elapsedTime * 0.2;
-        torusMesh.rotation.z = elapsedTime * 0.3;
-
-        octMesh.rotation.y = elapsedTime * 0.4;
-        octMesh.rotation.z = elapsedTime * 0.2;
-
-        ringMesh.rotation.z = elapsedTime * -0.3;
-
-        // Organic oscillation of floating objects group
-        objectsGroup.position.y = Math.sin(elapsedTime * 0.8) * 1.2;
-
-        // 3D Particle system slow drift
-        particleSystem.rotation.y = elapsedTime * 0.03;
-        particleSystem.rotation.x = elapsedTime * 0.015;
-
-        // Smooth Mouse Parallax Lerp
-        mouseX += (targetMouseX - mouseX) * 0.05;
-        mouseY += (targetMouseY - mouseY) * 0.05;
-
-        // Scroll Camera Flight Interpolation across page depth
-        const targetCamZ = 25 - (scrollProgress * 22);
-        const targetCamY = 5 - (scrollProgress * 12);
-        const targetCamRotX = -(scrollProgress * 0.3);
-
-        camera.position.x = mouseX * 6;
-        camera.position.y += (targetCamY + (mouseY * -4) - camera.position.y) * 0.05;
-        camera.position.z += (targetCamZ - camera.position.z) * 0.05;
-        camera.rotation.x += (targetCamRotX - camera.rotation.x) * 0.05;
-
-        camera.lookAt(0, -2, -10);
-
-        renderer.render(scene, camera);
-    }
-
-    animate3D();
+        document.documentElement.style.setProperty('--mouse-x', `${e.clientX}px`);
+        document.documentElement.style.setProperty('--mouse-y', `${e.clientY}px`);
+    }, { passive: true });
 }
 
 /* ==========================================================================
@@ -1267,6 +1226,49 @@ function initProjectFilters() {
     });
 }
 
+function initProjectSliderNavigation() {
+    const leftBtn = document.getElementById('projects-scroll-left');
+    const rightBtn = document.getElementById('projects-scroll-right');
+    const grid = document.getElementById('projects-grid');
+
+    if (!grid) return;
+
+    if (leftBtn) {
+        leftBtn.addEventListener('click', () => {
+            grid.scrollBy({ left: -360, behavior: 'smooth' });
+        });
+    }
+
+    if (rightBtn) {
+        rightBtn.addEventListener('click', () => {
+            grid.scrollBy({ left: 360, behavior: 'smooth' });
+        });
+    }
+
+    // Mouse drag scrolling support
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+
+    grid.addEventListener('mousedown', (e) => {
+        if (e.target.closest('a, button')) return;
+        isDown = true;
+        startX = e.pageX - grid.offsetLeft;
+        scrollLeft = grid.scrollLeft;
+    });
+
+    grid.addEventListener('mouseleave', () => { isDown = false; });
+    grid.addEventListener('mouseup', () => { isDown = false; });
+
+    grid.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - grid.offsetLeft;
+        const walk = (x - startX) * 1.5;
+        grid.scrollLeft = scrollLeft - walk;
+    });
+}
+
 /* ==========================================================================
    8. Project Modals & Interactive Demos
    ========================================================================== */
@@ -1392,61 +1394,16 @@ function initScrollProgressBar() {
     });
 }
 
-// Custom High-Tech Dual Ring Cursor Follower with Lerp Smoothing
-function initCustomCursor() {
-    const follower = document.getElementById('cursor-follower');
-    const dot = document.getElementById('cursor-dot');
-    if (!follower || !dot) return;
 
-    let mouseX = window.innerWidth / 2;
-    let mouseY = window.innerHeight / 2;
-    let followerX = mouseX;
-    let followerY = mouseY;
-
-    window.addEventListener('mousemove', (e) => {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
-
-        // Instant position update for center dot
-        dot.style.left = `${mouseX}px`;
-        dot.style.top = `${mouseY}px`;
-    });
-
-    // Smooth lerp trailing animation for outer ring follower
-    function animateCursor() {
-        followerX += (mouseX - followerX) * 0.18;
-        followerY += (mouseY - followerY) * 0.18;
-
-        follower.style.left = `${followerX}px`;
-        follower.style.top = `${followerY}px`;
-
-        requestAnimationFrame(animateCursor);
-    }
-    animateCursor();
-
-    // Hover scale feedback on interactive elements
-    const interactiveSelectors = 'a, button, .glass-card, .project-card, .skill-card, .social-icon-btn, input, textarea, select, .timeline-content, .metric-pill';
-    document.addEventListener('mouseover', (e) => {
-        if (e.target.closest(interactiveSelectors)) {
-            document.body.classList.add('cursor-hover');
-        }
-    });
-
-    document.addEventListener('mouseout', (e) => {
-        if (e.target.closest(interactiveSelectors)) {
-            document.body.classList.remove('cursor-hover');
-        }
-    });
-
-    document.addEventListener('mousedown', () => document.body.classList.add('cursor-click'));
-    document.addEventListener('mouseup', () => document.body.classList.remove('cursor-click'));
-}
 
 // Vercel / Linear Dynamic Mouse Spotlight Glow & 3D Tilt Engine
 function initSpotlightAnd3DTilt() {
     const cards = document.querySelectorAll('.glass-card, .project-card, .skill-card, .timeline-content, .code-window');
 
     cards.forEach(card => {
+        // Skip modal cards to prevent wobble/lag when clicking close button
+        if (card.classList.contains('modal-card')) return;
+
         // Ensure spotlight glow layer exists
         if (!card.querySelector('.spotlight-glow')) {
             const glow = document.createElement('div');
@@ -1476,6 +1433,19 @@ function initSpotlightAnd3DTilt() {
         });
     });
 }
+
+// Instant Modal Exit Handlers (Backdrop Click & Escape Key)
+document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('modal-overlay')) {
+        document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active'));
+    }
+});
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active'));
+    }
+});
 
 // Magnetic Buttons Physics (Subtle magnetic attraction towards cursor)
 function initMagneticButtons() {
