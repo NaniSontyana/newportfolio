@@ -8,14 +8,14 @@ const defaultPortfolioData = {
     personalInfo: {
         name: "Nani Sontyana",
         title: "Full-Stack & AI Systems Engineer",
-        status: "Available for Software Engineering Roles",
+        status: "Actively Seeking Software Engineering Roles",
         summary: "Full-Stack Software Engineer with hands-on expertise in building high-performance RESTful microservices, AI & RAG document intelligence engines, and scalable web apps using Java, Python, React.js, Node.js, and Spring Boot.",
         aboutTitle: "Engineered For Performance & Scale",
         aboutSubtitle: "A quick snapshot of my technical capabilities and practical software engineering footprint.",
         email: "nanisontyana47@gmail.com",
         phone: "+91 9618466575",
         linkedin: "https://linkedin.com/in/nani-sontyana",
-        github: "https://github.com/nanisontyana",
+        github: "https://github.com/NaniSontyana",
         cgpa: "8.14",
         apiSpeedup: "25%",
         mlAccuracy: "75%+",
@@ -59,7 +59,7 @@ const defaultPortfolioData = {
             icon: "fa-solid fa-file-pdf",
             gradientClass: "bg-gradient-rag",
             coverImage: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80",
-            githubUrl: "https://github.com/nanisontyana/DocuMind-AI",
+            githubUrl: "https://github.com/NaniSontyana/DocuMind-AI",
             liveUrl: "https://documind-ai.vercel.app",
             subtitle: "Enterprise Question Answering over PDF Documents with Vector Source Citation",
             type: "AI & RAG Platform",
@@ -81,7 +81,7 @@ const defaultPortfolioData = {
             icon: "fa-solid fa-chart-line",
             gradientClass: "bg-gradient-hr",
             coverImage: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80",
-            githubUrl: "https://github.com/nanisontyana/SmartHR-Analytics",
+            githubUrl: "https://github.com/NaniSontyana/SmartHR-Analytics",
             liveUrl: "https://smarthr-analytics.render.com",
             subtitle: "Machine Learning Employee Attrition Risk Predictor & Management Dashboard",
             type: "ML & Enterprise Analytics",
@@ -103,7 +103,7 @@ const defaultPortfolioData = {
             icon: "fa-solid fa-bell",
             gradientClass: "bg-gradient-sub",
             coverImage: "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=800&q=80",
-            githubUrl: "https://github.com/nanisontyana/Subscription-Tracker-Backend",
+            githubUrl: "https://github.com/NaniSontyana/Subscription-Tracker-Backend",
             liveUrl: "https://subtracker-api.onrender.com",
             subtitle: "Automated Recurring Billing Tracker & Event-Driven Notification Workflows",
             type: "Event-Driven Backend System",
@@ -125,7 +125,7 @@ const defaultPortfolioData = {
             icon: "fa-solid fa-map-location-dot",
             gradientClass: "bg-gradient-rag",
             coverImage: "https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&w=800&q=80",
-            githubUrl: "https://github.com/nanisontyana/Menty-by-Maps",
+            githubUrl: "https://github.com/NaniSontyana/Menty-by-Maps",
             liveUrl: "https://menty-by-maps.vercel.app",
             subtitle: "Geospatial Mentorship Discovery & Real-Time Location-Based Navigation Engine",
             type: "Spatial GIS & AI System",
@@ -198,7 +198,7 @@ const defaultPortfolioData = {
 };
 
 // Global portfolioData object initialized immediately from localStorage or defaults
-let portfolioData;
+var portfolioData;
 try {
     const localSaved = localStorage.getItem('nani_portfolio_custom_v1');
     if (localSaved) {
@@ -214,4 +214,9 @@ try {
 } catch (e) {
     portfolioData = JSON.parse(JSON.stringify(defaultPortfolioData));
 }
+
+if (typeof window !== 'undefined') {
+    window.portfolioData = portfolioData;
+}
+
 

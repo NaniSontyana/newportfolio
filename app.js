@@ -6,7 +6,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     await loadStoredData();
     initProBackground();
     initTypingEffect();
-    initNavbarScroll();
+    initMobileMenuNav();
+    initLeetCodeLiveStats();
     initScrollAnimations();
     initStatCounters();
     initSkillFilters();
@@ -56,6 +57,7 @@ async function loadStoredData() {
         try {
             const parsed = JSON.parse(stored);
             if (parsed && parsed.personalInfo && parsed.projects) {
+                portfolioData = parsed;
                 window.portfolioData = parsed;
                 return;
             }
@@ -78,6 +80,7 @@ async function loadStoredData() {
             if (dataStr) {
                 const parsed = JSON.parse(dataStr);
                 if (parsed && parsed.personalInfo) {
+                    portfolioData = parsed;
                     window.portfolioData = parsed;
                     // Sync back to localStorage for instant future loads
                     try { localStorage.setItem('nani_portfolio_custom_v1', dataStr); } catch (err) {}
@@ -90,8 +93,12 @@ async function loadStoredData() {
 }
 
 function saveStoredData() {
-    if (!window.portfolioData) return;
-    const dataStr = JSON.stringify(portfolioData);
+    const currentData = window.portfolioData || portfolioData;
+    if (!currentData) return;
+
+    portfolioData = currentData;
+    window.portfolioData = currentData;
+    const dataStr = JSON.stringify(currentData);
 
     // 1. Synchronously save to localStorage immediately
     try {
@@ -134,7 +141,7 @@ function renderPersonalAndSummaryFromData() {
 
     const statusDisplay = document.getElementById('hero-status-display');
     if (statusDisplay) {
-        statusDisplay.innerHTML = `<span class="pulse-dot"></span> ${info.status || 'Available for Software Engineering Roles'}`;
+        statusDisplay.innerHTML = `<span class="pulse-dot"></span> ${info.status || 'Actively Seeking Software Engineering Roles'}`;
     }
 
     // Hero Summary / Bio Description
@@ -424,6 +431,8 @@ function populatePersonalInputs() {
     setVal('cust-title', info.title);
     setVal('cust-status', info.status);
     setVal('cust-summary', info.summary);
+    setVal('cust-about-title', info.aboutTitle);
+    setVal('cust-about-subtitle', info.aboutSubtitle);
     setVal('cust-cgpa', info.cgpa);
     setVal('cust-apispeed', info.apiSpeedup);
     setVal('cust-mlacc', info.mlAccuracy);
@@ -444,10 +453,10 @@ function savePersonalInfoFromUI() {
     portfolioData.personalInfo = {
         name: getVal('cust-name') || "Nani Sontyana",
         title: getVal('cust-title') || "Full-Stack & AI Systems Engineer",
-        status: getVal('cust-status') || "Available for Software Engineering Roles",
+        status: getVal('cust-status') || "Actively Seeking Software Engineering Roles",
         summary: getVal('cust-summary') || "",
-        aboutTitle: (portfolioData.personalInfo && portfolioData.personalInfo.aboutTitle) || "Engineered For Performance & Scale",
-        aboutSubtitle: (portfolioData.personalInfo && portfolioData.personalInfo.aboutSubtitle) || "A quick snapshot of my technical capabilities and practical software engineering footprint.",
+        aboutTitle: getVal('cust-about-title') || "Engineered For Performance & Scale",
+        aboutSubtitle: getVal('cust-about-subtitle') || "A quick snapshot of my technical capabilities and practical software engineering footprint.",
         cgpa: getVal('cust-cgpa') || "8.14",
         apiSpeedup: getVal('cust-apispeed') || "25%",
         mlAccuracy: getVal('cust-mlacc') || "75%+",
@@ -476,9 +485,14 @@ function renderCustomizerLists() {
                     <strong style="color:var(--text-main); font-size:0.9rem;">${s.name}</strong>
                     <span style="font-size:0.75rem; color:var(--primary-cyan); margin-left:0.5rem; text-transform:uppercase;">[${s.category}]</span>
                 </div>
-                <button onclick="deleteSkillFromUI('${s.id}')" style="background:rgba(255,77,77,0.15); border:1px solid rgba(255,77,77,0.3); color:#ff4d4d; border-radius:6px; padding:0.25rem 0.6rem; cursor:pointer; font-size:0.78rem;">
-                    <i class="fa-solid fa-trash"></i> Delete
-                </button>
+                <div style="display:flex; gap:0.5rem;">
+                    <button onclick="populateSkillFormForEdit('${s.id}')" style="background:rgba(0,242,254,0.15); border:1px solid rgba(0,242,254,0.4); color:var(--primary-cyan); border-radius:6px; padding:0.25rem 0.65rem; cursor:pointer; font-size:0.78rem;">
+                        <i class="fa-solid fa-pen-to-square"></i> Edit
+                    </button>
+                    <button onclick="deleteSkillFromUI('${s.id}')" style="background:rgba(255,77,77,0.15); border:1px solid rgba(255,77,77,0.3); color:#ff4d4d; border-radius:6px; padding:0.25rem 0.65rem; cursor:pointer; font-size:0.78rem;">
+                        <i class="fa-solid fa-trash"></i> Delete
+                    </button>
+                </div>
             </div>
         `).join('');
     }
@@ -517,9 +531,14 @@ function renderCustomizerLists() {
                     <strong style="color:var(--text-main); font-size:0.9rem;">${e.degree}</strong>
                     <span style="font-size:0.75rem; color:var(--text-muted); display:block;">${e.institution} (${e.duration})</span>
                 </div>
-                <button onclick="deleteEduFromUI('${e.id}')" style="background:rgba(255,77,77,0.15); border:1px solid rgba(255,77,77,0.3); color:#ff4d4d; border-radius:6px; padding:0.25rem 0.6rem; cursor:pointer; font-size:0.78rem;">
-                    <i class="fa-solid fa-trash"></i> Delete
-                </button>
+                <div style="display:flex; gap:0.5rem;">
+                    <button onclick="populateEduFormForEdit('${e.id}')" style="background:rgba(0,242,254,0.15); border:1px solid rgba(0,242,254,0.4); color:var(--primary-cyan); border-radius:6px; padding:0.25rem 0.65rem; cursor:pointer; font-size:0.78rem;">
+                        <i class="fa-solid fa-pen-to-square"></i> Edit
+                    </button>
+                    <button onclick="deleteEduFromUI('${e.id}')" style="background:rgba(255,77,77,0.15); border:1px solid rgba(255,77,77,0.3); color:#ff4d4d; border-radius:6px; padding:0.25rem 0.6rem; cursor:pointer; font-size:0.78rem;">
+                        <i class="fa-solid fa-trash"></i> Delete
+                    </button>
+                </div>
             </div>
         `).join('');
     }
@@ -535,9 +554,14 @@ function renderCustomizerLists() {
                     <strong style="color:var(--text-main); font-size:0.9rem;">${c.title}</strong>
                     <span style="font-size:0.75rem; color:var(--text-muted); display:block;">${c.issuer} (${c.year})</span>
                 </div>
-                <button onclick="deleteCertFromUI('${c.id}')" style="background:rgba(255,77,77,0.15); border:1px solid rgba(255,77,77,0.3); color:#ff4d4d; border-radius:6px; padding:0.25rem 0.6rem; cursor:pointer; font-size:0.78rem;">
-                    <i class="fa-solid fa-trash"></i> Delete
-                </button>
+                <div style="display:flex; gap:0.5rem;">
+                    <button onclick="populateCertFormForEdit('${c.id}')" style="background:rgba(0,242,254,0.15); border:1px solid rgba(0,242,254,0.4); color:var(--primary-cyan); border-radius:6px; padding:0.25rem 0.65rem; cursor:pointer; font-size:0.78rem;">
+                        <i class="fa-solid fa-pen-to-square"></i> Edit
+                    </button>
+                    <button onclick="deleteCertFromUI('${c.id}')" style="background:rgba(255,77,77,0.15); border:1px solid rgba(255,77,77,0.3); color:#ff4d4d; border-radius:6px; padding:0.25rem 0.6rem; cursor:pointer; font-size:0.78rem;">
+                        <i class="fa-solid fa-trash"></i> Delete
+                    </button>
+                </div>
             </div>
         `).join('');
     }
@@ -553,15 +577,55 @@ function renderCustomizerLists() {
                     <strong style="color:var(--text-main); font-size:0.9rem;">${x.company}</strong>
                     <span style="font-size:0.75rem; color:var(--text-muted); display:block;">${x.role} (${x.duration})</span>
                 </div>
-                <button onclick="deleteExpFromUI('${x.id}')" style="background:rgba(255,77,77,0.15); border:1px solid rgba(255,77,77,0.3); color:#ff4d4d; border-radius:6px; padding:0.25rem 0.6rem; cursor:pointer; font-size:0.78rem;">
-                    <i class="fa-solid fa-trash"></i> Delete
-                </button>
+                <div style="display:flex; gap:0.5rem;">
+                    <button onclick="populateExpFormForEdit('${x.id}')" style="background:rgba(0,242,254,0.15); border:1px solid rgba(0,242,254,0.4); color:var(--primary-cyan); border-radius:6px; padding:0.25rem 0.65rem; cursor:pointer; font-size:0.78rem;">
+                        <i class="fa-solid fa-pen-to-square"></i> Edit
+                    </button>
+                    <button onclick="deleteExpFromUI('${x.id}')" style="background:rgba(255,77,77,0.15); border:1px solid rgba(255,77,77,0.3); color:#ff4d4d; border-radius:6px; padding:0.25rem 0.6rem; cursor:pointer; font-size:0.78rem;">
+                        <i class="fa-solid fa-trash"></i> Delete
+                    </button>
+                </div>
             </div>
         `).join('');
     }
 }
 
+function populateSkillFormForEdit(skillId) {
+    const s = (portfolioData.skills || []).find(item => item.id === skillId);
+    if (!s) return;
+    const editIdInput = document.getElementById('editing-skill-id');
+    if (editIdInput) editIdInput.value = s.id;
+    document.getElementById('new-skill-name').value = s.name || '';
+    document.getElementById('new-skill-category').value = s.category || 'languages';
+    document.getElementById('new-skill-level').value = s.level || 85;
+    document.getElementById('new-skill-tags').value = (s.tags || []).join(', ');
+
+    const heading = document.getElementById('skill-form-heading');
+    if (heading) heading.innerHTML = `<i class="fa-solid fa-pen-to-square"></i> Edit Skill: <span style="color:#00f2fe;">${s.name}</span>`;
+    const btnSave = document.getElementById('btn-save-skill');
+    if (btnSave) btnSave.innerHTML = `<i class="fa-solid fa-floppy-disk"></i> Save Skill Changes`;
+    const btnCancel = document.getElementById('btn-cancel-skill-edit');
+    if (btnCancel) btnCancel.style.display = 'inline-flex';
+}
+
+function resetSkillForm() {
+    const editIdInput = document.getElementById('editing-skill-id');
+    if (editIdInput) editIdInput.value = '';
+    document.getElementById('new-skill-name').value = '';
+    document.getElementById('new-skill-level').value = '';
+    document.getElementById('new-skill-tags').value = '';
+
+    const heading = document.getElementById('skill-form-heading');
+    if (heading) heading.innerHTML = `<i class="fa-solid fa-plus"></i> Add / Edit Skill`;
+    const btnSave = document.getElementById('btn-save-skill');
+    if (btnSave) btnSave.innerHTML = `<i class="fa-solid fa-plus"></i> Save / Add Skill`;
+    const btnCancel = document.getElementById('btn-cancel-skill-edit');
+    if (btnCancel) btnCancel.style.display = 'none';
+}
+
 function addNewSkillFromUI() {
+    const editIdInput = document.getElementById('editing-skill-id');
+    const editId = editIdInput ? editIdInput.value : '';
     const name = document.getElementById('new-skill-name').value.trim();
     const category = document.getElementById('new-skill-category').value;
     const level = parseInt(document.getElementById('new-skill-level').value) || 85;
@@ -572,23 +636,37 @@ function addNewSkillFromUI() {
         return;
     }
 
-    const newSkill = {
-        id: "s_" + Date.now(),
-        name: name,
-        category: category,
-        level: level,
-        status: "Custom Skill",
-        tags: tagsStr ? tagsStr.split(',').map(t => t.trim()) : ["Custom"],
-        icon: "fa-solid fa-code",
-        iconColor: "#00f2fe"
-    };
+    if (!portfolioData.skills) portfolioData.skills = [];
+    const tags = tagsStr ? tagsStr.split(',').map(t => t.trim()) : ["Custom"];
 
-    portfolioData.skills.push(newSkill);
+    if (editId) {
+        const idx = portfolioData.skills.findIndex(s => s.id === editId);
+        if (idx !== -1) {
+            portfolioData.skills[idx] = {
+                ...portfolioData.skills[idx],
+                name,
+                category,
+                level,
+                tags
+            };
+        }
+    } else {
+        const newSkill = {
+            id: "s_" + Date.now(),
+            name: name,
+            category: category,
+            level: level,
+            status: "Custom Skill",
+            tags: tags,
+            icon: "fa-solid fa-code",
+            iconColor: "#00f2fe"
+        };
+        portfolioData.skills.push(newSkill);
+    }
+
     saveStoredData();
     renderAllSectionsFromData();
-
-    document.getElementById('new-skill-name').value = '';
-    document.getElementById('new-skill-tags').value = '';
+    resetSkillForm();
 }
 
 function deleteSkillFromUI(id) {
@@ -785,7 +863,45 @@ function deleteProjectFromUI(id) {
     renderAllSectionsFromData();
 }
 
+function populateEduFormForEdit(eduId) {
+    const e = (portfolioData.education || []).find(item => item.id === eduId);
+    if (!e) return;
+    const editIdInput = document.getElementById('editing-edu-id');
+    if (editIdInput) editIdInput.value = e.id;
+    document.getElementById('new-edu-degree').value = e.degree || '';
+    document.getElementById('new-edu-inst').value = e.institution || '';
+    document.getElementById('new-edu-duration').value = e.duration || '';
+    document.getElementById('new-edu-gpa').value = e.gpa || '';
+    document.getElementById('new-edu-desc').value = e.description || '';
+
+    const heading = document.getElementById('edu-form-heading');
+    if (heading) heading.innerHTML = `<i class="fa-solid fa-pen-to-square"></i> Edit Education: <span style="color:#00f2fe;">${e.degree}</span>`;
+    const btnSave = document.getElementById('btn-save-edu');
+    if (btnSave) btnSave.innerHTML = `<i class="fa-solid fa-floppy-disk"></i> Save Education Changes`;
+    const btnCancel = document.getElementById('btn-cancel-edu-edit');
+    if (btnCancel) btnCancel.style.display = 'inline-flex';
+}
+
+function resetEduForm() {
+    const editIdInput = document.getElementById('editing-edu-id');
+    if (editIdInput) editIdInput.value = '';
+    document.getElementById('new-edu-degree').value = '';
+    document.getElementById('new-edu-inst').value = '';
+    document.getElementById('new-edu-duration').value = '';
+    document.getElementById('new-edu-gpa').value = '';
+    document.getElementById('new-edu-desc').value = '';
+
+    const heading = document.getElementById('edu-form-heading');
+    if (heading) heading.innerHTML = `<i class="fa-solid fa-plus"></i> Add / Edit Education Degree`;
+    const btnSave = document.getElementById('btn-save-edu');
+    if (btnSave) btnSave.innerHTML = `<i class="fa-solid fa-plus"></i> Save / Add Education Entry`;
+    const btnCancel = document.getElementById('btn-cancel-edu-edit');
+    if (btnCancel) btnCancel.style.display = 'none';
+}
+
 function addNewEduFromUI() {
+    const editIdInput = document.getElementById('editing-edu-id');
+    const editId = editIdInput ? editIdInput.value : '';
     const degree = document.getElementById('new-edu-degree').value.trim();
     const inst = document.getElementById('new-edu-inst').value.trim();
     const duration = document.getElementById('new-edu-duration').value.trim() || '2022 - 2026';
@@ -798,23 +914,33 @@ function addNewEduFromUI() {
     }
 
     if (!portfolioData.education) portfolioData.education = [];
-    portfolioData.education.push({
-        id: "e_" + Date.now(),
-        degree,
-        institution: inst,
-        duration,
-        gpa,
-        description: desc
-    });
+
+    if (editId) {
+        const idx = portfolioData.education.findIndex(e => e.id === editId);
+        if (idx !== -1) {
+            portfolioData.education[idx] = {
+                ...portfolioData.education[idx],
+                degree,
+                institution: inst,
+                duration,
+                gpa,
+                description: desc
+            };
+        }
+    } else {
+        portfolioData.education.push({
+            id: "e_" + Date.now(),
+            degree,
+            institution: inst,
+            duration,
+            gpa,
+            description: desc
+        });
+    }
 
     saveStoredData();
     renderAllSectionsFromData();
-
-    document.getElementById('new-edu-degree').value = '';
-    document.getElementById('new-edu-inst').value = '';
-    document.getElementById('new-edu-duration').value = '';
-    document.getElementById('new-edu-gpa').value = '';
-    document.getElementById('new-edu-desc').value = '';
+    resetEduForm();
 }
 
 function deleteEduFromUI(id) {
@@ -823,7 +949,45 @@ function deleteEduFromUI(id) {
     renderAllSectionsFromData();
 }
 
+function populateCertFormForEdit(certId) {
+    const c = (portfolioData.certifications || []).find(item => item.id === certId);
+    if (!c) return;
+    const editIdInput = document.getElementById('editing-cert-id');
+    if (editIdInput) editIdInput.value = c.id;
+    document.getElementById('new-cert-title').value = c.title || '';
+    document.getElementById('new-cert-issuer').value = c.issuer || '';
+    document.getElementById('new-cert-year').value = c.year || '';
+    if (document.getElementById('new-cert-url')) document.getElementById('new-cert-url').value = c.certUrl || '';
+    document.getElementById('new-cert-desc').value = c.description || '';
+
+    const heading = document.getElementById('cert-form-heading');
+    if (heading) heading.innerHTML = `<i class="fa-solid fa-pen-to-square"></i> Edit Certification: <span style="color:#00f2fe;">${c.title}</span>`;
+    const btnSave = document.getElementById('btn-save-cert');
+    if (btnSave) btnSave.innerHTML = `<i class="fa-solid fa-floppy-disk"></i> Save Certification Changes`;
+    const btnCancel = document.getElementById('btn-cancel-cert-edit');
+    if (btnCancel) btnCancel.style.display = 'inline-flex';
+}
+
+function resetCertForm() {
+    const editIdInput = document.getElementById('editing-cert-id');
+    if (editIdInput) editIdInput.value = '';
+    document.getElementById('new-cert-title').value = '';
+    document.getElementById('new-cert-issuer').value = '';
+    document.getElementById('new-cert-year').value = '';
+    if (document.getElementById('new-cert-url')) document.getElementById('new-cert-url').value = '';
+    document.getElementById('new-cert-desc').value = '';
+
+    const heading = document.getElementById('cert-form-heading');
+    if (heading) heading.innerHTML = `<i class="fa-solid fa-plus"></i> Add / Edit Verified Certification`;
+    const btnSave = document.getElementById('btn-save-cert');
+    if (btnSave) btnSave.innerHTML = `<i class="fa-solid fa-plus"></i> Save / Add Certification Entry`;
+    const btnCancel = document.getElementById('btn-cancel-cert-edit');
+    if (btnCancel) btnCancel.style.display = 'none';
+}
+
 function addNewCertFromUI() {
+    const editIdInput = document.getElementById('editing-cert-id');
+    const editId = editIdInput ? editIdInput.value : '';
     const title = document.getElementById('new-cert-title').value.trim();
     const issuer = document.getElementById('new-cert-issuer').value.trim();
     const year = document.getElementById('new-cert-year').value.trim() || 'Issued 2025';
@@ -836,23 +1000,33 @@ function addNewCertFromUI() {
     }
 
     if (!portfolioData.certifications) portfolioData.certifications = [];
-    portfolioData.certifications.push({
-        id: "c_" + Date.now(),
-        title,
-        issuer,
-        year,
-        certUrl,
-        description: desc
-    });
+
+    if (editId) {
+        const idx = portfolioData.certifications.findIndex(c => c.id === editId);
+        if (idx !== -1) {
+            portfolioData.certifications[idx] = {
+                ...portfolioData.certifications[idx],
+                title,
+                issuer,
+                year,
+                certUrl,
+                description: desc
+            };
+        }
+    } else {
+        portfolioData.certifications.push({
+            id: "c_" + Date.now(),
+            title,
+            issuer,
+            year,
+            certUrl,
+            description: desc
+        });
+    }
 
     saveStoredData();
     renderAllSectionsFromData();
-
-    document.getElementById('new-cert-title').value = '';
-    document.getElementById('new-cert-issuer').value = '';
-    document.getElementById('new-cert-year').value = '';
-    if (document.getElementById('new-cert-url')) document.getElementById('new-cert-url').value = '';
-    document.getElementById('new-cert-desc').value = '';
+    resetCertForm();
 }
 
 function promptAddCertLink(e, certId) {
@@ -874,7 +1048,47 @@ function deleteCertFromUI(id) {
     renderAllSectionsFromData();
 }
 
+function populateExpFormForEdit(expId) {
+    const x = (portfolioData.experience || []).find(item => item.id === expId);
+    if (!x) return;
+    const editIdInput = document.getElementById('editing-exp-id');
+    if (editIdInput) editIdInput.value = x.id;
+    document.getElementById('new-exp-company').value = x.company || '';
+    document.getElementById('new-exp-role').value = x.role || '';
+    document.getElementById('new-exp-duration').value = x.duration || '';
+    document.getElementById('new-exp-location').value = x.location || '';
+    document.getElementById('new-exp-tech').value = (x.tech || []).join(', ');
+    document.getElementById('new-exp-bullets').value = (x.bullets || []).join('\n');
+
+    const heading = document.getElementById('exp-form-heading');
+    if (heading) heading.innerHTML = `<i class="fa-solid fa-pen-to-square"></i> Edit Experience: <span style="color:#00f2fe;">${x.company}</span>`;
+    const btnSave = document.getElementById('btn-save-exp');
+    if (btnSave) btnSave.innerHTML = `<i class="fa-solid fa-floppy-disk"></i> Save Experience Changes`;
+    const btnCancel = document.getElementById('btn-cancel-exp-edit');
+    if (btnCancel) btnCancel.style.display = 'inline-flex';
+}
+
+function resetExpForm() {
+    const editIdInput = document.getElementById('editing-exp-id');
+    if (editIdInput) editIdInput.value = '';
+    document.getElementById('new-exp-company').value = '';
+    document.getElementById('new-exp-role').value = '';
+    document.getElementById('new-exp-duration').value = '';
+    document.getElementById('new-exp-location').value = '';
+    document.getElementById('new-exp-tech').value = '';
+    document.getElementById('new-exp-bullets').value = '';
+
+    const heading = document.getElementById('exp-form-heading');
+    if (heading) heading.innerHTML = `<i class="fa-solid fa-plus"></i> Add / Edit Work / Internship Experience`;
+    const btnSave = document.getElementById('btn-save-exp');
+    if (btnSave) btnSave.innerHTML = `<i class="fa-solid fa-plus"></i> Save / Add Experience Entry`;
+    const btnCancel = document.getElementById('btn-cancel-exp-edit');
+    if (btnCancel) btnCancel.style.display = 'none';
+}
+
 function addNewExpFromUI() {
+    const editIdInput = document.getElementById('editing-exp-id');
+    const editId = editIdInput ? editIdInput.value : '';
     const company = document.getElementById('new-exp-company').value.trim();
     const role = document.getElementById('new-exp-role').value.trim();
     const duration = document.getElementById('new-exp-duration').value.trim() || '2024';
@@ -882,35 +1096,40 @@ function addNewExpFromUI() {
     const techStr = document.getElementById('new-exp-tech').value.trim();
     const bulletsStr = document.getElementById('new-exp-bullets').value.trim();
 
-    if (!company || !role) {
-        alert("Please enter company name and role title.");
-        return;
-    }
-
     const bullets = bulletsStr
         ? bulletsStr.split('\n').map(b => b.trim()).filter(b => b.length > 0)
         : ["Delivered full-stack microservices and API solutions."];
 
     if (!portfolioData.experience) portfolioData.experience = [];
-    portfolioData.experience.push({
-        id: "exp_" + Date.now(),
-        company,
-        role,
-        duration,
-        location,
-        tech: techStr ? techStr.split(',').map(t => t.trim()) : ["Full Stack"],
-        bullets
-    });
+
+    if (editId) {
+        const idx = portfolioData.experience.findIndex(x => x.id === editId);
+        if (idx !== -1) {
+            portfolioData.experience[idx] = {
+                ...portfolioData.experience[idx],
+                company,
+                role,
+                duration,
+                location,
+                tech: techStr ? techStr.split(',').map(t => t.trim()) : portfolioData.experience[idx].tech,
+                bullets
+            };
+        }
+    } else {
+        portfolioData.experience.push({
+            id: "exp_" + Date.now(),
+            company,
+            role,
+            duration,
+            location,
+            tech: techStr ? techStr.split(',').map(t => t.trim()) : ["Full Stack"],
+            bullets
+        });
+    }
 
     saveStoredData();
     renderAllSectionsFromData();
-
-    document.getElementById('new-exp-company').value = '';
-    document.getElementById('new-exp-role').value = '';
-    document.getElementById('new-exp-duration').value = '';
-    document.getElementById('new-exp-location').value = '';
-    document.getElementById('new-exp-tech').value = '';
-    document.getElementById('new-exp-bullets').value = '';
+    resetExpForm();
 }
 
 function deleteExpFromUI(id) {
@@ -1005,8 +1224,16 @@ try {
 function resetPortfolioDataToDefaults() {
     if (confirm("Are you sure you want to reset all portfolio data to default settings?")) {
         localStorage.removeItem('nani_portfolio_custom_v1');
+        openPortfolioDB().then(db => {
+            if (db) {
+                const tx = db.transaction(IDB_STORE, 'readwrite');
+                tx.objectStore(IDB_STORE).delete('current_portfolio_data');
+            }
+        }).catch(e => console.error("IndexedDB reset error", e));
         if (typeof defaultPortfolioData !== 'undefined') {
-            window.portfolioData = JSON.parse(JSON.stringify(defaultPortfolioData));
+            const defaults = JSON.parse(JSON.stringify(defaultPortfolioData));
+            portfolioData = defaults;
+            window.portfolioData = defaults;
         }
         renderAllSectionsFromData();
         populatePersonalInputs();
@@ -1272,6 +1499,61 @@ function initProjectSliderNavigation() {
 /* ==========================================================================
    8. Project Modals & Interactive Demos
    ========================================================================== */
+function getProjectArchitectureHTML(proj) {
+    if (!proj) return '';
+
+    let nodes = [];
+    if (proj.id === 'documind') {
+        nodes = [
+            { icon: 'fa-brands fa-react', label: 'React.js Client UI' },
+            { icon: 'fa-brands fa-node-js', label: 'Node.js Gateway' },
+            { icon: 'fa-brands fa-python', label: 'Flask + LangChain' },
+            { icon: 'fa-solid fa-database', label: 'PostgreSQL + pgvector' }
+        ];
+    } else if (proj.id === 'smarthr') {
+        nodes = [
+            { icon: 'fa-brands fa-react', label: 'Recharts HR Dashboard' },
+            { icon: 'fa-brands fa-node-js', label: 'Express Router API' },
+            { icon: 'fa-solid fa-brain', label: 'Scikit-Learn ML Model' },
+            { icon: 'fa-solid fa-envira', label: 'MongoDB Data Store' }
+        ];
+    } else if (proj.id === 'subtracker') {
+        nodes = [
+            { icon: 'fa-brands fa-node-js', label: 'Node.js Subscription Core' },
+            { icon: 'fa-solid fa-shield-halved', label: 'Arcjet Rate Limiter' },
+            { icon: 'fa-solid fa-clock', label: 'Upstash QStash Cron' },
+            { icon: 'fa-solid fa-paper-plane', label: 'Nodemailer Alerts' }
+        ];
+    } else if (proj.id === 'mentymaps') {
+        nodes = [
+            { icon: 'fa-solid fa-map-location-dot', label: 'Mapbox GL JS Interface' },
+            { icon: 'fa-brands fa-node-js', label: 'Socket.io + Redis PubSub' },
+            { icon: 'fa-solid fa-database', label: 'PostgreSQL + PostGIS (<50ms)' },
+            { icon: 'fa-solid fa-cubes-stacked', label: 'DBSCAN Spatial Clustering' }
+        ];
+    } else {
+        nodes = [
+            { icon: 'fa-solid fa-laptop-code', label: 'Frontend Client Interface' },
+            { icon: 'fa-solid fa-server', label: 'Microservice API Gateway' },
+            { icon: 'fa-solid fa-database', label: 'Database & Cache Layer' }
+        ];
+    }
+
+    return `
+        <div class="arch-diagram-card">
+            <h4 style="color:var(--primary-cyan); font-size:0.95rem; margin-bottom:0.85rem;">
+                <i class="fa-solid fa-diagram-project"></i> System Architecture & Microservice Flowchart:
+            </h4>
+            <div class="arch-nodes-flex">
+                ${nodes.map((n, idx) => `
+                    <div class="arch-node"><i class="${n.icon}"></i> ${n.label}</div>
+                    ${idx < nodes.length - 1 ? `<div class="arch-arrow"><i class="fa-solid fa-arrow-right"></i></div>` : ''}
+                `).join('')}
+            </div>
+        </div>
+    `;
+}
+
 function openProjectModal(key) {
     let data = (portfolioData.projects || []).find(p => p.id === key);
 
@@ -1291,6 +1573,8 @@ function openProjectModal(key) {
         </div>
 
         ${data.coverImage ? `<img src="${data.coverImage}" alt="${data.title}" style="width:100%; max-height:260px; object-fit:cover; border-radius:12px; margin-bottom:1.5rem; border:1px solid var(--glass-border);">` : ''}
+
+        ${getProjectArchitectureHTML(data)}
 
         <div style="margin-bottom:1.5rem;">
             <h4 style="font-size:1rem; margin-bottom:0.6rem; color:var(--primary-cyan);">Technologies Applied:</h4>
@@ -1495,4 +1779,84 @@ function initClickRipples() {
         }, 650);
     });
 }
+
+/* Mobile Responsive Navigation Drawer & Navbar Scroll Handler */
+function initMobileMenuNav() {
+    const mobileToggle = document.getElementById('mobile-toggle');
+    const navMenu = document.getElementById('nav-menu');
+    const navLinks = document.querySelectorAll('.nav-link');
+    const navbar = document.getElementById('navbar');
+
+    // Scroll Navbar blur effect
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 40) {
+            if (navbar) navbar.classList.add('scrolled');
+        } else {
+            if (navbar) navbar.classList.remove('scrolled');
+        }
+    });
+
+    if (mobileToggle && navMenu) {
+        mobileToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isActive = navMenu.classList.toggle('active');
+            mobileToggle.classList.toggle('active');
+            
+            // Toggle body scroll locking when mobile menu is open
+            document.body.style.overflow = isActive ? 'hidden' : '';
+
+            const icon = mobileToggle.querySelector('i');
+            if (icon) {
+                icon.className = isActive ? 'fa-solid fa-xmark' : 'fa-solid fa-bars-staggered';
+            }
+        });
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                navMenu.classList.remove('active');
+                mobileToggle.classList.remove('active');
+                document.body.style.overflow = '';
+                const icon = mobileToggle.querySelector('i');
+                if (icon) icon.className = 'fa-solid fa-bars-staggered';
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (navMenu.classList.contains('active') && !navMenu.contains(e.target) && !mobileToggle.contains(e.target)) {
+                navMenu.classList.remove('active');
+                mobileToggle.classList.remove('active');
+                document.body.style.overflow = '';
+                const icon = mobileToggle.querySelector('i');
+                if (icon) icon.className = 'fa-solid fa-bars-staggered';
+            }
+        });
+    }
+}
+
+/* Live LeetCode Stats Fetcher with Graceful Failover */
+async function initLeetCodeLiveStats() {
+    const totalEl = document.getElementById('lc-total-solved');
+    const easyEl = document.getElementById('lc-easy-solved');
+    const medEl = document.getElementById('lc-medium-solved');
+    const hardEl = document.getElementById('lc-hard-solved');
+
+    if (!totalEl) return;
+
+    try {
+        const response = await fetch('https://alfa-leetcode-api.onrender.com/userProfile/NaniSontyana');
+        if (response.ok) {
+            const data = await response.json();
+            if (data && typeof data.totalSolved === 'number') {
+                totalEl.textContent = `${data.totalSolved}+`;
+                if (easyEl && typeof data.easySolved === 'number') easyEl.textContent = `Easy: ${data.easySolved}`;
+                if (medEl && typeof data.mediumSolved === 'number') medEl.textContent = `Med: ${data.mediumSolved}`;
+                if (hardEl && typeof data.hardSolved === 'number') hardEl.textContent = `Hard: ${data.hardSolved}`;
+            }
+        }
+    } catch (e) {
+        console.warn("LeetCode live API fallback active", e);
+    }
+}
+
+
 
