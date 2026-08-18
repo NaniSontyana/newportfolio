@@ -5,7 +5,7 @@
    ========================================================================== */
 
 const defaultPortfolioData = {
-    dataVersion: "2026.08.18-v2",
+    dataVersion: "2026.08.18-v3",
     personalInfo: {
         name: "Nani Sontyana",
         title: "Full-Stack & AI Systems Engineer",
@@ -161,6 +161,29 @@ const defaultPortfolioData = {
                 "Integrated LLM code analysis models with custom zero-shot prompts to detect security vulnerabilities (OWASP Top 10), cyclomatic complexity anti-patterns, and memory leaks.",
                 "Implemented Redis Pub/Sub queue for non-blocking asynchronous PR processing, delivering inline GitHub review comments and code diff suggestions under 3 seconds.",
                 "Designed a full-stack React dashboard displaying repository code quality trends, PR review latency metrics, and automated refactoring suggestions."
+            ]
+        },
+        {
+            id: "swiftcart",
+            title: "SwiftCart – Full-Stack Distributed E-Commerce Platform",
+            category: "backend fullstack",
+            filterCat: "fullstack",
+            badge: "May 2026",
+            icon: "fa-solid fa-cart-shopping",
+            gradientClass: "bg-gradient-hr",
+            coverImage: "https://images.unsplash.com/photo-1556742049-0a675440778b?auto=format&fit=crop&w=800&q=80",
+            githubUrl: "https://github.com/NaniSontyana/SwiftCart-Ecommerce",
+            liveUrl: "https://swiftcart-store.vercel.app",
+            subtitle: "Scalable E-Commerce Microservices Engine with Event-Driven Inventory & Stripe Payment Workflows",
+            type: "E-Commerce & Microservices Engine",
+            description: "High-performance distributed e-commerce web platform featuring real-time inventory synchronization, Stripe payment gateway integration, JWT role-based access control, and sub-50ms product catalog caching using Redis.",
+            tech: ["React", "Redux Toolkit", "Node.js", "Express", "PostgreSQL", "Redis", "Stripe API", "JWT", "Docker"],
+            bullets: [
+                "Architected a modular e-commerce backend microservice architecture decoupling product catalog, user authentication, shopping cart state, and order fulfillment services.",
+                "Integrated Stripe API payment gateway with webhook payment state verification and tokenized idempotency keys to prevent duplicate checkout transactions.",
+                "Implemented Redis caching strategies for high-frequency product catalog queries, boosting response speed by 45% during surge traffic spikes.",
+                "Designed transactional database locking algorithms ensuring real-time inventory updates and preventing overselling during concurrent user checkouts.",
+                "Created an enterprise administration panel for real-time inventory management, order status tracking, and sales revenue analytics visualization."
             ]
         }
     ],

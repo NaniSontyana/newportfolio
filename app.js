@@ -1608,6 +1608,13 @@ function getProjectArchitectureHTML(proj) {
             { icon: 'fa-solid fa-brain', label: 'LLM Reasoning & Security Engine' },
             { icon: 'fa-solid fa-comments', label: 'Inline PR Review Dispatcher (<3s)' }
         ];
+    } else if (proj.id === 'swiftcart') {
+        nodes = [
+            { icon: 'fa-brands fa-react', label: 'React + Redux Toolkit Client' },
+            { icon: 'fa-brands fa-node-js', label: 'Express API Gateway + JWT' },
+            { icon: 'fa-solid fa-credit-card', label: 'Stripe Webhook Gateway' },
+            { icon: 'fa-solid fa-database', label: 'PostgreSQL + Redis Cache (<50ms)' }
+        ];
     } else {
         nodes = [
             { icon: 'fa-solid fa-laptop-code', label: 'Frontend Client Interface' },
