@@ -5,6 +5,7 @@
    ========================================================================== */
 
 const defaultPortfolioData = {
+    dataVersion: "2026.08.18-v1",
     personalInfo: {
         name: "Nani Sontyana",
         title: "Full-Stack & AI Systems Engineer",

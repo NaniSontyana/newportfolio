@@ -90,8 +90,20 @@ async function loadStoredData() {
         }
     }
 
-    // 3. Apply loaded data if valid
+    // 3. Version & Master Code Sync Check:
+    // If a new git commit was pushed with an updated dataVersion in portfolio-data.js,
+    // or if loadedData is missing projects from defaultPortfolioData, auto-sync to master code!
+    const codeVersion = typeof defaultPortfolioData !== 'undefined' ? defaultPortfolioData.dataVersion : null;
+
     if (loadedData) {
+        if (codeVersion && loadedData.dataVersion !== codeVersion) {
+            // New commit deployed! Auto-sync to fresh master code so git commits are always preserved
+            portfolioData = JSON.parse(JSON.stringify(defaultPortfolioData));
+            window.portfolioData = portfolioData;
+            saveStoredData();
+            return;
+        }
+
         portfolioData = loadedData;
         window.portfolioData = loadedData;
 
@@ -102,6 +114,9 @@ async function loadStoredData() {
             // Quota exceeded - remove stale key from localStorage so it never overrides IndexedDB
             try { localStorage.removeItem('nani_portfolio_custom_v1'); } catch (e) {}
         }
+    } else if (typeof defaultPortfolioData !== 'undefined') {
+        portfolioData = JSON.parse(JSON.stringify(defaultPortfolioData));
+        window.portfolioData = portfolioData;
     }
 }
 
