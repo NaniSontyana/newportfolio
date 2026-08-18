@@ -1,0 +1,12 @@
+{
+  "name": "nani-sontyana-portfolio",
+  "version": "1.0.0",
+  "description": "Full-Stack & AI Systems Engineer Portfolio",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve . -l 3000",
+    "dev": "npx serve . -l 3000"
+  },
+  "author": "Nani Sontyana",
+  "license": "ISC"
+}
