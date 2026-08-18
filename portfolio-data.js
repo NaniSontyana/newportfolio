@@ -5,7 +5,7 @@
    ========================================================================== */
 
 const defaultPortfolioData = {
-    dataVersion: "2026.08.18-v4",
+    dataVersion: "2026.08.18-v5",
     personalInfo: {
         name: "Nani Sontyana",
         title: "Full-Stack & AI Systems Engineer",
@@ -218,19 +218,11 @@ const defaultPortfolioData = {
         },
         {
             id: "cert2",
-            title: "Full Stack Web Development (Java & Spring Boot)",
+            title: "Full Stack Web Development",
             issuer: "BrainOvision Solutions Pvt. Ltd.",
             year: "Issued 2024",
             certUrl: "https://drive.google.com/file/d/1a3ecQTuDKSVKVMtz6Tw3Djgxd9Z0t4xU/view?usp=sharing",
             description: "Hands-on development program focusing on Spring Boot, Java backend architectures, and production application building."
-        },
-        {
-            id: "cert3",
-            title: "Java Software Engineering & Microservices",
-            issuer: "BrainOvision Solutions",
-            year: "Issued 2024",
-            certUrl: "https://drive.google.com/file/d/1a3ecQTuDKSVKVMtz6Tw3Djgxd9Z0t4xU/view?usp=sharing",
-            description: "Certified practical expertise in core Java OOP, Spring Boot RESTful web services, RBAC security, and SQL database integration."
         }
     ],
 
