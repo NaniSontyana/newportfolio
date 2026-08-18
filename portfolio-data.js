@@ -5,7 +5,7 @@
    ========================================================================== */
 
 const defaultPortfolioData = {
-    dataVersion: "2026.08.18-v1",
+    dataVersion: "2026.08.18-v2",
     personalInfo: {
         name: "Nani Sontyana",
         title: "Full-Stack & AI Systems Engineer",
@@ -138,6 +138,29 @@ const defaultPortfolioData = {
                 "Implemented an event-driven real-time communication engine in Node.js utilizing Socket.io and Redis Pub/Sub for location updates and instant mentor-mentee chat dispatch under 100ms.",
                 "Built a Python Flask microservice leveraging Scikit-Learn (DBSCAN / K-Means spatial clustering) to dynamically aggregate high-density mentorship hubs and calculate optimal proximity matching routes.",
                 "Secured microservice communications with JWT session token verification, spatial location obfuscation algorithms, and role-based endpoint protection (RBAC)."
+            ]
+        },
+        {
+            id: "aicodereview",
+            title: "AI Code Reviewer Bot – Automated PR Security & Analysis",
+            category: "ai fullstack",
+            filterCat: "ai",
+            badge: "Aug 2026",
+            icon: "fa-solid fa-code-pull-request",
+            gradientClass: "bg-gradient-rag",
+            coverImage: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80",
+            githubUrl: "https://github.com/NaniSontyana/AI-Code-Reviewer-Bot",
+            liveUrl: "https://ai-code-reviewer.vercel.app",
+            subtitle: "Automated Pull Request Code Analysis, OWASP Security Scanning & AST Refactoring Engine",
+            type: "AI & Microservice Platform",
+            description: "Automated AI-driven code review microservice integrating AST parsing and LLM reasoning to perform automated static analysis, security vulnerability detection, and inline GitHub PR review comments under 3 seconds.",
+            tech: ["Node.js", "TypeScript", "Python Flask", "LLM APIs (Gemini/OpenAI)", "AST Parser", "GitHub Webhooks", "Docker", "Redis"],
+            bullets: [
+                "Architected an event-driven AI code review microservice that listens to GitHub Webhook events and dynamically analyzes incoming Pull Request diffs.",
+                "Built AST (Abstract Syntax Tree) parsing and token chunking pipelines in Python Flask to isolate modified code blocks and eliminate unnecessary prompt context payload overhead.",
+                "Integrated LLM code analysis models with custom zero-shot prompts to detect security vulnerabilities (OWASP Top 10), cyclomatic complexity anti-patterns, and memory leaks.",
+                "Implemented Redis Pub/Sub queue for non-blocking asynchronous PR processing, delivering inline GitHub review comments and code diff suggestions under 3 seconds.",
+                "Designed a full-stack React dashboard displaying repository code quality trends, PR review latency metrics, and automated refactoring suggestions."
             ]
         }
     ],

@@ -1601,6 +1601,13 @@ function getProjectArchitectureHTML(proj) {
             { icon: 'fa-solid fa-database', label: 'PostgreSQL + PostGIS (<50ms)' },
             { icon: 'fa-solid fa-cubes-stacked', label: 'DBSCAN Spatial Clustering' }
         ];
+    } else if (proj.id === 'aicodereview') {
+        nodes = [
+            { icon: 'fa-brands fa-github', label: 'GitHub App Webhook Listener' },
+            { icon: 'fa-solid fa-code-branch', label: 'AST Parser & Diff Isolator' },
+            { icon: 'fa-solid fa-brain', label: 'LLM Reasoning & Security Engine' },
+            { icon: 'fa-solid fa-comments', label: 'Inline PR Review Dispatcher (<3s)' }
+        ];
     } else {
         nodes = [
             { icon: 'fa-solid fa-laptop-code', label: 'Frontend Client Interface' },
