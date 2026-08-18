@@ -51,22 +51,9 @@ function openPortfolioDB() {
 }
 
 async function loadStoredData() {
-    // 1. Try synchronous localStorage first for instant loading on page refresh
-    const stored = localStorage.getItem('nani_portfolio_custom_v1');
-    if (stored) {
-        try {
-            const parsed = JSON.parse(stored);
-            if (parsed && parsed.personalInfo && parsed.projects) {
-                portfolioData = parsed;
-                window.portfolioData = parsed;
-                return;
-            }
-        } catch (e) {
-            console.error("Error parsing stored portfolio customizer data", e);
-        }
-    }
+    let loadedData = null;
 
-    // 2. Fallback to IndexedDB (supports large payloads like uploaded images)
+    // 1. Try IndexedDB first as the primary reliable database (supports large image payloads & large datasets without 5MB quota cap)
     try {
         const db = await openPortfolioDB();
         if (db) {
@@ -79,16 +66,42 @@ async function loadStoredData() {
             });
             if (dataStr) {
                 const parsed = JSON.parse(dataStr);
-                if (parsed && parsed.personalInfo) {
-                    portfolioData = parsed;
-                    window.portfolioData = parsed;
-                    // Sync back to localStorage for instant future loads
-                    try { localStorage.setItem('nani_portfolio_custom_v1', dataStr); } catch (err) {}
+                if (parsed && parsed.personalInfo && parsed.projects) {
+                    loadedData = parsed;
                 }
             }
         }
     } catch (e) {
         console.warn("IndexedDB load warning", e);
+    }
+
+    // 2. Fallback to localStorage if IndexedDB had no record
+    if (!loadedData) {
+        const stored = localStorage.getItem('nani_portfolio_custom_v1');
+        if (stored) {
+            try {
+                const parsed = JSON.parse(stored);
+                if (parsed && parsed.personalInfo && parsed.projects) {
+                    loadedData = parsed;
+                }
+            } catch (e) {
+                console.error("Error parsing stored portfolio customizer data", e);
+            }
+        }
+    }
+
+    // 3. Apply loaded data if valid
+    if (loadedData) {
+        portfolioData = loadedData;
+        window.portfolioData = loadedData;
+
+        // Try syncing to localStorage for instant synchronous loads where quota allows
+        try {
+            localStorage.setItem('nani_portfolio_custom_v1', JSON.stringify(loadedData));
+        } catch (err) {
+            // Quota exceeded - remove stale key from localStorage so it never overrides IndexedDB
+            try { localStorage.removeItem('nani_portfolio_custom_v1'); } catch (e) {}
+        }
     }
 }
 
@@ -100,14 +113,7 @@ function saveStoredData() {
     window.portfolioData = currentData;
     const dataStr = JSON.stringify(currentData);
 
-    // 1. Synchronously save to localStorage immediately
-    try {
-        localStorage.setItem('nani_portfolio_custom_v1', dataStr);
-    } catch (err) {
-        console.warn("localStorage quota warning. Storing payload in IndexedDB.", err);
-    }
-
-    // 2. Asynchronously backup to IndexedDB for large image data payloads
+    // 1. Asynchronously backup to IndexedDB for large image data payloads & complete project details
     openPortfolioDB().then(db => {
         if (db) {
             const tx = db.transaction(IDB_STORE, 'readwrite');
@@ -115,6 +121,16 @@ function saveStoredData() {
             store.put(dataStr, 'current_portfolio_data');
         }
     }).catch(e => console.error("IndexedDB save error", e));
+
+    // 2. Synchronously save to localStorage immediately, clearing stale data if quota fails
+    try {
+        localStorage.setItem('nani_portfolio_custom_v1', dataStr);
+    } catch (err) {
+        console.warn("localStorage quota warning. Safely storing payload in IndexedDB and clearing stale localStorage key.", err);
+        try {
+            localStorage.removeItem('nani_portfolio_custom_v1');
+        } catch (e) {}
+    }
 }
 
 function renderAllSectionsFromData() {
@@ -247,9 +263,10 @@ function renderProjectsFromData() {
             <div class="project-banner ${proj.gradientClass || 'bg-gradient-rag'}">
                 ${proj.coverImage ? `<img src="${proj.coverImage}" alt="${proj.title}" class="project-cover-img" loading="lazy">` : ''}
                 <div class="project-badge">${proj.badge}</div>
+                ${!proj.coverImage ? `
                 <div class="project-icon-wrapper">
                     <i class="${proj.icon || 'fa-solid fa-code'}"></i>
-                </div>
+                </div>` : ''}
             </div>
 
             <div class="project-content">
@@ -722,8 +739,27 @@ function downloadPortfolioConfigFile() {
 
 const defaultPortfolioData = ${JSON.stringify(portfolioData, null, 4)};
 
-// Global portfolioData object initialized from defaults or localStorage
-let portfolioData = JSON.parse(JSON.stringify(defaultPortfolioData));
+// Global portfolioData object initialized immediately from localStorage or defaults
+var portfolioData;
+try {
+    const localSaved = localStorage.getItem('nani_portfolio_custom_v1');
+    if (localSaved) {
+        const parsed = JSON.parse(localSaved);
+        if (parsed && parsed.personalInfo && parsed.projects) {
+            portfolioData = parsed;
+        } else {
+            portfolioData = JSON.parse(JSON.stringify(defaultPortfolioData));
+        }
+    } else {
+        portfolioData = JSON.parse(JSON.stringify(defaultPortfolioData));
+    }
+} catch (e) {
+    portfolioData = JSON.parse(JSON.stringify(defaultPortfolioData));
+}
+
+if (typeof window !== 'undefined') {
+    window.portfolioData = portfolioData;
+}
 `;
 
     const blob = new Blob([fileContent], { type: 'application/javascript' });
@@ -735,6 +771,7 @@ let portfolioData = JSON.parse(JSON.stringify(defaultPortfolioData));
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+    alert("Downloaded updated portfolio-data.js! Replace portfolio-data.js in your project folder to save changes permanently in your code repository.");
 }
 
 function populateProjectFormForEdit(projId) {
@@ -810,43 +847,54 @@ function addNewProjectFromUI() {
         return;
     }
 
-    const parsedBullets = bulletsStr
-        ? bulletsStr.split('\n').map(b => b.trim()).filter(b => b.length > 0)
-        : [desc || "Designed scalable architecture and user interface."];
-
     if (!portfolioData.projects) portfolioData.projects = [];
 
     if (editId) {
         const idx = portfolioData.projects.findIndex(p => p.id === editId);
         if (idx !== -1) {
+            const existing = portfolioData.projects[idx];
+            const parsedBullets = bulletsStr
+                ? bulletsStr.split('\n').map(b => b.trim()).filter(b => b.length > 0)
+                : (existing.bullets && existing.bullets.length > 0 ? existing.bullets : [desc || "Designed scalable architecture and user interface."]);
+
+            const parsedTech = techStr
+                ? techStr.split(',').map(t => t.trim()).filter(t => t.length > 0)
+                : (existing.tech && existing.tech.length > 0 ? existing.tech : ["React", "Node.js"]);
+
             portfolioData.projects[idx] = {
-                ...portfolioData.projects[idx],
-                title,
-                badge,
-                coverImage: coverImage || portfolioData.projects[idx].coverImage,
-                category,
-                githubUrl,
-                liveUrl,
-                description: desc || portfolioData.projects[idx].description,
-                tech: techStr ? techStr.split(',').map(t => t.trim()) : portfolioData.projects[idx].tech,
+                ...existing,
+                title: title || existing.title,
+                badge: badge || existing.badge,
+                coverImage: coverImage || existing.coverImage,
+                category: category || existing.category,
+                filterCat: category === "ai fullstack" ? "ai" : (category === "backend fullstack" ? "backend" : "fullstack"),
+                githubUrl: githubUrl !== undefined && githubUrl !== '' ? githubUrl : existing.githubUrl,
+                liveUrl: liveUrl !== undefined && liveUrl !== '' ? liveUrl : existing.liveUrl,
+                description: desc || existing.description,
+                tech: parsedTech,
                 bullets: parsedBullets
             };
         }
     } else {
+        const parsedBullets = bulletsStr
+            ? bulletsStr.split('\n').map(b => b.trim()).filter(b => b.length > 0)
+            : [desc || "Designed scalable architecture and user interface."];
+
         const newProj = {
             id: "p_" + Date.now(),
             title: title,
-            category: category,
-            badge: badge,
+            category: category || "ai fullstack",
+            filterCat: category === "ai fullstack" ? "ai" : (category === "backend fullstack" ? "backend" : "fullstack"),
+            badge: badge || "2026",
             icon: "fa-solid fa-rocket",
             gradientClass: "bg-gradient-rag",
             coverImage: coverImage || "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80",
-            githubUrl: githubUrl || "https://github.com/nanisontyana",
+            githubUrl: githubUrl || "",
             liveUrl: liveUrl || "",
             subtitle: title + " Microservices & Architecture",
             type: "Featured Platform",
             description: desc || "Scalable full-stack application built with microservice architecture.",
-            tech: techStr ? techStr.split(',').map(t => t.trim()) : ["React", "Node.js", "Python Flask"],
+            tech: techStr ? techStr.split(',').map(t => t.trim()).filter(t => t.length > 0) : ["React", "Node.js", "Python Flask"],
             bullets: parsedBullets
         };
         portfolioData.projects.push(newProj);
@@ -855,6 +903,7 @@ function addNewProjectFromUI() {
     saveStoredData();
     renderAllSectionsFromData();
     resetProjectForm();
+    alert(`SUCCESS! Project "${title}" saved cleanly to browser database (IndexedDB). All details preserved.`);
 }
 
 function deleteProjectFromUI(id) {
@@ -1096,33 +1145,38 @@ function addNewExpFromUI() {
     const techStr = document.getElementById('new-exp-tech').value.trim();
     const bulletsStr = document.getElementById('new-exp-bullets').value.trim();
 
-    const bullets = bulletsStr
-        ? bulletsStr.split('\n').map(b => b.trim()).filter(b => b.length > 0)
-        : ["Delivered full-stack microservices and API solutions."];
-
     if (!portfolioData.experience) portfolioData.experience = [];
 
     if (editId) {
         const idx = portfolioData.experience.findIndex(x => x.id === editId);
         if (idx !== -1) {
+            const existing = portfolioData.experience[idx];
+            const bullets = bulletsStr
+                ? bulletsStr.split('\n').map(b => b.trim()).filter(b => b.length > 0)
+                : (existing.bullets && existing.bullets.length > 0 ? existing.bullets : ["Delivered full-stack microservices and API solutions."]);
+
             portfolioData.experience[idx] = {
-                ...portfolioData.experience[idx],
-                company,
-                role,
-                duration,
-                location,
-                tech: techStr ? techStr.split(',').map(t => t.trim()) : portfolioData.experience[idx].tech,
+                ...existing,
+                company: company || existing.company,
+                role: role || existing.role,
+                duration: duration || existing.duration,
+                location: location || existing.location,
+                tech: techStr ? techStr.split(',').map(t => t.trim()).filter(t => t.length > 0) : existing.tech,
                 bullets
             };
         }
     } else {
+        const bullets = bulletsStr
+            ? bulletsStr.split('\n').map(b => b.trim()).filter(b => b.length > 0)
+            : ["Delivered full-stack microservices and API solutions."];
+
         portfolioData.experience.push({
             id: "exp_" + Date.now(),
             company,
             role,
             duration,
             location,
-            tech: techStr ? techStr.split(',').map(t => t.trim()) : ["Full Stack"],
+            tech: techStr ? techStr.split(',').map(t => t.trim()).filter(t => t.length > 0) : ["Full Stack"],
             bullets
         });
     }
@@ -1130,6 +1184,7 @@ function addNewExpFromUI() {
     saveStoredData();
     renderAllSectionsFromData();
     resetExpForm();
+    alert("SUCCESS! Experience entry updated.");
 }
 
 function deleteExpFromUI(id) {
