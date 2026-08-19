@@ -14,7 +14,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     initProjectFilters();
     initProjectSliderNavigation();
     initResumeModals();
-    initSecretAdminTriggers();
     
     // High-End Interactive Animation Suite
     initSpotlightAnd3DTilt();
@@ -29,122 +28,23 @@ document.addEventListener('DOMContentLoaded', async () => {
 /* ==========================================================================
    1. Data Persistence & Full Section Renderers (IndexedDB + localStorage)
    ========================================================================== */
-const IDB_NAME = 'NaniPortfolioDB';
-const IDB_STORE = 'portfolio_store';
-
-function openPortfolioDB() {
-    return new Promise((resolve) => {
-        if (!window.indexedDB) {
-            resolve(null);
-            return;
-        }
-        const request = indexedDB.open(IDB_NAME, 1);
-        request.onupgradeneeded = (e) => {
-            const db = e.target.result;
-            if (!db.objectStoreNames.contains(IDB_STORE)) {
-                db.createObjectStore(IDB_STORE);
-            }
-        };
-        request.onsuccess = (e) => resolve(e.target.result);
-        request.onerror = () => resolve(null);
-    });
+function getPortfolioData() {
+    if (typeof window !== 'undefined' && window.portfolioData && window.portfolioData.projects) {
+        return window.portfolioData;
+    }
+    if (typeof portfolioData !== 'undefined' && portfolioData && portfolioData.projects) {
+        return portfolioData;
+    }
+    if (typeof defaultPortfolioData !== 'undefined' && defaultPortfolioData && defaultPortfolioData.projects) {
+        return defaultPortfolioData;
+    }
+    return {};
 }
 
 async function loadStoredData() {
-    let loadedData = null;
-
-    // 1. Try IndexedDB first as the primary reliable database (supports large image payloads & large datasets without 5MB quota cap)
-    try {
-        const db = await openPortfolioDB();
-        if (db) {
-            const dataStr = await new Promise((resolve) => {
-                const tx = db.transaction(IDB_STORE, 'readonly');
-                const store = tx.objectStore(IDB_STORE);
-                const req = store.get('current_portfolio_data');
-                req.onsuccess = () => resolve(req.result);
-                req.onerror = () => resolve(null);
-            });
-            if (dataStr) {
-                const parsed = JSON.parse(dataStr);
-                if (parsed && parsed.personalInfo && parsed.projects) {
-                    loadedData = parsed;
-                }
-            }
-        }
-    } catch (e) {
-        console.warn("IndexedDB load warning", e);
-    }
-
-    // 2. Fallback to localStorage if IndexedDB had no record
-    if (!loadedData) {
-        const stored = localStorage.getItem('nani_portfolio_custom_v1');
-        if (stored) {
-            try {
-                const parsed = JSON.parse(stored);
-                if (parsed && parsed.personalInfo && parsed.projects) {
-                    loadedData = parsed;
-                }
-            } catch (e) {
-                console.error("Error parsing stored portfolio customizer data", e);
-            }
-        }
-    }
-
-    // 3. Version & Master Code Sync Check:
-    // If a new git commit was pushed with an updated dataVersion in portfolio-data.js,
-    // or if loadedData is missing projects from defaultPortfolioData, auto-sync to master code!
-    const codeVersion = typeof defaultPortfolioData !== 'undefined' ? defaultPortfolioData.dataVersion : null;
-
-    if (loadedData) {
-        if (codeVersion && loadedData.dataVersion !== codeVersion) {
-            // New commit deployed! Auto-sync to fresh master code so git commits are always preserved
-            portfolioData = JSON.parse(JSON.stringify(defaultPortfolioData));
-            window.portfolioData = portfolioData;
-            saveStoredData();
-            return;
-        }
-
-        portfolioData = loadedData;
-        window.portfolioData = loadedData;
-
-        // Try syncing to localStorage for instant synchronous loads where quota allows
-        try {
-            localStorage.setItem('nani_portfolio_custom_v1', JSON.stringify(loadedData));
-        } catch (err) {
-            // Quota exceeded - remove stale key from localStorage so it never overrides IndexedDB
-            try { localStorage.removeItem('nani_portfolio_custom_v1'); } catch (e) {}
-        }
-    } else if (typeof defaultPortfolioData !== 'undefined') {
-        portfolioData = JSON.parse(JSON.stringify(defaultPortfolioData));
-        window.portfolioData = portfolioData;
-    }
-}
-
-function saveStoredData() {
-    const currentData = window.portfolioData || portfolioData;
-    if (!currentData) return;
-
-    portfolioData = currentData;
-    window.portfolioData = currentData;
-    const dataStr = JSON.stringify(currentData);
-
-    // 1. Asynchronously backup to IndexedDB for large image data payloads & complete project details
-    openPortfolioDB().then(db => {
-        if (db) {
-            const tx = db.transaction(IDB_STORE, 'readwrite');
-            const store = tx.objectStore(IDB_STORE);
-            store.put(dataStr, 'current_portfolio_data');
-        }
-    }).catch(e => console.error("IndexedDB save error", e));
-
-    // 2. Synchronously save to localStorage immediately, clearing stale data if quota fails
-    try {
-        localStorage.setItem('nani_portfolio_custom_v1', dataStr);
-    } catch (err) {
-        console.warn("localStorage quota warning. Safely storing payload in IndexedDB and clearing stale localStorage key.", err);
-        try {
-            localStorage.removeItem('nani_portfolio_custom_v1');
-        } catch (e) {}
+    const data = getPortfolioData();
+    if (typeof window !== 'undefined') {
+        window.portfolioData = data;
     }
 }
 
@@ -154,7 +54,6 @@ function renderAllSectionsFromData() {
     renderProjectsFromData();
     renderExperienceFromData();
     renderEducationAndCertsFromData();
-    renderCustomizerLists();
 
     // Refresh interactive animation triggers for dynamic elements
     initSpotlightAnd3DTilt();
@@ -163,12 +62,13 @@ function renderAllSectionsFromData() {
 }
 
 function renderPersonalAndSummaryFromData() {
-    if (!portfolioData || !portfolioData.personalInfo) return;
-    const info = portfolioData.personalInfo;
+    const data = getPortfolioData();
+    if (!data.personalInfo) return;
+    const info = data.personalInfo;
 
     // Hero Name & Status
-    const nameTrigger = document.getElementById('hero-name-admin-trigger');
-    if (nameTrigger) nameTrigger.textContent = info.name || "Nani Sontyana";
+    const heroName = document.querySelector('.hero-title .gradient-text');
+    if (heroName) heroName.textContent = info.name || "Nani Sontyana";
 
     const statusDisplay = document.getElementById('hero-status-display');
     if (statusDisplay) {
@@ -250,9 +150,10 @@ function renderPersonalAndSummaryFromData() {
 
 function renderSkillsFromData() {
     const grid = document.getElementById('skills-grid');
-    if (!grid || !portfolioData || !portfolioData.skills) return;
+    const data = getPortfolioData();
+    if (!grid || !data.skills) return;
 
-    grid.innerHTML = portfolioData.skills.map(skill => `
+    grid.innerHTML = data.skills.map(skill => `
         <div class="skill-card glass-card" data-cat="${skill.category}">
             <div class="skill-head">
                 <i class="${skill.icon} skill-icon" style="color:${skill.iconColor || 'var(--primary-cyan)'};"></i>
@@ -271,9 +172,10 @@ function renderSkillsFromData() {
 
 function renderProjectsFromData() {
     const grid = document.getElementById('projects-grid');
-    if (!grid || !portfolioData || !portfolioData.projects) return;
+    const data = getPortfolioData();
+    if (!grid || !data.projects) return;
 
-    grid.innerHTML = portfolioData.projects.map(proj => `
+    grid.innerHTML = data.projects.map(proj => `
         <div class="project-card glass-card" data-category="${proj.category}">
             <div class="project-banner ${proj.gradientClass || 'bg-gradient-rag'}">
                 ${proj.coverImage ? `<img src="${proj.coverImage}" alt="${proj.title}" class="project-cover-img" loading="lazy">` : ''}
@@ -315,9 +217,10 @@ function renderProjectsFromData() {
 
 function renderExperienceFromData() {
     const expContainer = document.getElementById('experience-list-container');
-    if (!expContainer || !portfolioData || !portfolioData.experience) return;
+    const data = getPortfolioData();
+    if (!expContainer || !data.experience) return;
 
-    expContainer.innerHTML = portfolioData.experience.map(exp => `
+    expContainer.innerHTML = data.experience.map(exp => `
         <div class="timeline-item glass-card" data-aos="fade-up" style="margin-bottom:2rem;">
             <div class="timeline-dot">
                 <i class="fa-solid fa-briefcase"></i>
@@ -353,9 +256,11 @@ function renderExperienceFromData() {
 }
 
 function renderEducationAndCertsFromData() {
+    const data = getPortfolioData();
+
     const eduContainer = document.getElementById('education-list-container');
-    if (eduContainer && portfolioData.education) {
-        eduContainer.innerHTML = portfolioData.education.map(item => `
+    if (eduContainer && data.education) {
+        eduContainer.innerHTML = data.education.map(item => `
             <div class="edu-card glass-card" style="margin-bottom:1rem;">
                 <div class="edu-year">${item.duration}</div>
                 <h4>${item.degree}</h4>
@@ -367,8 +272,8 @@ function renderEducationAndCertsFromData() {
     }
 
     const certsContainer = document.getElementById('certs-list-container');
-    if (certsContainer && portfolioData.certifications) {
-        certsContainer.innerHTML = portfolioData.certifications.map(cert => `
+    if (certsContainer && data.certifications) {
+        certsContainer.innerHTML = data.certifications.map(cert => `
             <div class="cert-card glass-card" style="margin-bottom:1rem;">
                 <div class="cert-icon">
                     <i class="fa-solid fa-award"></i>
@@ -382,934 +287,14 @@ function renderEducationAndCertsFromData() {
                         <a href="${cert.certUrl}" target="_blank" rel="noopener noreferrer" class="btn-cert-link">
                             <i class="fa-solid fa-shield-halved"></i> Verify Certificate
                         </a>
-                    ` : `
-                        <button class="btn-cert-link btn-cert-add" onclick="promptAddCertLink(event, '${cert.id}')">
-                            <i class="fa-solid fa-link"></i> Add Certificate Link
-                        </button>
-                    `}
+                    ` : ''}
                 </div>
             </div>
         `).join('');
     }
 }
 
-/* ==========================================================================
-   2. Secret Admin Triggers & Customizer Portal Logic
-   ========================================================================== */
-function initSecretAdminTriggers() {
-    const logoHeader = document.getElementById('logo-admin-trigger');
-    const logoFooter = document.getElementById('footer-logo-admin-trigger');
-    const heroName = document.getElementById('hero-name-admin-trigger');
 
-    let clickCount = 0;
-    let timer = null;
-
-    const triggerAdmin = (e) => {
-        e.preventDefault();
-        clickCount++;
-        if (clickCount === 1) {
-            timer = setTimeout(() => {
-                openCustomizerModal();
-                clickCount = 0;
-            }, 300);
-        } else if (clickCount >= 2) {
-            clearTimeout(timer);
-            openCustomizerModal();
-            clickCount = 0;
-        }
-    };
-
-    if (logoHeader) logoHeader.addEventListener('click', triggerAdmin);
-    if (logoFooter) logoFooter.addEventListener('click', triggerAdmin);
-    if (heroName) heroName.addEventListener('click', openCustomizerModal);
-}
-
-function openCustomizerModal() {
-    populatePersonalInputs();
-    renderCustomizerLists();
-    document.getElementById('customizer-modal').classList.add('active');
-}
-
-function closeCustomizerModal() {
-    document.getElementById('customizer-modal').classList.remove('active');
-}
-
-function switchCustTab(tab) {
-    document.querySelectorAll('.skill-tab-btn[id^="cust-tab-"]').forEach(b => b.classList.remove('active'));
-    const activeTabBtn = document.getElementById(`cust-tab-${tab}`);
-    if (activeTabBtn) activeTabBtn.classList.add('active');
-
-    const contents = ['personal', 'skills', 'projects', 'experience', 'education', 'export'];
-    contents.forEach(c => {
-        const el = document.getElementById(`cust-content-${c}`);
-        if (el) el.style.display = c === tab ? 'block' : 'none';
-    });
-
-    if (tab === 'export') {
-        generateConfigExportJS();
-    }
-}
-
-function populatePersonalInputs() {
-    if (!portfolioData || !portfolioData.personalInfo) return;
-    const info = portfolioData.personalInfo;
-
-    const setVal = (id, val) => {
-        const el = document.getElementById(id);
-        if (el) el.value = val || '';
-    };
-
-    setVal('cust-name', info.name);
-    setVal('cust-title', info.title);
-    setVal('cust-status', info.status);
-    setVal('cust-summary', info.summary);
-    setVal('cust-about-title', info.aboutTitle);
-    setVal('cust-about-subtitle', info.aboutSubtitle);
-    setVal('cust-cgpa', info.cgpa);
-    setVal('cust-apispeed', info.apiSpeedup);
-    setVal('cust-mlacc', info.mlAccuracy);
-    setVal('cust-codedup', info.codeDupDrop);
-    setVal('cust-email', info.email);
-    setVal('cust-phone', info.phone);
-    setVal('cust-linkedin', info.linkedin);
-    setVal('cust-github', info.github);
-    setVal('cust-bg-video', info.bgVideo);
-}
-
-function savePersonalInfoFromUI() {
-    const getVal = (id) => {
-        const el = document.getElementById(id);
-        return el ? el.value.trim() : '';
-    };
-
-    portfolioData.personalInfo = {
-        name: getVal('cust-name') || "Nani Sontyana",
-        title: getVal('cust-title') || "Full-Stack & AI Systems Engineer",
-        status: getVal('cust-status') || "Actively Seeking Software Engineering Roles",
-        summary: getVal('cust-summary') || "",
-        aboutTitle: getVal('cust-about-title') || "Engineered For Performance & Scale",
-        aboutSubtitle: getVal('cust-about-subtitle') || "A quick snapshot of my technical capabilities and practical software engineering footprint.",
-        cgpa: getVal('cust-cgpa') || "8.14",
-        apiSpeedup: getVal('cust-apispeed') || "25%",
-        mlAccuracy: getVal('cust-mlacc') || "75%+",
-        codeDupDrop: getVal('cust-codedup') || "30%",
-        email: getVal('cust-email') || "nanisontyana47@gmail.com",
-        phone: getVal('cust-phone') || "+91 9618466575",
-        linkedin: getVal('cust-linkedin') || "https://linkedin.com/in/nani-sontyana",
-        github: getVal('cust-github') || "https://github.com/nanisontyana",
-        bgVideo: getVal('cust-bg-video') || "custom-bg-video.mp4"
-    };
-
-    saveStoredData();
-    renderAllSectionsFromData();
-    alert("SUCCESS! Personal Info & Summary updated across the portfolio.");
-}
-
-function renderCustomizerLists() {
-    // Skills List
-    const skillsList = document.getElementById('cust-skills-list');
-    const skillCount = document.getElementById('skill-count');
-    if (skillsList && portfolioData.skills) {
-        skillCount.textContent = portfolioData.skills.length;
-        skillsList.innerHTML = portfolioData.skills.map(s => `
-            <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.03); padding:0.6rem 0.9rem; border-radius:8px; border:1px solid var(--glass-border);">
-                <div>
-                    <strong style="color:var(--text-main); font-size:0.9rem;">${s.name}</strong>
-                    <span style="font-size:0.75rem; color:var(--primary-cyan); margin-left:0.5rem; text-transform:uppercase;">[${s.category}]</span>
-                </div>
-                <div style="display:flex; gap:0.5rem;">
-                    <button onclick="populateSkillFormForEdit('${s.id}')" style="background:rgba(0,242,254,0.15); border:1px solid rgba(0,242,254,0.4); color:var(--primary-cyan); border-radius:6px; padding:0.25rem 0.65rem; cursor:pointer; font-size:0.78rem;">
-                        <i class="fa-solid fa-pen-to-square"></i> Edit
-                    </button>
-                    <button onclick="deleteSkillFromUI('${s.id}')" style="background:rgba(255,77,77,0.15); border:1px solid rgba(255,77,77,0.3); color:#ff4d4d; border-radius:6px; padding:0.25rem 0.65rem; cursor:pointer; font-size:0.78rem;">
-                        <i class="fa-solid fa-trash"></i> Delete
-                    </button>
-                </div>
-            </div>
-        `).join('');
-    }
-
-    // Projects List
-    const projList = document.getElementById('cust-projects-list');
-    const projCount = document.getElementById('proj-count');
-    if (projList && portfolioData.projects) {
-        projCount.textContent = portfolioData.projects.length;
-        projList.innerHTML = portfolioData.projects.map(p => `
-            <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.03); padding:0.6rem 0.9rem; border-radius:8px; border:1px solid var(--glass-border);">
-                <div>
-                    <strong style="color:var(--text-main); font-size:0.9rem;">${p.title}</strong>
-                    <span style="font-size:0.75rem; color:var(--text-muted); display:block;">${p.badge}</span>
-                </div>
-                <div style="display:flex; gap:0.5rem;">
-                    <button onclick="populateProjectFormForEdit('${p.id}')" style="background:rgba(0,242,254,0.15); border:1px solid rgba(0,242,254,0.4); color:var(--primary-cyan); border-radius:6px; padding:0.25rem 0.65rem; cursor:pointer; font-size:0.78rem;">
-                        <i class="fa-solid fa-pen-to-square"></i> Edit
-                    </button>
-                    <button onclick="deleteProjectFromUI('${p.id}')" style="background:rgba(255,77,77,0.15); border:1px solid rgba(255,77,77,0.3); color:#ff4d4d; border-radius:6px; padding:0.25rem 0.65rem; cursor:pointer; font-size:0.78rem;">
-                        <i class="fa-solid fa-trash"></i> Delete
-                    </button>
-                </div>
-            </div>
-        `).join('');
-    }
-
-    // Education List
-    const eduList = document.getElementById('cust-edu-list');
-    const eduCount = document.getElementById('edu-count');
-    if (eduList && portfolioData.education) {
-        eduCount.textContent = portfolioData.education.length;
-        eduList.innerHTML = portfolioData.education.map(e => `
-            <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.03); padding:0.6rem 0.9rem; border-radius:8px; border:1px solid var(--glass-border);">
-                <div>
-                    <strong style="color:var(--text-main); font-size:0.9rem;">${e.degree}</strong>
-                    <span style="font-size:0.75rem; color:var(--text-muted); display:block;">${e.institution} (${e.duration})</span>
-                </div>
-                <div style="display:flex; gap:0.5rem;">
-                    <button onclick="populateEduFormForEdit('${e.id}')" style="background:rgba(0,242,254,0.15); border:1px solid rgba(0,242,254,0.4); color:var(--primary-cyan); border-radius:6px; padding:0.25rem 0.65rem; cursor:pointer; font-size:0.78rem;">
-                        <i class="fa-solid fa-pen-to-square"></i> Edit
-                    </button>
-                    <button onclick="deleteEduFromUI('${e.id}')" style="background:rgba(255,77,77,0.15); border:1px solid rgba(255,77,77,0.3); color:#ff4d4d; border-radius:6px; padding:0.25rem 0.6rem; cursor:pointer; font-size:0.78rem;">
-                        <i class="fa-solid fa-trash"></i> Delete
-                    </button>
-                </div>
-            </div>
-        `).join('');
-    }
-
-    // Certifications List
-    const certList = document.getElementById('cust-cert-list');
-    const certCount = document.getElementById('cert-count');
-    if (certList && portfolioData.certifications) {
-        certCount.textContent = portfolioData.certifications.length;
-        certList.innerHTML = portfolioData.certifications.map(c => `
-            <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.03); padding:0.6rem 0.9rem; border-radius:8px; border:1px solid var(--glass-border);">
-                <div>
-                    <strong style="color:var(--text-main); font-size:0.9rem;">${c.title}</strong>
-                    <span style="font-size:0.75rem; color:var(--text-muted); display:block;">${c.issuer} (${c.year})</span>
-                </div>
-                <div style="display:flex; gap:0.5rem;">
-                    <button onclick="populateCertFormForEdit('${c.id}')" style="background:rgba(0,242,254,0.15); border:1px solid rgba(0,242,254,0.4); color:var(--primary-cyan); border-radius:6px; padding:0.25rem 0.65rem; cursor:pointer; font-size:0.78rem;">
-                        <i class="fa-solid fa-pen-to-square"></i> Edit
-                    </button>
-                    <button onclick="deleteCertFromUI('${c.id}')" style="background:rgba(255,77,77,0.15); border:1px solid rgba(255,77,77,0.3); color:#ff4d4d; border-radius:6px; padding:0.25rem 0.6rem; cursor:pointer; font-size:0.78rem;">
-                        <i class="fa-solid fa-trash"></i> Delete
-                    </button>
-                </div>
-            </div>
-        `).join('');
-    }
-
-    // Experience List
-    const expList = document.getElementById('cust-exp-list');
-    const expCount = document.getElementById('exp-count');
-    if (expList && portfolioData.experience) {
-        expCount.textContent = portfolioData.experience.length;
-        expList.innerHTML = portfolioData.experience.map(x => `
-            <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.03); padding:0.6rem 0.9rem; border-radius:8px; border:1px solid var(--glass-border);">
-                <div>
-                    <strong style="color:var(--text-main); font-size:0.9rem;">${x.company}</strong>
-                    <span style="font-size:0.75rem; color:var(--text-muted); display:block;">${x.role} (${x.duration})</span>
-                </div>
-                <div style="display:flex; gap:0.5rem;">
-                    <button onclick="populateExpFormForEdit('${x.id}')" style="background:rgba(0,242,254,0.15); border:1px solid rgba(0,242,254,0.4); color:var(--primary-cyan); border-radius:6px; padding:0.25rem 0.65rem; cursor:pointer; font-size:0.78rem;">
-                        <i class="fa-solid fa-pen-to-square"></i> Edit
-                    </button>
-                    <button onclick="deleteExpFromUI('${x.id}')" style="background:rgba(255,77,77,0.15); border:1px solid rgba(255,77,77,0.3); color:#ff4d4d; border-radius:6px; padding:0.25rem 0.6rem; cursor:pointer; font-size:0.78rem;">
-                        <i class="fa-solid fa-trash"></i> Delete
-                    </button>
-                </div>
-            </div>
-        `).join('');
-    }
-}
-
-function populateSkillFormForEdit(skillId) {
-    const s = (portfolioData.skills || []).find(item => item.id === skillId);
-    if (!s) return;
-    const editIdInput = document.getElementById('editing-skill-id');
-    if (editIdInput) editIdInput.value = s.id;
-    document.getElementById('new-skill-name').value = s.name || '';
-    document.getElementById('new-skill-category').value = s.category || 'languages';
-    document.getElementById('new-skill-level').value = s.level || 85;
-    document.getElementById('new-skill-tags').value = (s.tags || []).join(', ');
-
-    const heading = document.getElementById('skill-form-heading');
-    if (heading) heading.innerHTML = `<i class="fa-solid fa-pen-to-square"></i> Edit Skill: <span style="color:#00f2fe;">${s.name}</span>`;
-    const btnSave = document.getElementById('btn-save-skill');
-    if (btnSave) btnSave.innerHTML = `<i class="fa-solid fa-floppy-disk"></i> Save Skill Changes`;
-    const btnCancel = document.getElementById('btn-cancel-skill-edit');
-    if (btnCancel) btnCancel.style.display = 'inline-flex';
-}
-
-function resetSkillForm() {
-    const editIdInput = document.getElementById('editing-skill-id');
-    if (editIdInput) editIdInput.value = '';
-    document.getElementById('new-skill-name').value = '';
-    document.getElementById('new-skill-level').value = '';
-    document.getElementById('new-skill-tags').value = '';
-
-    const heading = document.getElementById('skill-form-heading');
-    if (heading) heading.innerHTML = `<i class="fa-solid fa-plus"></i> Add / Edit Skill`;
-    const btnSave = document.getElementById('btn-save-skill');
-    if (btnSave) btnSave.innerHTML = `<i class="fa-solid fa-plus"></i> Save / Add Skill`;
-    const btnCancel = document.getElementById('btn-cancel-skill-edit');
-    if (btnCancel) btnCancel.style.display = 'none';
-}
-
-function addNewSkillFromUI() {
-    const editIdInput = document.getElementById('editing-skill-id');
-    const editId = editIdInput ? editIdInput.value : '';
-    const name = document.getElementById('new-skill-name').value.trim();
-    const category = document.getElementById('new-skill-category').value;
-    const level = parseInt(document.getElementById('new-skill-level').value) || 85;
-    const tagsStr = document.getElementById('new-skill-tags').value.trim();
-
-    if (!name) {
-        alert("Please enter a skill name.");
-        return;
-    }
-
-    if (!portfolioData.skills) portfolioData.skills = [];
-    const tags = tagsStr ? tagsStr.split(',').map(t => t.trim()) : ["Custom"];
-
-    if (editId) {
-        const idx = portfolioData.skills.findIndex(s => s.id === editId);
-        if (idx !== -1) {
-            portfolioData.skills[idx] = {
-                ...portfolioData.skills[idx],
-                name,
-                category,
-                level,
-                tags
-            };
-        }
-    } else {
-        const newSkill = {
-            id: "s_" + Date.now(),
-            name: name,
-            category: category,
-            level: level,
-            status: "Custom Skill",
-            tags: tags,
-            icon: "fa-solid fa-code",
-            iconColor: "#00f2fe"
-        };
-        portfolioData.skills.push(newSkill);
-    }
-
-    saveStoredData();
-    renderAllSectionsFromData();
-    resetSkillForm();
-}
-
-function deleteSkillFromUI(id) {
-    portfolioData.skills = portfolioData.skills.filter(s => s.id !== id);
-    saveStoredData();
-    renderAllSectionsFromData();
-}
-
-function handleProjectImageUpload(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        const img = new Image();
-        img.onload = function() {
-            const canvas = document.createElement('canvas');
-            const MAX_WIDTH = 1000;
-            const MAX_HEIGHT = 700;
-            let width = img.width;
-            let height = img.height;
-
-            if (width > height) {
-                if (width > MAX_WIDTH) {
-                    height *= MAX_WIDTH / width;
-                    width = MAX_WIDTH;
-                }
-            } else {
-                if (height > MAX_HEIGHT) {
-                    width *= MAX_HEIGHT / height;
-                    height = MAX_HEIGHT;
-                }
-            }
-
-            canvas.width = width;
-            canvas.height = height;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0, width, height);
-
-            const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.85);
-            document.getElementById('new-proj-cover').value = compressedDataUrl;
-        };
-        img.src = e.target.result;
-    };
-    reader.readAsDataURL(file);
-}
-
-function downloadPortfolioConfigFile() {
-    const fileContent = `/* ==========================================================================
-   PORTFOLIO CONFIGURATION DATA
-   Saved on ${new Date().toLocaleDateString()}
-   ========================================================================== */
-
-const defaultPortfolioData = ${JSON.stringify(portfolioData, null, 4)};
-
-// Global portfolioData object initialized immediately from localStorage or defaults
-var portfolioData;
-try {
-    const localSaved = localStorage.getItem('nani_portfolio_custom_v1');
-    if (localSaved) {
-        const parsed = JSON.parse(localSaved);
-        if (parsed && parsed.personalInfo && parsed.projects) {
-            portfolioData = parsed;
-        } else {
-            portfolioData = JSON.parse(JSON.stringify(defaultPortfolioData));
-        }
-    } else {
-        portfolioData = JSON.parse(JSON.stringify(defaultPortfolioData));
-    }
-} catch (e) {
-    portfolioData = JSON.parse(JSON.stringify(defaultPortfolioData));
-}
-
-if (typeof window !== 'undefined') {
-    window.portfolioData = portfolioData;
-}
-`;
-
-    const blob = new Blob([fileContent], { type: 'application/javascript' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'portfolio-data.js';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    alert("Downloaded updated portfolio-data.js! Replace portfolio-data.js in your project folder to save changes permanently in your code repository.");
-}
-
-function populateProjectFormForEdit(projId) {
-    const proj = (portfolioData.projects || []).find(p => p.id === projId);
-    if (!proj) return;
-
-    document.getElementById('editing-proj-id').value = proj.id;
-    document.getElementById('new-proj-title').value = proj.title || '';
-    document.getElementById('new-proj-badge').value = proj.badge || '';
-    document.getElementById('new-proj-cover').value = proj.coverImage || '';
-    document.getElementById('new-proj-category').value = proj.category || 'ai fullstack';
-    document.getElementById('new-proj-github').value = proj.githubUrl || '';
-    document.getElementById('new-proj-live').value = proj.liveUrl || '';
-    document.getElementById('new-proj-tech').value = (proj.tech || []).join(', ');
-    document.getElementById('new-proj-desc').value = proj.description || '';
-    document.getElementById('new-proj-bullets').value = (proj.bullets || []).join('\n');
-
-    const heading = document.getElementById('proj-form-heading');
-    if (heading) {
-        heading.innerHTML = `<i class="fa-solid fa-pen-to-square"></i> Edit Project: <span style="color:#00f2fe;">${proj.title}</span>`;
-    }
-    const saveBtn = document.getElementById('btn-save-project');
-    if (saveBtn) {
-        saveBtn.innerHTML = `<i class="fa-solid fa-floppy-disk"></i> Save Project Changes`;
-    }
-    const cancelBtn = document.getElementById('btn-cancel-proj-edit');
-    if (cancelBtn) {
-        cancelBtn.style.display = 'inline-flex';
-    }
-}
-
-function resetProjectForm() {
-    const editIdInput = document.getElementById('editing-proj-id');
-    if (editIdInput) editIdInput.value = '';
-    document.getElementById('new-proj-title').value = '';
-    document.getElementById('new-proj-badge').value = '';
-    document.getElementById('new-proj-cover').value = '';
-    document.getElementById('new-proj-github').value = '';
-    document.getElementById('new-proj-live').value = '';
-    document.getElementById('new-proj-tech').value = '';
-    document.getElementById('new-proj-desc').value = '';
-    document.getElementById('new-proj-bullets').value = '';
-
-    const heading = document.getElementById('proj-form-heading');
-    if (heading) {
-        heading.innerHTML = `<i class="fa-solid fa-plus"></i> Add / Edit Project & Hidden Details`;
-    }
-    const saveBtn = document.getElementById('btn-save-project');
-    if (saveBtn) {
-        saveBtn.innerHTML = `<i class="fa-solid fa-plus"></i> Save / Add Project`;
-    }
-    const cancelBtn = document.getElementById('btn-cancel-proj-edit');
-    if (cancelBtn) {
-        cancelBtn.style.display = 'none';
-    }
-}
-
-function addNewProjectFromUI() {
-    const editIdInput = document.getElementById('editing-proj-id');
-    const editId = editIdInput ? editIdInput.value : '';
-    const title = document.getElementById('new-proj-title').value.trim();
-    const badge = document.getElementById('new-proj-badge').value.trim() || '2026';
-    const category = document.getElementById('new-proj-category').value;
-    const coverImage = document.getElementById('new-proj-cover').value.trim();
-    const githubUrl = document.getElementById('new-proj-github').value.trim();
-    const liveUrl = document.getElementById('new-proj-live').value.trim();
-    const techStr = document.getElementById('new-proj-tech').value.trim();
-    const desc = document.getElementById('new-proj-desc').value.trim();
-    const bulletsStr = document.getElementById('new-proj-bullets').value.trim();
-
-    if (!title) {
-        alert("Please enter a project title.");
-        return;
-    }
-
-    if (!portfolioData.projects) portfolioData.projects = [];
-
-    if (editId) {
-        const idx = portfolioData.projects.findIndex(p => p.id === editId);
-        if (idx !== -1) {
-            const existing = portfolioData.projects[idx];
-            const parsedBullets = bulletsStr
-                ? bulletsStr.split('\n').map(b => b.trim()).filter(b => b.length > 0)
-                : (existing.bullets && existing.bullets.length > 0 ? existing.bullets : [desc || "Designed scalable architecture and user interface."]);
-
-            const parsedTech = techStr
-                ? techStr.split(',').map(t => t.trim()).filter(t => t.length > 0)
-                : (existing.tech && existing.tech.length > 0 ? existing.tech : ["React", "Node.js"]);
-
-            portfolioData.projects[idx] = {
-                ...existing,
-                title: title || existing.title,
-                badge: badge || existing.badge,
-                coverImage: coverImage || existing.coverImage,
-                category: category || existing.category,
-                filterCat: category === "ai fullstack" ? "ai" : (category === "backend fullstack" ? "backend" : "fullstack"),
-                githubUrl: githubUrl !== undefined && githubUrl !== '' ? githubUrl : existing.githubUrl,
-                liveUrl: liveUrl !== undefined && liveUrl !== '' ? liveUrl : existing.liveUrl,
-                description: desc || existing.description,
-                tech: parsedTech,
-                bullets: parsedBullets
-            };
-        }
-    } else {
-        const parsedBullets = bulletsStr
-            ? bulletsStr.split('\n').map(b => b.trim()).filter(b => b.length > 0)
-            : [desc || "Designed scalable architecture and user interface."];
-
-        const newProj = {
-            id: "p_" + Date.now(),
-            title: title,
-            category: category || "ai fullstack",
-            filterCat: category === "ai fullstack" ? "ai" : (category === "backend fullstack" ? "backend" : "fullstack"),
-            badge: badge || "2026",
-            icon: "fa-solid fa-rocket",
-            gradientClass: "bg-gradient-rag",
-            coverImage: coverImage || "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80",
-            githubUrl: githubUrl || "",
-            liveUrl: liveUrl || "",
-            subtitle: title + " Microservices & Architecture",
-            type: "Featured Platform",
-            description: desc || "Scalable full-stack application built with microservice architecture.",
-            tech: techStr ? techStr.split(',').map(t => t.trim()).filter(t => t.length > 0) : ["React", "Node.js", "Python Flask"],
-            bullets: parsedBullets
-        };
-        portfolioData.projects.push(newProj);
-    }
-
-    saveStoredData();
-    renderAllSectionsFromData();
-    resetProjectForm();
-    alert(`SUCCESS! Project "${title}" saved cleanly to browser database (IndexedDB). All details preserved.`);
-}
-
-function deleteProjectFromUI(id) {
-    portfolioData.projects = portfolioData.projects.filter(p => p.id !== id);
-    saveStoredData();
-    renderAllSectionsFromData();
-}
-
-function populateEduFormForEdit(eduId) {
-    const e = (portfolioData.education || []).find(item => item.id === eduId);
-    if (!e) return;
-    const editIdInput = document.getElementById('editing-edu-id');
-    if (editIdInput) editIdInput.value = e.id;
-    document.getElementById('new-edu-degree').value = e.degree || '';
-    document.getElementById('new-edu-inst').value = e.institution || '';
-    document.getElementById('new-edu-duration').value = e.duration || '';
-    document.getElementById('new-edu-gpa').value = e.gpa || '';
-    document.getElementById('new-edu-desc').value = e.description || '';
-
-    const heading = document.getElementById('edu-form-heading');
-    if (heading) heading.innerHTML = `<i class="fa-solid fa-pen-to-square"></i> Edit Education: <span style="color:#00f2fe;">${e.degree}</span>`;
-    const btnSave = document.getElementById('btn-save-edu');
-    if (btnSave) btnSave.innerHTML = `<i class="fa-solid fa-floppy-disk"></i> Save Education Changes`;
-    const btnCancel = document.getElementById('btn-cancel-edu-edit');
-    if (btnCancel) btnCancel.style.display = 'inline-flex';
-}
-
-function resetEduForm() {
-    const editIdInput = document.getElementById('editing-edu-id');
-    if (editIdInput) editIdInput.value = '';
-    document.getElementById('new-edu-degree').value = '';
-    document.getElementById('new-edu-inst').value = '';
-    document.getElementById('new-edu-duration').value = '';
-    document.getElementById('new-edu-gpa').value = '';
-    document.getElementById('new-edu-desc').value = '';
-
-    const heading = document.getElementById('edu-form-heading');
-    if (heading) heading.innerHTML = `<i class="fa-solid fa-plus"></i> Add / Edit Education Degree`;
-    const btnSave = document.getElementById('btn-save-edu');
-    if (btnSave) btnSave.innerHTML = `<i class="fa-solid fa-plus"></i> Save / Add Education Entry`;
-    const btnCancel = document.getElementById('btn-cancel-edu-edit');
-    if (btnCancel) btnCancel.style.display = 'none';
-}
-
-function addNewEduFromUI() {
-    const editIdInput = document.getElementById('editing-edu-id');
-    const editId = editIdInput ? editIdInput.value : '';
-    const degree = document.getElementById('new-edu-degree').value.trim();
-    const inst = document.getElementById('new-edu-inst').value.trim();
-    const duration = document.getElementById('new-edu-duration').value.trim() || '2022 - 2026';
-    const gpa = document.getElementById('new-edu-gpa').value.trim() || 'CGPA: 8.0';
-    const desc = document.getElementById('new-edu-desc').value.trim();
-
-    if (!degree || !inst) {
-        alert("Please enter degree and institution.");
-        return;
-    }
-
-    if (!portfolioData.education) portfolioData.education = [];
-
-    if (editId) {
-        const idx = portfolioData.education.findIndex(e => e.id === editId);
-        if (idx !== -1) {
-            portfolioData.education[idx] = {
-                ...portfolioData.education[idx],
-                degree,
-                institution: inst,
-                duration,
-                gpa,
-                description: desc
-            };
-        }
-    } else {
-        portfolioData.education.push({
-            id: "e_" + Date.now(),
-            degree,
-            institution: inst,
-            duration,
-            gpa,
-            description: desc
-        });
-    }
-
-    saveStoredData();
-    renderAllSectionsFromData();
-    resetEduForm();
-}
-
-function deleteEduFromUI(id) {
-    portfolioData.education = (portfolioData.education || []).filter(e => e.id !== id);
-    saveStoredData();
-    renderAllSectionsFromData();
-}
-
-function populateCertFormForEdit(certId) {
-    const c = (portfolioData.certifications || []).find(item => item.id === certId);
-    if (!c) return;
-    const editIdInput = document.getElementById('editing-cert-id');
-    if (editIdInput) editIdInput.value = c.id;
-    document.getElementById('new-cert-title').value = c.title || '';
-    document.getElementById('new-cert-issuer').value = c.issuer || '';
-    document.getElementById('new-cert-year').value = c.year || '';
-    if (document.getElementById('new-cert-url')) document.getElementById('new-cert-url').value = c.certUrl || '';
-    document.getElementById('new-cert-desc').value = c.description || '';
-
-    const heading = document.getElementById('cert-form-heading');
-    if (heading) heading.innerHTML = `<i class="fa-solid fa-pen-to-square"></i> Edit Certification: <span style="color:#00f2fe;">${c.title}</span>`;
-    const btnSave = document.getElementById('btn-save-cert');
-    if (btnSave) btnSave.innerHTML = `<i class="fa-solid fa-floppy-disk"></i> Save Certification Changes`;
-    const btnCancel = document.getElementById('btn-cancel-cert-edit');
-    if (btnCancel) btnCancel.style.display = 'inline-flex';
-}
-
-function resetCertForm() {
-    const editIdInput = document.getElementById('editing-cert-id');
-    if (editIdInput) editIdInput.value = '';
-    document.getElementById('new-cert-title').value = '';
-    document.getElementById('new-cert-issuer').value = '';
-    document.getElementById('new-cert-year').value = '';
-    if (document.getElementById('new-cert-url')) document.getElementById('new-cert-url').value = '';
-    document.getElementById('new-cert-desc').value = '';
-
-    const heading = document.getElementById('cert-form-heading');
-    if (heading) heading.innerHTML = `<i class="fa-solid fa-plus"></i> Add / Edit Verified Certification`;
-    const btnSave = document.getElementById('btn-save-cert');
-    if (btnSave) btnSave.innerHTML = `<i class="fa-solid fa-plus"></i> Save / Add Certification Entry`;
-    const btnCancel = document.getElementById('btn-cancel-cert-edit');
-    if (btnCancel) btnCancel.style.display = 'none';
-}
-
-function addNewCertFromUI() {
-    const editIdInput = document.getElementById('editing-cert-id');
-    const editId = editIdInput ? editIdInput.value : '';
-    const title = document.getElementById('new-cert-title').value.trim();
-    const issuer = document.getElementById('new-cert-issuer').value.trim();
-    const year = document.getElementById('new-cert-year').value.trim() || 'Issued 2025';
-    const certUrl = document.getElementById('new-cert-url') ? document.getElementById('new-cert-url').value.trim() : '';
-    const desc = document.getElementById('new-cert-desc').value.trim();
-
-    if (!title || !issuer) {
-        alert("Please enter certification title and issuer.");
-        return;
-    }
-
-    if (!portfolioData.certifications) portfolioData.certifications = [];
-
-    if (editId) {
-        const idx = portfolioData.certifications.findIndex(c => c.id === editId);
-        if (idx !== -1) {
-            portfolioData.certifications[idx] = {
-                ...portfolioData.certifications[idx],
-                title,
-                issuer,
-                year,
-                certUrl,
-                description: desc
-            };
-        }
-    } else {
-        portfolioData.certifications.push({
-            id: "c_" + Date.now(),
-            title,
-            issuer,
-            year,
-            certUrl,
-            description: desc
-        });
-    }
-
-    saveStoredData();
-    renderAllSectionsFromData();
-    resetCertForm();
-}
-
-function promptAddCertLink(e, certId) {
-    if (e) e.preventDefault();
-    const cert = (portfolioData.certifications || []).find(c => c.id === certId);
-    if (!cert) return;
-
-    const url = prompt(`Paste Certificate Verification URL for "${cert.title}":`, cert.certUrl || 'https://');
-    if (url && url.trim() && url !== 'https://') {
-        cert.certUrl = url.trim();
-        saveStoredData();
-        renderAllSectionsFromData();
-    }
-}
-
-function deleteCertFromUI(id) {
-    portfolioData.certifications = (portfolioData.certifications || []).filter(c => c.id !== id);
-    saveStoredData();
-    renderAllSectionsFromData();
-}
-
-function populateExpFormForEdit(expId) {
-    const x = (portfolioData.experience || []).find(item => item.id === expId);
-    if (!x) return;
-    const editIdInput = document.getElementById('editing-exp-id');
-    if (editIdInput) editIdInput.value = x.id;
-    document.getElementById('new-exp-company').value = x.company || '';
-    document.getElementById('new-exp-role').value = x.role || '';
-    document.getElementById('new-exp-duration').value = x.duration || '';
-    document.getElementById('new-exp-location').value = x.location || '';
-    document.getElementById('new-exp-tech').value = (x.tech || []).join(', ');
-    document.getElementById('new-exp-bullets').value = (x.bullets || []).join('\n');
-
-    const heading = document.getElementById('exp-form-heading');
-    if (heading) heading.innerHTML = `<i class="fa-solid fa-pen-to-square"></i> Edit Experience: <span style="color:#00f2fe;">${x.company}</span>`;
-    const btnSave = document.getElementById('btn-save-exp');
-    if (btnSave) btnSave.innerHTML = `<i class="fa-solid fa-floppy-disk"></i> Save Experience Changes`;
-    const btnCancel = document.getElementById('btn-cancel-exp-edit');
-    if (btnCancel) btnCancel.style.display = 'inline-flex';
-}
-
-function resetExpForm() {
-    const editIdInput = document.getElementById('editing-exp-id');
-    if (editIdInput) editIdInput.value = '';
-    document.getElementById('new-exp-company').value = '';
-    document.getElementById('new-exp-role').value = '';
-    document.getElementById('new-exp-duration').value = '';
-    document.getElementById('new-exp-location').value = '';
-    document.getElementById('new-exp-tech').value = '';
-    document.getElementById('new-exp-bullets').value = '';
-
-    const heading = document.getElementById('exp-form-heading');
-    if (heading) heading.innerHTML = `<i class="fa-solid fa-plus"></i> Add / Edit Work / Internship Experience`;
-    const btnSave = document.getElementById('btn-save-exp');
-    if (btnSave) btnSave.innerHTML = `<i class="fa-solid fa-plus"></i> Save / Add Experience Entry`;
-    const btnCancel = document.getElementById('btn-cancel-exp-edit');
-    if (btnCancel) btnCancel.style.display = 'none';
-}
-
-function addNewExpFromUI() {
-    const editIdInput = document.getElementById('editing-exp-id');
-    const editId = editIdInput ? editIdInput.value : '';
-    const company = document.getElementById('new-exp-company').value.trim();
-    const role = document.getElementById('new-exp-role').value.trim();
-    const duration = document.getElementById('new-exp-duration').value.trim() || '2024';
-    const location = document.getElementById('new-exp-location').value.trim() || 'Remote';
-    const techStr = document.getElementById('new-exp-tech').value.trim();
-    const bulletsStr = document.getElementById('new-exp-bullets').value.trim();
-
-    if (!portfolioData.experience) portfolioData.experience = [];
-
-    if (editId) {
-        const idx = portfolioData.experience.findIndex(x => x.id === editId);
-        if (idx !== -1) {
-            const existing = portfolioData.experience[idx];
-            const bullets = bulletsStr
-                ? bulletsStr.split('\n').map(b => b.trim()).filter(b => b.length > 0)
-                : (existing.bullets && existing.bullets.length > 0 ? existing.bullets : ["Delivered full-stack microservices and API solutions."]);
-
-            portfolioData.experience[idx] = {
-                ...existing,
-                company: company || existing.company,
-                role: role || existing.role,
-                duration: duration || existing.duration,
-                location: location || existing.location,
-                tech: techStr ? techStr.split(',').map(t => t.trim()).filter(t => t.length > 0) : existing.tech,
-                bullets
-            };
-        }
-    } else {
-        const bullets = bulletsStr
-            ? bulletsStr.split('\n').map(b => b.trim()).filter(b => b.length > 0)
-            : ["Delivered full-stack microservices and API solutions."];
-
-        portfolioData.experience.push({
-            id: "exp_" + Date.now(),
-            company,
-            role,
-            duration,
-            location,
-            tech: techStr ? techStr.split(',').map(t => t.trim()).filter(t => t.length > 0) : ["Full Stack"],
-            bullets
-        });
-    }
-
-    saveStoredData();
-    renderAllSectionsFromData();
-    resetExpForm();
-    alert("SUCCESS! Experience entry updated.");
-}
-
-function deleteExpFromUI(id) {
-    portfolioData.experience = (portfolioData.experience || []).filter(x => x.id !== id);
-    saveStoredData();
-    renderAllSectionsFromData();
-}
-
-function generateConfigExportJS() {
-    const box = document.getElementById('export-json-box');
-    if (box) {
-        box.value = `const portfolioData = ${JSON.stringify(portfolioData, null, 4)};`;
-    }
-}
-
-function applyLiveConfigFromTextarea() {
-    const box = document.getElementById('export-json-box');
-    if (!box) return;
-
-    try {
-        let code = box.value.trim();
-        if (code.startsWith('const portfolioData =')) {
-            code = code.replace(/^const portfolioData\s*=\s*/, '');
-        }
-        if (code.endsWith(';')) {
-            code = code.slice(0, -1);
-        }
-
-        const newData = JSON.parse(code);
-        
-        if (newData && newData.skills && newData.projects) {
-            window.portfolioData = newData;
-            saveStoredData();
-            renderAllSectionsFromData();
-            alert("SUCCESS! Portfolio configuration updated live on the website.");
-        } else {
-            alert("Invalid configuration format. Must contain skills and projects arrays.");
-        }
-    } catch (err) {
-        alert("JSON Syntax Error: " + err.message + "\nPlease check formatting.");
-    }
-}
-
-function copyConfigToClipboard() {
-    const box = document.getElementById('export-json-box');
-    if (box) {
-        box.select();
-        navigator.clipboard.writeText(box.value);
-        alert("Portfolio Config JavaScript copied to clipboard! Paste it into portfolio-data.js to save your changes permanently.");
-    }
-}
-
-function downloadPortfolioConfigFile() {
-    const jsContent = `/* ==========================================================================
-   PORTFOLIO CONFIGURATION DATA (EXPORTED)
-   ========================================================================== */
-
-const defaultPortfolioData = ${JSON.stringify(portfolioData, null, 4)};
-
-// Global portfolioData object initialized immediately from localStorage or defaults
-let portfolioData;
-try {
-    const localSaved = localStorage.getItem('nani_portfolio_custom_v1');
-    if (localSaved) {
-        const parsed = JSON.parse(localSaved);
-        if (parsed && parsed.personalInfo && parsed.projects) {
-            portfolioData = parsed;
-        } else {
-            portfolioData = JSON.parse(JSON.stringify(defaultPortfolioData));
-        }
-    } else {
-        portfolioData = JSON.parse(JSON.stringify(defaultPortfolioData));
-    }
-} catch (e) {
-    portfolioData = JSON.parse(JSON.stringify(defaultPortfolioData));
-}
-`;
-
-    const blob = new Blob([jsContent], { type: 'application/javascript;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', 'portfolio-data.js');
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-
-    alert("SUCCESS! 'portfolio-data.js' downloaded.\nSave or replace 'portfolio-data.js' in your project root to keep your changes permanently in source control!");
-}
-
-function resetPortfolioDataToDefaults() {
-    if (confirm("Are you sure you want to reset all portfolio data to default settings?")) {
-        localStorage.removeItem('nani_portfolio_custom_v1');
-        openPortfolioDB().then(db => {
-            if (db) {
-                const tx = db.transaction(IDB_STORE, 'readwrite');
-                tx.objectStore(IDB_STORE).delete('current_portfolio_data');
-            }
-        }).catch(e => console.error("IndexedDB reset error", e));
-        if (typeof defaultPortfolioData !== 'undefined') {
-            const defaults = JSON.parse(JSON.stringify(defaultPortfolioData));
-            portfolioData = defaults;
-            window.portfolioData = defaults;
-        }
-        renderAllSectionsFromData();
-        populatePersonalInputs();
-        alert("Portfolio data reset to default settings successfully.");
-    }
-}
 
 
 /* ==========================================================================
@@ -1608,7 +593,7 @@ function getProjectArchitectureHTML(proj) {
             { icon: 'fa-solid fa-brain', label: 'LLM Reasoning & Security Engine' },
             { icon: 'fa-solid fa-comments', label: 'Inline PR Review Dispatcher (<3s)' }
         ];
-    } else if (proj.id === 'swiftcart') {
+    } else if (proj.id === 'ecommerce2') {
         nodes = [
             { icon: 'fa-brands fa-react', label: 'React + Redux Toolkit Client' },
             { icon: 'fa-brands fa-node-js', label: 'Express API Gateway + JWT' },
@@ -1639,7 +624,7 @@ function getProjectArchitectureHTML(proj) {
 }
 
 function openProjectModal(key) {
-    let data = (portfolioData.projects || []).find(p => p.id === key);
+    let data = (getPortfolioData().projects || []).find(p => p.id === key);
 
     if (!data) return;
 
@@ -1651,9 +636,6 @@ function openProjectModal(key) {
                 <h2 style="margin-top:0.2rem;">${data.title}</h2>
                 <p style="color:var(--text-muted); font-size:0.95rem;">${data.subtitle || ''}</p>
             </div>
-            <button class="btn btn-sm btn-glass" onclick="openEditProjectModal('${data.id}')" style="border-color:var(--primary-cyan); color:var(--primary-cyan); font-size:0.85rem; padding:0.45rem 0.95rem; cursor:pointer;">
-                <i class="fa-solid fa-pen-to-square"></i> Edit Project Details
-            </button>
         </div>
 
         ${data.coverImage ? `<img src="${data.coverImage}" alt="${data.title}" style="width:100%; max-height:260px; object-fit:cover; border-radius:12px; margin-bottom:1.5rem; border:1px solid var(--glass-border);">` : ''}
@@ -1681,13 +663,6 @@ function openProjectModal(key) {
     `;
 
     document.getElementById('project-modal').classList.add('active');
-}
-
-function openEditProjectModal(projId) {
-    closeProjectModal();
-    openCustomizerModal();
-    switchCustTab('projects');
-    populateProjectFormForEdit(projId);
 }
 
 function closeProjectModal() {

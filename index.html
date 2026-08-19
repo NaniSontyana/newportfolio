@@ -39,8 +39,7 @@
     <!-- Navigation Header -->
     <header class="navbar" id="navbar">
         <div class="container nav-container">
-            <!-- Hidden Admin Portal Trigger inside Name Logo -->
-            <a href="#hero" class="logo" id="logo-admin-trigger" title="Nani Sontyana Portfolio">
+            <a href="#hero" class="logo" title="Nani Sontyana Portfolio">
                 <span class="logo-bracket">&lt;</span>NS<span class="logo-bracket"> /&gt;</span>
                 <span class="logo-name">Nani Sontyana</span>
             </a>
@@ -75,8 +74,7 @@
                     </div>
 
                     <h1 class="hero-title">
-                        Hi, I'm <span class="gradient-text hero-name-click" id="hero-name-admin-trigger"
-                            title="Nani Sontyana Portfolio">Nani Sontyana</span>
+                        Hi, I'm <span class="gradient-text">Nani Sontyana</span>
                     </h1>
 
                     <h2 class="hero-subtitle">
@@ -356,7 +354,52 @@
 
                 <div class="timeline-container">
                     <div class="timeline-line"></div>
-                    <div id="experience-list-container"></div>
+                    <div id="experience-list-container">
+                        <div class="timeline-item glass-card" data-aos="fade-up" style="margin-bottom:2rem;">
+                            <div class="timeline-dot">
+                                <i class="fa-solid fa-briefcase"></i>
+                            </div>
+                            <div class="timeline-header">
+                                <div>
+                                    <h3 class="company-name">BrainOvision Solutions Pvt. Ltd.</h3>
+                                    <div class="role-title">Full Stack Developer Intern</div>
+                                </div>
+                                <div class="timeline-date">
+                                    <span class="badge-date"><i class="fa-regular fa-calendar"></i> June 2024 – August 2024</span>
+                                    <span class="badge-location"><i class="fa-solid fa-location-dot"></i> Remote</span>
+                                </div>
+                            </div>
+                            <div class="timeline-body">
+                                <ul class="experience-bullets">
+                                    <li>
+                                        <i class="fa-solid fa-circle-check bullet-icon"></i>
+                                        <span>Engineered robust Java Spring Boot applications featuring secure authentication, role-based access control (RBAC), and dynamic administration dashboards, cutting manual admin overhead by 40%.</span>
+                                    </li>
+                                    <li>
+                                        <i class="fa-solid fa-circle-check bullet-icon"></i>
+                                        <span>Architected and implemented 15+ RESTful API endpoints, streamlining data flow and reducing average client response time by 25%.</span>
+                                    </li>
+                                    <li>
+                                        <i class="fa-solid fa-circle-check bullet-icon"></i>
+                                        <span>Refactored backend service logic and optimized database queries, achieving a 30% reduction in code duplication and enhancing codebase maintainability.</span>
+                                    </li>
+                                    <li>
+                                        <i class="fa-solid fa-circle-check bullet-icon"></i>
+                                        <span>Actively code-reviewed 20+ pull requests, resolved high-priority production bugs, and delivered core features within a 5-member Agile sprint team.</span>
+                                    </li>
+                                </ul>
+                                <div class="exp-tech-stack">
+                                    <span class="tech-chip">Java</span>
+                                    <span class="tech-chip">Spring Boot</span>
+                                    <span class="tech-chip">REST APIs</span>
+                                    <span class="tech-chip">RBAC Security</span>
+                                    <span class="tech-chip">SQL</span>
+                                    <span class="tech-chip">Git / GitHub</span>
+                                    <span class="tech-chip">Agile Scrum</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -383,7 +426,142 @@
                     <button class="slider-btn slider-btn-prev" id="projects-scroll-left" aria-label="Scroll Left">
                         <i class="fa-solid fa-chevron-left"></i>
                     </button>
-                    <div class="projects-grid projects-slider" id="projects-grid"></div>
+                    <div class="projects-grid projects-slider" id="projects-grid">
+                        <!-- Project 1: DocuMind AI -->
+                        <div class="project-card glass-card" data-category="ai fullstack">
+                            <div class="project-banner bg-gradient-rag">
+                                <img src="https://res.cloudinary.com/duf3bsuur/image/upload/v1786175640/Screenshot_2026-08-08_122549_lnlcdv.png" alt="DocuMind AI – RAG Document Intelligence" class="project-cover-img" loading="lazy">
+                                <div class="project-badge">Jul 2026</div>
+                            </div>
+                            <div class="project-content">
+                                <div class="project-meta">
+                                    <span class="proj-type">AI & RAG Platform</span>
+                                </div>
+                                <h3 class="project-title">DocuMind AI – RAG Document Intelligence</h3>
+                                <p class="project-desc">Enterprise Retrieval-Augmented Generation (RAG) platform enabling accurate natural language question answering over uploaded PDF documents with exact source-cited snippet responses.</p>
+                                <div class="project-tech">
+                                    <span>React</span><span>Node.js</span><span>Python Flask</span><span>PostgreSQL + pgvector</span><span>LangChain</span><span>JWT</span>
+                                </div>
+                                <div class="project-action-links">
+                                    <a href="https://github.com/NaniSontyana/docmindAI" target="_blank" rel="noopener noreferrer" class="proj-action-btn"><i class="fa-brands fa-github"></i> Code</a>
+                                    <a href="https://docmind-ai-nine.vercel.app/" target="_blank" rel="noopener noreferrer" class="proj-action-btn live"><i class="fa-solid fa-arrow-up-right-from-square"></i> Live Demo</a>
+                                </div>
+                                <div class="project-footer">
+                                    <button class="btn-project-details" onclick="openProjectModal('documind')">
+                                        <i class="fa-solid fa-sliders"></i> Deep-Dive Architecture
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Project 2: SmartHR -->
+                        <div class="project-card glass-card" data-category="ai fullstack">
+                            <div class="project-banner bg-gradient-hr">
+                                <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80" alt="SmartHR – Retention & Analytics Engine" class="project-cover-img" loading="lazy">
+                                <div class="project-badge">Apr 2026</div>
+                            </div>
+                            <div class="project-content">
+                                <div class="project-meta">
+                                    <span class="proj-type">ML & Enterprise Analytics</span>
+                                </div>
+                                <h3 class="project-title">SmartHR – Retention & Analytics Engine</h3>
+                                <p class="project-desc">Predictive HR analytics system integrating a Random Forest machine learning model achieving 75%+ employee attrition prediction accuracy with response latency under 2 seconds.</p>
+                                <div class="project-tech">
+                                    <span>React</span><span>Vite</span><span>Node.js</span><span>Express</span><span>MongoDB</span><span>Python Flask</span><span>Scikit-Learn</span>
+                                </div>
+                                <div class="project-action-links">
+                                    <a href="https://github.com/NaniSontyana/SmartHR-Analytics" target="_blank" rel="noopener noreferrer" class="proj-action-btn"><i class="fa-brands fa-github"></i> Code</a>
+                                    <a href="https://smarthr-analytics.render.com" target="_blank" rel="noopener noreferrer" class="proj-action-btn live"><i class="fa-solid fa-arrow-up-right-from-square"></i> Live Demo</a>
+                                </div>
+                                <div class="project-footer">
+                                    <button class="btn-project-details" onclick="openProjectModal('smarthr')">
+                                        <i class="fa-solid fa-sliders"></i> Deep-Dive Architecture
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Project 3: Subscription Tracker System -->
+                        <div class="project-card glass-card" data-category="backend fullstack">
+                            <div class="project-banner bg-gradient-sub">
+                                <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=800&q=80" alt="Subscription Tracker System" class="project-cover-img" loading="lazy">
+                                <div class="project-badge">Dec 2025</div>
+                            </div>
+                            <div class="project-content">
+                                <div class="project-meta">
+                                    <span class="proj-type">Event-Driven Backend System</span>
+                                </div>
+                                <h3 class="project-title">Subscription Tracker System</h3>
+                                <p class="project-desc">Resilient backend subscription management platform featuring automated recurring tracking, scheduled background renewal alerts, and Arcjet rate-limiting security.</p>
+                                <div class="project-tech">
+                                    <span>Node.js</span><span>Express</span><span>MongoDB</span><span>JWT</span><span>Nodemailer</span><span>Upstash QStash</span><span>Arcjet</span>
+                                </div>
+                                <div class="project-action-links">
+                                    <a href="https://github.com/NaniSontyana/Subscription-Tracker-Backend" target="_blank" rel="noopener noreferrer" class="proj-action-btn"><i class="fa-brands fa-github"></i> Code</a>
+                                    <a href="https://subtracker-api.onrender.com" target="_blank" rel="noopener noreferrer" class="proj-action-btn live"><i class="fa-solid fa-arrow-up-right-from-square"></i> Live Demo</a>
+                                </div>
+                                <div class="project-footer">
+                                    <button class="btn-project-details" onclick="openProjectModal('subtracker')">
+                                        <i class="fa-solid fa-sliders"></i> Deep-Dive Architecture
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Project 4: Menty by Maps -->
+                        <div class="project-card glass-card" data-category="ai fullstack">
+                            <div class="project-banner bg-gradient-rag">
+                                <img src="https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&w=800&q=80" alt="Menty by Maps – Spatial Mentorship Engine" class="project-cover-img" loading="lazy">
+                                <div class="project-badge">Aug 2026</div>
+                            </div>
+                            <div class="project-content">
+                                <div class="project-meta">
+                                    <span class="proj-type">Spatial GIS & AI System</span>
+                                </div>
+                                <h3 class="project-title">Menty by Maps – Spatial Mentorship Engine</h3>
+                                <p class="project-desc">Interactive geospatial mentorship platform enabling real-time location-based mentor discovery, spatial density clustering, and low-latency route navigation for proximity-based networking.</p>
+                                <div class="project-tech">
+                                    <span>React</span><span>Mapbox GL JS</span><span>Node.js</span><span>Python Flask</span><span>PostgreSQL + PostGIS</span><span>Redis</span><span>JWT</span>
+                                </div>
+                                <div class="project-action-links">
+                                    <a href="https://github.com/NaniSontyana/Menty-by-Maps" target="_blank" rel="noopener noreferrer" class="proj-action-btn"><i class="fa-brands fa-github"></i> Code</a>
+                                    <a href="https://menty-by-maps.vercel.app" target="_blank" rel="noopener noreferrer" class="proj-action-btn live"><i class="fa-solid fa-arrow-up-right-from-square"></i> Live Demo</a>
+                                </div>
+                                <div class="project-footer">
+                                    <button class="btn-project-details" onclick="openProjectModal('mentymaps')">
+                                        <i class="fa-solid fa-sliders"></i> Deep-Dive Architecture
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Project 5: AI Code Reviewer Bot -->
+                        <div class="project-card glass-card" data-category="ai fullstack">
+                            <div class="project-banner bg-gradient-rag">
+                                <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80" alt="AI Code Reviewer Bot" class="project-cover-img" loading="lazy">
+                                <div class="project-badge">Aug 2026</div>
+                            </div>
+                            <div class="project-content">
+                                <div class="project-meta">
+                                    <span class="proj-type">AI & Microservice Platform</span>
+                                </div>
+                                <h3 class="project-title">AI Code Reviewer Bot – Automated PR Security & Analysis</h3>
+                                <p class="project-desc">Automated AI-driven code review microservice integrating AST parsing and LLM reasoning to perform automated static analysis, security vulnerability detection, and inline GitHub PR review comments under 3 seconds.</p>
+                                <div class="project-tech">
+                                    <span>Node.js</span><span>TypeScript</span><span>Python Flask</span><span>LLM APIs</span><span>AST Parser</span><span>GitHub Webhooks</span>
+                                </div>
+                                <div class="project-action-links">
+                                    <a href="https://github.com/NaniSontyana/AI-Code-Reviewer-Bot" target="_blank" rel="noopener noreferrer" class="proj-action-btn"><i class="fa-brands fa-github"></i> Code</a>
+                                    <a href="https://ai-code-reviewer.vercel.app" target="_blank" rel="noopener noreferrer" class="proj-action-btn live"><i class="fa-solid fa-arrow-up-right-from-square"></i> Live Demo</a>
+                                </div>
+                                <div class="project-footer">
+                                    <button class="btn-project-details" onclick="openProjectModal('aicodereview')">
+                                        <i class="fa-solid fa-sliders"></i> Deep-Dive Architecture
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <button class="slider-btn slider-btn-next" id="projects-scroll-right" aria-label="Scroll Right">
                         <i class="fa-solid fa-chevron-right"></i>
                     </button>
@@ -404,13 +582,71 @@
                     <!-- Education Column -->
                     <div class="edu-column">
                         <h3 class="column-title"><i class="fa-solid fa-graduation-cap"></i> Academic Background</h3>
-                        <div id="education-list-container"></div>
+                        <div id="education-list-container">
+                            <div class="edu-card glass-card" style="margin-bottom:1rem;">
+                                <div class="edu-year">Nov 2022 – Apr 2026</div>
+                                <h4>B.Tech in Computer Science</h4>
+                                <div class="institution">Baba Institute of Technology and Science</div>
+                                <div class="gpa-badge"><i class="fa-solid fa-star"></i> CGPA: 8.14 / 10.0</div>
+                                <p class="edu-desc">Coursework: Data Structures & Algorithms, Object-Oriented Programming, Database Systems, Web Technologies, Operating Systems, Software Engineering.</p>
+                            </div>
+                            <div class="edu-card glass-card" style="margin-bottom:1rem;">
+                                <div class="edu-year">2020 – 2022</div>
+                                <h4>Intermediate (MPC - Math, Physics, Chem)</h4>
+                                <div class="institution">Venkat Sai Junior College</div>
+                                <div class="gpa-badge"><i class="fa-solid fa-star"></i> Score: 77.1%</div>
+                                <p class="edu-desc">Strong foundation in higher mathematics, analytical reasoning, and foundational physics.</p>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Certifications Column -->
                     <div class="cert-column">
                         <h3 class="column-title"><i class="fa-solid fa-certificate"></i> Verified Certifications</h3>
-                        <div id="certs-list-container"></div>
+                        <div id="certs-list-container">
+                            <div class="cert-card glass-card" style="margin-bottom:1rem;">
+                                <div class="cert-icon">
+                                    <i class="fa-solid fa-award"></i>
+                                </div>
+                                <div class="cert-info" style="flex-grow:1;">
+                                    <h4>MERN Stack Web Development</h4>
+                                    <div class="cert-issuer">GeeksforGeeks</div>
+                                    <div class="cert-date"><i class="fa-regular fa-calendar-check"></i> Issued 2025</div>
+                                    <p style="margin-bottom:0.5rem;">Comprehensive training covering MongoDB, Express.js, React.js, Node.js, REST API architecture, and state management.</p>
+                                    <a href="https://media.geeksforgeeks.org/courses/certificates/" target="_blank" rel="noopener noreferrer" class="btn-cert-link">
+                                        <i class="fa-solid fa-shield-halved"></i> Verify Certificate
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="cert-card glass-card" style="margin-bottom:1rem;">
+                                <div class="cert-icon">
+                                    <i class="fa-solid fa-award"></i>
+                                </div>
+                                <div class="cert-info" style="flex-grow:1;">
+                                    <h4>Full Stack Web Development</h4>
+                                    <div class="cert-issuer">BrainOvision Solutions Pvt. Ltd.</div>
+                                    <div class="cert-date"><i class="fa-regular fa-calendar-check"></i> Issued 2024</div>
+                                    <p style="margin-bottom:0.5rem;">Hands-on development program focusing on Spring Boot, Java backend architectures, and production application building.</p>
+                                    <a href="https://drive.google.com/file/d/1a3ecQTuDKSVKVMtz6Tw3Djgxd9Z0t4xU/view?usp=sharing" target="_blank" rel="noopener noreferrer" class="btn-cert-link">
+                                        <i class="fa-solid fa-shield-halved"></i> Verify Certificate
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="cert-card glass-card" style="margin-bottom:1rem;">
+                                <div class="cert-icon">
+                                    <i class="fa-solid fa-award"></i>
+                                </div>
+                                <div class="cert-info" style="flex-grow:1;">
+                                    <h4>Java Full Stack Internship</h4>
+                                    <div class="cert-issuer">Council for Skills and Competencies (CSC India) & APSCHE</div>
+                                    <div class="cert-date"><i class="fa-regular fa-calendar-check"></i> Nov 2025 – Mar 2026</div>
+                                    <p style="margin-bottom:0.5rem;">Student Internship Program in Java Full Stack development conducted by CSC India & Talent Scope Technologies under APSCHE (Certificate ID: CSCIndia-1h4afyr7).</p>
+                                    <a href="https://verify.cscindia.org.in/" target="_blank" rel="noopener noreferrer" class="btn-cert-link">
+                                        <i class="fa-solid fa-shield-halved"></i> Verify Certificate
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -510,7 +746,7 @@
     <footer class="footer">
         <div class="container footer-content">
             <div class="footer-brand">
-                <a href="#hero" class="logo" id="footer-logo-admin-trigger">
+                <a href="#hero" class="logo">
                     <span class="logo-bracket">&lt;</span>NS<span class="logo-bracket"> /&gt;</span>
                 </a>
                 <p>Designed & Built by <strong>Nani Sontyana</strong> &copy; 2026. All rights reserved.</p>
@@ -521,362 +757,7 @@
         </div>
     </footer>
 
-    <!-- Hidden Customizer Admin Modal -->
-    <div class="modal-overlay" id="customizer-modal">
-        <div class="modal-card glass-card" style="max-width:900px; width:92%;">
-            <button class="modal-close" onclick="closeCustomizerModal()">&times;</button>
 
-            <div class="modal-header-block">
-                <h2><i class="fa-solid fa-sliders" style="color:var(--primary-cyan);"></i> Portfolio Admin & Customizer Portal</h2>
-                <p style="color:var(--text-muted); font-size:0.9rem;">Edit any section live on the website: Personal Bio/Summary, Skills, Projects, Education, and Contact Links!</p>
-            </div>
-
-            <!-- Tabs Navigation -->
-            <div class="skill-tabs" style="justify-content:flex-start; margin-bottom:1.5rem; flex-wrap:wrap; gap:0.5rem;">
-                <button class="skill-tab-btn active" id="cust-tab-personal" onclick="switchCustTab('personal')"><i class="fa-solid fa-user-pen"></i> Personal & Summary</button>
-                <button class="skill-tab-btn" id="cust-tab-skills" onclick="switchCustTab('skills')"><i class="fa-solid fa-code"></i> Skills Toolkit</button>
-                <button class="skill-tab-btn" id="cust-tab-projects" onclick="switchCustTab('projects')"><i class="fa-solid fa-rocket"></i> Projects Showcase</button>
-                <button class="skill-tab-btn" id="cust-tab-experience" onclick="switchCustTab('experience')"><i class="fa-solid fa-briefcase"></i> Experience / Internships</button>
-                <button class="skill-tab-btn" id="cust-tab-education" onclick="switchCustTab('education')"><i class="fa-solid fa-graduation-cap"></i> Education & Certs</button>
-                <button class="skill-tab-btn" id="cust-tab-export" onclick="switchCustTab('export')"><i class="fa-solid fa-code-compare"></i> Permanent Save & Export</button>
-            </div>
-
-            <!-- Tab Content 1: Edit Personal Info & Summary -->
-            <div id="cust-content-personal">
-                <div style="background:rgba(6,9,19,0.7); padding:1.25rem; border-radius:12px; border:1px solid var(--glass-border); margin-bottom:1rem;">
-                    <h4 style="font-size:1rem; color:var(--primary-cyan); margin-bottom:1rem;"><i class="fa-solid fa-pen-to-square"></i> Hero Section & Personal Summary</h4>
-
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-bottom:0.8rem;">
-                        <div>
-                            <label style="font-size:0.8rem; color:var(--text-muted); display:block; margin-bottom:0.3rem;">Full Name</label>
-                            <input type="text" id="cust-name" class="form-group-input" style="width:100%;">
-                        </div>
-                        <div>
-                            <label style="font-size:0.8rem; color:var(--text-muted); display:block; margin-bottom:0.3rem;">Professional Title / Role</label>
-                            <input type="text" id="cust-title" class="form-group-input" style="width:100%;">
-                        </div>
-                    </div>
-
-                    <div style="margin-bottom:0.8rem;">
-                        <label style="font-size:0.8rem; color:var(--text-muted); display:block; margin-bottom:0.3rem;">Availability Status Badge Text</label>
-                        <input type="text" id="cust-status" class="form-group-input" style="width:100%;">
-                    </div>
-
-                    <div style="margin-bottom:1rem;">
-                        <label style="font-size:0.8rem; color:var(--primary-cyan); font-weight:600; display:block; margin-bottom:0.3rem;">
-                            <i class="fa-solid fa-align-left"></i> Summary / Bio Description
-                        </label>
-                        <textarea id="cust-summary" rows="4" class="form-group-input" style="width:100%; font-size:0.9rem;" placeholder="Write your professional summary bio here..."></textarea>
-                    </div>
-
-                    <h4 style="font-size:1rem; color:var(--primary-cyan); margin-bottom:0.8rem; margin-top:1.2rem;"><i class="fa-solid fa-heading"></i> About Section Heading</h4>
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-bottom:0.8rem;">
-                        <div>
-                            <label style="font-size:0.8rem; color:var(--text-muted); display:block; margin-bottom:0.3rem;">About Title</label>
-                            <input type="text" id="cust-about-title" class="form-group-input" style="width:100%;">
-                        </div>
-                        <div>
-                            <label style="font-size:0.8rem; color:var(--text-muted); display:block; margin-bottom:0.3rem;">About Subtitle</label>
-                            <input type="text" id="cust-about-subtitle" class="form-group-input" style="width:100%;">
-                        </div>
-                    </div>
-
-                    <h4 style="font-size:1rem; color:var(--primary-cyan); margin-bottom:0.8rem; margin-top:1.2rem;"><i class="fa-solid fa-chart-simple"></i> Hero Impact Metrics</h4>
-                    <div style="display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:0.8rem; margin-bottom:1rem;">
-                        <div>
-                            <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.2rem;">CGPA</label>
-                            <input type="text" id="cust-cgpa" class="form-group-input" style="width:100%;">
-                        </div>
-                        <div>
-                            <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.2rem;">API Speedup</label>
-                            <input type="text" id="cust-apispeed" class="form-group-input" style="width:100%;">
-                        </div>
-                        <div>
-                            <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.2rem;">ML Accuracy</label>
-                            <input type="text" id="cust-mlacc" class="form-group-input" style="width:100%;">
-                        </div>
-                        <div>
-                            <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.2rem;">Code Dup Drop</label>
-                            <input type="text" id="cust-codedup" class="form-group-input" style="width:100%;">
-                        </div>
-                    </div>
-
-                    <h4 style="font-size:1rem; color:var(--primary-cyan); margin-bottom:0.8rem; margin-top:1.2rem;"><i class="fa-solid fa-address-book"></i> Contact Details & Social Links</h4>
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-bottom:0.8rem;">
-                        <div>
-                            <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.2rem;">Email</label>
-                            <input type="email" id="cust-email" class="form-group-input" style="width:100%;">
-                        </div>
-                        <div>
-                            <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.2rem;">Phone</label>
-                            <input type="text" id="cust-phone" class="form-group-input" style="width:100%;">
-                        </div>
-                    </div>
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-bottom:1rem;">
-                        <div>
-                            <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.2rem;">LinkedIn URL</label>
-                            <input type="url" id="cust-linkedin" class="form-group-input" style="width:100%;">
-                        </div>
-                        <div>
-                            <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.2rem;">GitHub URL</label>
-                            <input type="url" id="cust-github" class="form-group-input" style="width:100%;">
-                        </div>
-                    </div>
-
-                    <div style="margin-bottom:1.2rem;">
-                        <label style="font-size:0.75rem; color:var(--primary-cyan); display:block; margin-bottom:0.2rem;">
-                            <i class="fa-solid fa-video"></i> Background Video MP4 URL
-                        </label>
-                        <input type="text" id="cust-bg-video" class="form-group-input" style="width:100%;" placeholder="Paste custom MP4 video link or filename (e.g. ./bg-video.mp4)">
-                    </div>
-
-                    <button class="btn btn-primary" onclick="savePersonalInfoFromUI()">
-                        <i class="fa-solid fa-floppy-disk"></i> Save Summary & Personal Info
-                    </button>
-                </div>
-            </div>
-
-            <!-- Tab Content 2: Manage Skills -->
-            <div id="cust-content-skills" style="display:none;">
-                <div style="background:rgba(6,9,19,0.7); padding:1.25rem; border-radius:12px; border:1px solid var(--glass-border); margin-bottom:1.5rem;">
-                    <h4 style="font-size:1rem; color:var(--primary-cyan); margin-bottom:1rem;" id="skill-form-heading"><i class="fa-solid fa-plus"></i> Add / Edit Skill</h4>
-                    <input type="hidden" id="editing-skill-id" value="">
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-bottom:0.8rem;">
-                        <input type="text" id="new-skill-name" placeholder="Skill Name (e.g. GraphQL)" class="form-group-input">
-                        <select id="new-skill-category" class="form-group-input">
-                            <option value="languages">Languages</option>
-                            <option value="frontend">Frontend</option>
-                            <option value="backend">Backend & APIs</option>
-                            <option value="databases">Databases</option>
-                            <option value="aiml">AI & ML / RAG</option>
-                            <option value="devops">DevOps & Tools</option>
-                        </select>
-                    </div>
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-bottom:1rem;">
-                        <input type="number" id="new-skill-level" placeholder="Proficiency Level % (e.g. 90)" min="10" max="100" class="form-group-input">
-                        <input type="text" id="new-skill-tags" placeholder="Tags comma separated (e.g. API, Schema)" class="form-group-input">
-                    </div>
-                    <div style="display:flex; gap:0.8rem; align-items:center;">
-                        <button class="btn btn-primary" id="btn-save-skill" style="padding:0.5rem 1.25rem; font-size:0.85rem;" onclick="addNewSkillFromUI()">
-                            <i class="fa-solid fa-plus"></i> Save / Add Skill
-                        </button>
-                        <button type="button" class="btn btn-glass" id="btn-cancel-skill-edit" style="display:none; padding:0.5rem 1rem; font-size:0.85rem;" onclick="resetSkillForm()">
-                            <i class="fa-solid fa-xmark"></i> Cancel Edit
-                        </button>
-                    </div>
-                </div>
-
-                <h4 style="font-size:1rem; margin-bottom:0.75rem;">Current Skills (<span id="skill-count">0</span>):</h4>
-                <div id="cust-skills-list" style="display:flex; flex-direction:column; gap:0.5rem; max-height:280px; overflow-y:auto; padding-right:0.5rem;"></div>
-            </div>
-
-            <!-- Tab Content 3: Manage Projects & Edit Hidden Details -->
-            <div id="cust-content-projects" style="display:none;">
-                <div style="background:rgba(6,9,19,0.7); padding:1.25rem; border-radius:12px; border:1px solid var(--glass-border); margin-bottom:1.5rem;">
-                    <h4 style="font-size:1rem; color:var(--primary-cyan); margin-bottom:1rem;" id="proj-form-heading">
-                        <i class="fa-solid fa-plus"></i> Add / Edit Project & Hidden Details
-                    </h4>
-                    <input type="hidden" id="editing-proj-id" value="">
-
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-bottom:0.8rem;">
-                        <div>
-                            <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.2rem;">Project Title</label>
-                            <input type="text" id="new-proj-title" placeholder="Project Title (e.g. DocuMind AI)" class="form-group-input" style="width:100%;">
-                        </div>
-                        <div>
-                            <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.2rem;">Badge / Date</label>
-                            <input type="text" id="new-proj-badge" placeholder="Date (e.g. Jul 2026)" class="form-group-input" style="width:100%;">
-                        </div>
-                    </div>
-
-                    <div style="margin-bottom:0.8rem;">
-                        <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.2rem;">Cover Image (URL or Upload Image File)</label>
-                        <div style="display:flex; gap:0.5rem; align-items:center;">
-                            <input type="url" id="new-proj-cover" placeholder="Cover Image URL (https://...)" class="form-group-input" style="flex:1;">
-                            <button type="button" class="btn btn-sm btn-glass" style="white-space:nowrap; padding:0.55rem 0.85rem;" onclick="document.getElementById('new-proj-image-file').click()">
-                                <i class="fa-solid fa-upload"></i> Upload Image
-                            </button>
-                            <input type="file" id="new-proj-image-file" accept="image/*" style="display:none;" onchange="handleProjectImageUpload(event)">
-                        </div>
-                    </div>
-
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-bottom:0.8rem;">
-                        <div>
-                            <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.2rem;">Filter Category</label>
-                            <select id="new-proj-category" class="form-group-input" style="width:100%;">
-                                <option value="ai fullstack">AI / ML & RAG</option>
-                                <option value="fullstack">Full-Stack Web</option>
-                                <option value="backend fullstack">Backend Systems</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.2rem;">Technologies Applied (comma separated)</label>
-                            <input type="text" id="new-proj-tech" placeholder="React, Node.js, Python Flask, PostgreSQL" class="form-group-input" style="width:100%;">
-                        </div>
-                    </div>
-
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-bottom:0.8rem;">
-                        <div>
-                            <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.2rem;">GitHub Repo Link</label>
-                            <input type="url" id="new-proj-github" placeholder="https://github.com/..." class="form-group-input" style="width:100%;">
-                        </div>
-                        <div>
-                            <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.2rem;">Live Deployment Link</label>
-                            <input type="url" id="new-proj-live" placeholder="https://..." class="form-group-input" style="width:100%;">
-                        </div>
-                    </div>
-
-                    <div style="margin-bottom:0.8rem;">
-                        <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.2rem;">Short Description (Shown on Card Front)</label>
-                        <textarea id="new-proj-desc" rows="2" placeholder="Brief project summary description..." class="form-group-input" style="width:100%;"></textarea>
-                    </div>
-
-                    <div style="margin-bottom:0.8rem;">
-                        <label style="font-size:0.75rem; color:var(--primary-cyan); font-weight:600; display:block; margin-bottom:0.2rem;">
-                            <i class="fa-solid fa-layer-group"></i> Hidden Details: Deep-Dive Architecture & Achievements (1 per line)
-                        </label>
-                        <textarea id="new-proj-bullets" rows="4" placeholder="Paste 1 bullet per line..." class="form-group-input" style="width:100%;"></textarea>
-                    </div>
-
-                    <div style="display:flex; gap:0.8rem; align-items:center;">
-                        <button class="btn btn-primary" id="btn-save-project" style="padding:0.5rem 1.25rem; font-size:0.85rem;" onclick="addNewProjectFromUI()">
-                            <i class="fa-solid fa-plus"></i> Save / Add Project
-                        </button>
-                        <button type="button" class="btn btn-glass" id="btn-cancel-proj-edit" style="display:none; padding:0.5rem 1rem; font-size:0.85rem;" onclick="resetProjectForm()">
-                            <i class="fa-solid fa-xmark"></i> Cancel Edit
-                        </button>
-                    </div>
-                </div>
-
-                <h4 style="font-size:1rem; margin-bottom:0.75rem;">Current Projects (<span id="proj-count">0</span>):</h4>
-                <div id="cust-projects-list" style="display:flex; flex-direction:column; gap:0.5rem; max-height:260px; overflow-y:auto; padding-right:0.5rem;"></div>
-            </div>
-
-            <!-- Tab Content 4: Manage Education & Certifications -->
-            <div id="cust-content-education" style="display:none;">
-                <div style="background:rgba(6,9,19,0.7); padding:1.25rem; border-radius:12px; border:1px solid var(--glass-border); margin-bottom:1.5rem;">
-                    <h4 style="font-size:1rem; color:var(--primary-cyan); margin-bottom:1rem;" id="edu-form-heading"><i class="fa-solid fa-plus"></i> Add / Edit Education Degree</h4>
-                    <input type="hidden" id="editing-edu-id" value="">
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-bottom:0.8rem;">
-                        <input type="text" id="new-edu-degree" placeholder="Degree (e.g. B.Tech in CS)" class="form-group-input">
-                        <input type="text" id="new-edu-inst" placeholder="Institution Name" class="form-group-input">
-                    </div>
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-bottom:0.8rem;">
-                        <input type="text" id="new-edu-duration" placeholder="Duration (e.g. 2022 - 2026)" class="form-group-input">
-                        <input type="text" id="new-edu-gpa" placeholder="CGPA/Grade (e.g. CGPA: 8.14)" class="form-group-input">
-                    </div>
-                    <textarea id="new-edu-desc" rows="2" placeholder="Coursework / details..." class="form-group-input" style="width:100%; margin-bottom:0.8rem;"></textarea>
-                    <div style="display:flex; gap:0.8rem; align-items:center;">
-                        <button class="btn btn-primary" id="btn-save-edu" style="padding:0.5rem 1.25rem; font-size:0.85rem;" onclick="addNewEduFromUI()">
-                            <i class="fa-solid fa-plus"></i> Save / Add Education Entry
-                        </button>
-                        <button type="button" class="btn btn-glass" id="btn-cancel-edu-edit" style="display:none; padding:0.5rem 1rem; font-size:0.85rem;" onclick="resetEduForm()">
-                            <i class="fa-solid fa-xmark"></i> Cancel Edit
-                        </button>
-                    </div>
-                </div>
-
-                <h4 style="font-size:1rem; margin-bottom:0.75rem;">Education Entries (<span id="edu-count">0</span>):</h4>
-                <div id="cust-edu-list" style="display:flex; flex-direction:column; gap:0.5rem; max-height:180px; overflow-y:auto; padding-right:0.5rem; margin-bottom:1.5rem;"></div>
-
-                <div style="background:rgba(6,9,19,0.7); padding:1.25rem; border-radius:12px; border:1px solid var(--glass-border); margin-bottom:1.5rem;">
-                    <h4 style="font-size:1rem; color:var(--primary-cyan); margin-bottom:1rem;" id="cert-form-heading"><i class="fa-solid fa-plus"></i> Add / Edit Verified Certification</h4>
-                    <input type="hidden" id="editing-cert-id" value="">
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-bottom:0.8rem;">
-                        <input type="text" id="new-cert-title" placeholder="Certification Title" class="form-group-input">
-                        <input type="text" id="new-cert-issuer" placeholder="Issuer (e.g. GeeksforGeeks)" class="form-group-input">
-                    </div>
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-bottom:0.8rem;">
-                        <input type="text" id="new-cert-year" placeholder="Year / Date Issued (e.g. Issued 2025)" class="form-group-input">
-                        <input type="url" id="new-cert-url" placeholder="Verification / Certificate URL (https://...)" class="form-group-input">
-                    </div>
-                    <textarea id="new-cert-desc" rows="2" placeholder="Certification description..." class="form-group-input" style="width:100%; margin-bottom:0.8rem;"></textarea>
-                    <div style="display:flex; gap:0.8rem; align-items:center;">
-                        <button class="btn btn-primary" id="btn-save-cert" style="padding:0.5rem 1.25rem; font-size:0.85rem;" onclick="addNewCertFromUI()">
-                            <i class="fa-solid fa-plus"></i> Save / Add Certification Entry
-                        </button>
-                        <button type="button" class="btn btn-glass" id="btn-cancel-cert-edit" style="display:none; padding:0.5rem 1rem; font-size:0.85rem;" onclick="resetCertForm()">
-                            <i class="fa-solid fa-xmark"></i> Cancel Edit
-                        </button>
-                    </div>
-                </div>
-
-                <h4 style="font-size:1rem; margin-bottom:0.75rem;">Certification Entries (<span id="cert-count">0</span>):</h4>
-                <div id="cust-cert-list" style="display:flex; flex-direction:column; gap:0.5rem; max-height:180px; overflow-y:auto; padding-right:0.5rem;"></div>
-            </div>
-
-            <!-- Tab Content 4: Manage Experience & Internships -->
-            <div id="cust-content-experience" style="display:none;">
-                <div style="background:rgba(6,9,19,0.7); padding:1.25rem; border-radius:12px; border:1px solid var(--glass-border); margin-bottom:1.5rem;">
-                    <h4 style="font-size:1rem; color:var(--primary-cyan); margin-bottom:1rem;" id="exp-form-heading"><i class="fa-solid fa-plus"></i> Add / Edit Work / Internship Experience</h4>
-                    <input type="hidden" id="editing-exp-id" value="">
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-bottom:0.8rem;">
-                        <div>
-                            <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.2rem;">Company Name</label>
-                            <input type="text" id="new-exp-company" placeholder="Company (e.g. BrainOvision Solutions)" class="form-group-input" style="width:100%;">
-                        </div>
-                        <div>
-                            <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.2rem;">Role / Job Title</label>
-                            <input type="text" id="new-exp-role" placeholder="Role (e.g. Full Stack Developer Intern)" class="form-group-input" style="width:100%;">
-                        </div>
-                    </div>
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-bottom:0.8rem;">
-                        <div>
-                            <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.2rem;">Duration Range</label>
-                            <input type="text" id="new-exp-duration" placeholder="Dates (e.g. June 2024 – August 2024)" class="form-group-input" style="width:100%;">
-                        </div>
-                        <div>
-                            <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.2rem;">Location / Mode</label>
-                            <input type="text" id="new-exp-location" placeholder="Location (e.g. Remote / On-site)" class="form-group-input" style="width:100%;">
-                        </div>
-                    </div>
-                    <div style="margin-bottom:0.8rem;">
-                        <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.2rem;">Technologies Used (comma separated)</label>
-                        <input type="text" id="new-exp-tech" placeholder="Java, Spring Boot, REST APIs, SQL" class="form-group-input" style="width:100%;">
-                    </div>
-                    <div style="margin-bottom:0.8rem;">
-                        <label style="font-size:0.75rem; color:var(--primary-cyan); font-weight:600; display:block; margin-bottom:0.2rem;">
-                            Key Achievements & Bullets (1 per line)
-                        </label>
-                        <textarea id="new-exp-bullets" rows="4" placeholder="Paste 1 bullet per line..." class="form-group-input" style="width:100%;"></textarea>
-                    </div>
-                    <div style="display:flex; gap:0.8rem; align-items:center;">
-                        <button class="btn btn-primary" id="btn-save-exp" style="padding:0.5rem 1.25rem; font-size:0.85rem;" onclick="addNewExpFromUI()">
-                            <i class="fa-solid fa-plus"></i> Save / Add Experience Entry
-                        </button>
-                        <button type="button" class="btn btn-glass" id="btn-cancel-exp-edit" style="display:none; padding:0.5rem 1rem; font-size:0.85rem;" onclick="resetExpForm()">
-                            <i class="fa-solid fa-xmark"></i> Cancel Edit
-                        </button>
-                    </div>
-                </div>
-
-                <h4 style="font-size:1rem; margin-bottom:0.75rem;">Experience Entries (<span id="exp-count">0</span>):</h4>
-                <div id="cust-exp-list" style="display:flex; flex-direction:column; gap:0.5rem; max-height:220px; overflow-y:auto; padding-right:0.5rem;"></div>
-            </div>
-
-            <!-- Tab Content 5: Edit & Export Config JS -->
-            <div id="cust-content-export" style="display:none;">
-                <p style="font-size:0.88rem; color:var(--text-muted); margin-bottom:1rem;">
-                    Edit the full configuration JavaScript/JSON directly below and click <strong>"Apply Changes Live"</strong> to update the entire website immediately!
-                </p>
-                <textarea id="export-json-box" rows="12" style="width:100%; background:#060913; border:1px solid var(--glass-border); border-radius:8px; color:#50fa7b; font-family:var(--font-code); font-size:0.8rem; padding:1rem;"></textarea>
-                <div style="margin-top:1rem; display:flex; gap:1rem; flex-wrap:wrap;">
-                    <button class="btn btn-primary" onclick="applyLiveConfigFromTextarea()">
-                        <i class="fa-solid fa-floppy-disk"></i> Apply Changes Live
-                    </button>
-                    <button class="btn btn-glass" style="border-color:var(--primary-cyan); color:var(--primary-cyan);" onclick="downloadPortfolioConfigFile()">
-                        <i class="fa-solid fa-download"></i> Download portfolio-data.js File
-                    </button>
-                    <button class="btn btn-glass" onclick="copyConfigToClipboard()">
-                        <i class="fa-solid fa-copy"></i> Copy Config JS
-                    </button>
-                    <button class="btn btn-glass" style="color:#ff4d4d; border-color:rgba(255,77,77,0.3);" onclick="resetPortfolioDataToDefaults()">
-                        <i class="fa-solid fa-rotate-left"></i> Reset To Defaults
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Interactive Project Modal Window -->
     <div class="modal-overlay" id="project-modal">

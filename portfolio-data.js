@@ -59,9 +59,9 @@ const defaultPortfolioData = {
             badge: "Jul 2026",
             icon: "fa-solid fa-file-pdf",
             gradientClass: "bg-gradient-rag",
-            coverImage: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80",
-            githubUrl: "https://github.com/NaniSontyana/DocuMind-AI",
-            liveUrl: "https://documind-ai.vercel.app",
+            coverImage: "https://res.cloudinary.com/duf3bsuur/image/upload/v1786175640/Screenshot_2026-08-08_122549_lnlcdv.png",
+            githubUrl: "https://github.com/NaniSontyana/docmindAI",
+            liveUrl: "https://docmind-ai-nine.vercel.app/",
             subtitle: "Enterprise Question Answering over PDF Documents with Vector Source Citation",
             type: "AI & RAG Platform",
             description: "Enterprise Retrieval-Augmented Generation (RAG) platform enabling accurate natural language question answering over uploaded PDF documents with exact source-cited snippet responses.",
@@ -81,9 +81,9 @@ const defaultPortfolioData = {
             badge: "Apr 2026",
             icon: "fa-solid fa-chart-line",
             gradientClass: "bg-gradient-hr",
-            coverImage: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80",
-            githubUrl: "https://github.com/NaniSontyana/SmartHR-Analytics",
-            liveUrl: "https://smarthr-analytics.render.com",
+            coverImage: "https://res.cloudinary.com/duf3bsuur/image/upload/v1786175967/Screenshot_2026-08-08_123930_b3cyoy.png",
+            githubUrl: "https://github.com/NaniSontyana/smartHR-main",
+            liveUrl: "https://smarthr-three.vercel.app/",
             subtitle: "Machine Learning Employee Attrition Risk Predictor & Management Dashboard",
             type: "ML & Enterprise Analytics",
             description: "Predictive HR analytics system integrating a Random Forest machine learning model achieving 75%+ employee attrition prediction accuracy with response latency under 2 seconds.",
@@ -103,9 +103,9 @@ const defaultPortfolioData = {
             badge: "Dec 2025",
             icon: "fa-solid fa-bell",
             gradientClass: "bg-gradient-sub",
-            coverImage: "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=800&q=80",
-            githubUrl: "https://github.com/NaniSontyana/Subscription-Tracker-Backend",
-            liveUrl: "https://subtracker-api.onrender.com",
+            coverImage: "https://res.cloudinary.com/duf3bsuur/image/upload/v1786176363/Screenshot_2026-08-08_133438_trwztq.png",
+            githubUrl: "https://github.com/NaniSontyana/subscrption_tracker",
+            liveUrl: "https://subscrption-tracker-2.onrender.com",
             subtitle: "Automated Recurring Billing Tracker & Event-Driven Notification Workflows",
             type: "Event-Driven Backend System",
             description: "Resilient backend subscription management platform featuring automated recurring tracking, scheduled background renewal alerts, and Arcjet rate-limiting security.",
@@ -125,9 +125,9 @@ const defaultPortfolioData = {
             badge: "Aug 2026",
             icon: "fa-solid fa-map-location-dot",
             gradientClass: "bg-gradient-rag",
-            coverImage: "https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&w=800&q=80",
-            githubUrl: "https://github.com/NaniSontyana/Menty-by-Maps",
-            liveUrl: "https://menty-by-maps.vercel.app",
+            coverImage: "https://res.cloudinary.com/duf3bsuur/image/upload/v1786176781/Screenshot_2026-08-08_134241_txminv.png",
+            githubUrl: "https://github.com/NaniSontyana/Mentiby-Maps",
+            liveUrl: "https://mentiby-maps.vercel.app/login",
             subtitle: "Geospatial Mentorship Discovery & Real-Time Location-Based Navigation Engine",
             type: "Spatial GIS & AI System",
             description: "Interactive geospatial mentorship platform enabling real-time location-based mentor discovery, spatial density clustering, and low-latency route navigation for proximity-based networking.",
@@ -148,9 +148,8 @@ const defaultPortfolioData = {
             badge: "Aug 2026",
             icon: "fa-solid fa-code-pull-request",
             gradientClass: "bg-gradient-rag",
-            coverImage: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80",
-            githubUrl: "https://github.com/NaniSontyana/AI-Code-Reviewer-Bot",
-            liveUrl: "https://ai-code-reviewer.vercel.app",
+            coverImage: "https://res.cloudinary.com/duf3bsuur/image/upload/v1786847909/Screenshot_2026-08-16_080706_lswr54.png",
+            githubUrl: "https://github.com/NaniSontyana/AI-Code-review-bot",
             subtitle: "Automated Pull Request Code Analysis, OWASP Security Scanning & AST Refactoring Engine",
             type: "AI & Microservice Platform",
             description: "Automated AI-driven code review microservice integrating AST parsing and LLM reasoning to perform automated static analysis, security vulnerability detection, and inline GitHub PR review comments under 3 seconds.",
@@ -164,18 +163,18 @@ const defaultPortfolioData = {
             ]
         },
         {
-            id: "swiftcart",
-            title: "SwiftCart – Full-Stack Distributed E-Commerce Platform",
+            id: "ecommerce2",
+            title: "NovaCart – Distributed Microservices E-Commerce Platform",
             category: "backend fullstack",
             filterCat: "fullstack",
             badge: "May 2026",
             icon: "fa-solid fa-cart-shopping",
             gradientClass: "bg-gradient-hr",
             coverImage: "https://images.unsplash.com/photo-1556742049-0a675440778b?auto=format&fit=crop&w=800&q=80",
-            githubUrl: "https://github.com/NaniSontyana/SwiftCart-Ecommerce",
-            liveUrl: "https://swiftcart-store.vercel.app",
-            subtitle: "Scalable E-Commerce Microservices Engine with Event-Driven Inventory & Stripe Payment Workflows",
-            type: "E-Commerce & Microservices Engine",
+            githubUrl: "https://github.com/NaniSontyana/NovaCart-Ecommerce",
+            liveUrl: "https://novacart-store.vercel.app",
+            subtitle: "Scalable E-Commerce Microservices Engine with Event-Driven Inventory & Stripe Workflows",
+            type: "Distributed E-Commerce Engine",
             description: "High-performance distributed e-commerce web platform featuring real-time inventory synchronization, Stripe payment gateway integration, JWT role-based access control, and sub-50ms product catalog caching using Redis.",
             tech: ["React", "Redux Toolkit", "Node.js", "Express", "PostgreSQL", "Redis", "Stripe API", "JWT", "Docker"],
             bullets: [
@@ -223,6 +222,15 @@ const defaultPortfolioData = {
             year: "Issued 2024",
             certUrl: "https://drive.google.com/file/d/1a3ecQTuDKSVKVMtz6Tw3Djgxd9Z0t4xU/view?usp=sharing",
             description: "Hands-on development program focusing on Spring Boot, Java backend architectures, and production application building."
+        },
+        {
+            id: "cert3",
+            title: "Java Full Stack Internship",
+            issuer: "Council for Skills and Competencies (CSC India) & APSCHE",
+            year: "Nov 2025 – Mar 2026",
+            certUrl: "https://verify.cscindia.org.in/",
+            certId: "CSCIndia-1h4afyr7",
+            description: "Student Internship Program in Java Full Stack development conducted by CSC India & Talent Scope Technologies under APSCHE (Certificate ID: CSCIndia-1h4afyr7)."
         }
     ],
 
@@ -244,26 +252,10 @@ const defaultPortfolioData = {
     ]
 };
 
-// Global portfolioData object initialized immediately from localStorage or defaults
-var portfolioData;
-try {
-    const localSaved = localStorage.getItem('nani_portfolio_custom_v1');
-    if (localSaved) {
-        const parsed = JSON.parse(localSaved);
-        if (parsed && parsed.personalInfo && parsed.projects) {
-            portfolioData = parsed;
-        } else {
-            portfolioData = JSON.parse(JSON.stringify(defaultPortfolioData));
-        }
-    } else {
-        portfolioData = JSON.parse(JSON.stringify(defaultPortfolioData));
-    }
-} catch (e) {
-    portfolioData = JSON.parse(JSON.stringify(defaultPortfolioData));
-}
+// Global portfolioData object initialized directly
+var portfolioData = defaultPortfolioData;
 
 if (typeof window !== 'undefined') {
     window.portfolioData = portfolioData;
 }
-
 
