@@ -248,6 +248,19 @@ const defaultPortfolioData = {
                 "Refactored backend service logic and optimized database queries, achieving a 30% reduction in code duplication and enhancing codebase maintainability.",
                 "Actively code-reviewed 20+ pull requests, resolved high-priority production bugs, and delivered core features within a 5-member Agile sprint team."
             ]
+        },
+        {
+            id: "exp2",
+            company: "Council for Skills and Competencies (CSC India) & APSCHE",
+            role: "Java Full Stack Developer Intern",
+            duration: "Nov 2025 – Mar 2026",
+            location: "Visakhapatnam, AP",
+            tech: ["Java", "Spring Boot", "React.js", "RESTful APIs", "SQL", "Git", "Agile"],
+            bullets: [
+                "Completed an intensive Student Internship Initiative Program in Java Full Stack web development authorized by APSCHE & CSC India in partnership with Talent Scope Technologies.",
+                "Engineered scalable RESTful API services and interactive user interfaces leveraging Java, Spring Boot, SQL databases, and modern web frameworks.",
+                "Practiced Agile software development workflows, version control management, and clean object-oriented architecture patterns."
+            ]
         }
     ]
 };
